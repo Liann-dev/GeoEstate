@@ -1,6 +1,7 @@
 from app.auth.register import register
 from app.auth.login import login
-
+from app.home.home_buyer import home_buyer
+from app.home.home_seller import home_seller
 
 def main():
     while True:
@@ -13,8 +14,14 @@ def main():
         if pilihan == '1':
             register()
         elif pilihan == '2':
-            if login():
-                print("Selamat datang di GeoEstate!")
+            user = login()
+            if user:
+                if user['role'] == 'pembeli':
+                    input("Tekan ENTER untuk masuk ke halaman pembeli...")
+                    home_buyer(user['username'])
+                elif user['role'] == 'penjual':
+                    input("Tekan ENTER untuk masuk ke halaman penjual...")
+                    home_seller(user['username'])
                 break
         elif pilihan == '3':
             print("Terima kasih telah menggunakan GeoEstate!")
@@ -24,8 +31,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-print ("Ini Adalah Project GeoEstate Untuk Mempermudah Pencarian Properti Impian Anda")
-print ("Selamat Datang di GeoEstate!")
-print ("Kami Hadir untuk Membantu Anda Menemukan Properti yang Tepat dengan Mudah dan Cepat.")
-print ("Dengan Teknologi Pemetaan Terkini, Kami Menyediakan Informasi Lengkap tentang Lokasi, Harga, dan Fasilitas Properti.")
-print ("Jelajahi Berbagai Pilihan Properti yang Sesuai dengan Kebutuhan dan Anggaran Anda.")
