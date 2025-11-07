@@ -1,0 +1,5 @@
+print ("Ini Adalah Project GeoEstate Untuk Mempermudah Pencarian Properti Impian Anda")
+print ("Selamat Datang di GeoEstate!")
+print ("Kami Hadir untuk Membantu Anda Menemukan Properti yang Tepat dengan Mudah dan Cepat.")
+print ("Dengan Teknologi Pemetaan Terkini, Kami Menyediakan Informasi Lengkap tentang Lokasi, Harga, dan Fasilitas Properti.")
+print ("Jelajahi Berbagai Pilihan Properti yang Sesuai dengan Kebutuhan dan Anggaran Anda.")
