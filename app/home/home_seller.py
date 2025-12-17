@@ -1,19 +1,32 @@
-print("Welcome to GeoEstate Seller")
+import csv
+import os
 
-def home_seller(username):  # <=== Tambahkan parameter username
-    properti = []
+FILE_PROPERTI = "data/properti.csv"
 
+def home_seller(username):
     print(f"\nHalo {username}, selamat datang di GeoEstate Seller!")
 
+    # Pastikan file CSV ada
+    if not os.path.exists(FILE_PROPERTI):
+        with open(FILE_PROPERTI, mode='w', newline='') as file:
+            writer = csv.DictWriter(
+                file,
+                fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "doc_verified"]
+            )
+            writer.writeheader()
+
     while True:
-        print("\n===== GeoEstate Menu Utama (Penjual) =====")
+        print("\n===== GeoEstate Menu Penjual =====")
         print("1. Tambah Properti Baru")
-        print("2. Lihat Daftar Properti")
-        print("3. Keluar / Logout")
-        print("=========================================")
+        print("2. Lihat Properti Saya")
+        print("3. Logout")
+        print("=================================")
 
         pilihan = input("Pilih menu (1-3): ")
 
+        # =========================
+        # 1. TAMBAH PROPERTI
+        # =========================
         if pilihan == "1":
             print("\n--- Tambah Properti Baru ---")
 
@@ -30,33 +43,64 @@ def home_seller(username):  # <=== Tambahkan parameter username
             elif kategori_pilihan == "3":
                 kategori = "Resort"
             else:
-                kategori = "Lainnya"
+                print("Kategori tidak valid.")
+                continue
 
-            nama = input("\nNama Properti: ")
-            lokasi = input("Lokasi: ")
-            harga = int(input("Harga: "))
+            nama = input("Nama Properti : ")
+            lokasi = input("Lokasi        : ")
+            harga = input("Harga         : ")
 
-            properti.append({
+            # Ambil ID terakhir
+            with open(FILE_PROPERTI, mode='r', newline='') as file:
+                reader = list(csv.DictReader(file))
+                new_id = len(reader) + 1
+
+            data_baru = {
+                "id": str(new_id),
                 "nama": nama,
+                "kategori": kategori,
                 "lokasi": lokasi,
                 "harga": harga,
-                "kategori": kategori
-            })
+                "penjual": username,
+                "doc_verified": "False"   # <- BELUM TERVERIFIKASI
+            }
 
-            print(f"\nProperti '{nama}' ({kategori}) berhasil ditambahkan!\n")
+            with open(FILE_PROPERTI, mode='a', newline='') as file:
+                writer = csv.DictWriter(file, fieldnames=data_baru.keys())
+                writer.writerow(data_baru)
 
+            print("\nProperti berhasil ditambahkan!")
+            print("Status dokumen: BELUM TERVERIFIKASI")
+            print("Menunggu verifikasi sebelum dapat ditampilkan ke pembeli.\n")
+
+        # =========================
+        # 2. LIHAT PROPERTI SAYA
+        # =========================
         elif pilihan == "2":
-            print("\n--- Daftar Properti ---")
-            if len(properti) == 0:
-                print("Belum ada properti, silakan tambahkan dulu melalui menu 1.\n")
-            else:
-                for i, p in enumerate(properti, start=1):
-                    print(f"{i}. {p['nama']} ({p['kategori']}) - {p['lokasi']} - Rp {p['harga']}")
-                print()
+            print("\n--- Daftar Properti Saya ---")
 
+            with open(FILE_PROPERTI, mode='r', newline='') as file:
+                reader = csv.DictReader(file)
+                ada = False
+
+                for p in reader:
+                    if p['penjual'] == username:
+                        status = "Terverifikasi" if p['doc_verified'] == "True" else "Belum Terverifikasi"
+                        print(f"- ID {p['id']} | {p['nama']} ({p['kategori']})")
+                        print(f"  Lokasi : {p['lokasi']}")
+                        print(f"  Harga  : Rp {p['harga']}")
+                        print(f"  Status : {status}\n")
+                        ada = True
+
+                if not ada:
+                    print("Anda belum memiliki properti.\n")
+
+        # =========================
+        # 3. LOGOUT
+        # =========================
         elif pilihan == "3":
-            print(f"\nTerima kasih, {username}. Sampai jumpa!\n")
+            print(f"\nLogout berhasil. Sampai jumpa, {username}!\n")
             break
 
         else:
-            print("\nPilihan tidak valid, silakan coba lagi!\n")
+            print("Pilihan tidak valid, silakan coba lagi.\n")

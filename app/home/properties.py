@@ -1,11 +1,12 @@
-def lihat_properti():
-    properti = [
-        {"nama": "Villa Bandung", "lokasi": "Lembang", "harga": 950000000},
-        {"nama": "Rumah Modern", "lokasi": "Dago", "harga": 1250000000},
-        {"nama": "Apartemen SkyView", "lokasi": "Cihampelas", "harga": 850000000},
-    ]
+import csv
 
-    print("\n=== Daftar Properti GeoEstate ===")
-    for p in properti:
-        print(f"{p['nama']} - {p['lokasi']} - Rp {p['harga']}")
-    print()
+def lihat_properti():
+    print("\n=== Properti Tersedia ===")
+
+    with open("data/properti.csv", mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for p in reader:
+            if p['doc_verified'] == "True":
+                print(f"{p['nama']} ({p['kategori']})")
+                print(f"Lokasi: {p['lokasi']}")
+                print(f"Harga : Rp {p['harga']}\n")
