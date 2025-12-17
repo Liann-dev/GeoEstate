@@ -2,8 +2,11 @@ from app.auth.register import register
 from app.auth.login import login
 from app.home.home_buyer import home_buyer
 from app.home.home_seller import home_seller
+<<<<<<< HEAD
 from app.Utils.OnboardingScreen import show_splash, show_onboarding
 from app.Utils.padding import pad_center as centerpadding
+=======
+>>>>>>> f21a2f6a3649ca58bd8adb0adb2c064c7b938b06
 
 def main():
     show_splash()
