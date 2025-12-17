@@ -2,14 +2,19 @@ from app.auth.register import register
 from app.auth.login import login
 from app.home.home_buyer import home_buyer
 from app.home.home_seller import home_seller
+from app.Utils.OnboardingScreen import show_splash, show_onboarding
+from app.Utils.padding import pad_center as centerpadding
 
 def main():
+    show_splash()
+    show_onboarding()
     while True:
-        print("=== GeoEstate ===")
-        print("1. Register")
-        print("2. Login")
-        print("3. Exit")
-        pilihan = input("Pilih opsi (1/2/3): ")
+        print("\n" * 5)
+        print(centerpadding("Selamat datang di GeoEstate!"))
+        print(centerpadding("1. Register"))
+        print(centerpadding("2. Login"))
+        print(centerpadding("3. Exit"))
+        pilihan = input(centerpadding("Pilih opsi (1/2/3): "))
 
         if pilihan == '1':
             register()

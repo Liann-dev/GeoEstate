@@ -33,7 +33,11 @@ def bantuan():
             print("\nLayanan GeoEstate tersedia 24/7 kecuali saat maintenance.")
         elif P == 7:
             print("\nGeoEstate menerapkan autentikasi, enkripsi, kontrol akses, dan pemindaian keamanan rutin.")
-
+        elif P == 8:
+            print("\nUntuk bantuan lainnya, silahkan hubungi nomor di bawah ini :\n+62 851-7158-0526 (Adi)\n+62 895-3272-66457 (Lian)")
+        else:
+            print("\nOpsi bantuan tidak ditemukan!")
+            
         lanjut = input("\nIngin mengetahui sesuatu lagi? (Y/N): ").upper()
         if lanjut == "N":
             print("Kembali ke menu utama GeoEstate...\n")
