@@ -1,22 +1,41 @@
-print("Welcome to GeoEstate Seller")
+import csv
+import os
 
-def home_seller(username):  # <=== Tambahkan parameter username
-    properti = []
 
+FILE_PROPERTI = "data/properti.csv"
+
+def home_seller(username):
     print(f"\nHalo {username}, selamat datang di GeoEstate Seller!")
 
+    if not os.path.exists("data"):
+        os.makedirs("data")
+
+
+    if not os.path.exists(FILE_PROPERTI):
+        with open(FILE_PROPERTI, mode='w', newline='') as file:
+            writer = csv.DictWriter(
+                file,
+                fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "doc_verified"]
+            )
+            writer.writeheader()
+
     while True:
-        print("\n===== GeoEstate Menu Utama (Penjual) =====")
+ 
+        print("\n===== GeoEstate Menu Penjual =====")
         print("1. Tambah Properti Baru")
-        print("2. Lihat Daftar Properti")
-        print("3. Keluar / Logout")
-        print("=========================================")
+        print("2. Lihat Properti Saya")
+        print("3. Logout")
+        print("==================================")
 
         pilihan = input("Pilih menu (1-3): ")
 
+        # =========================
+        # OPSI 1: TAMBAH PROPERTI
+        # =========================
         if pilihan == "1":
             print("\n--- Tambah Properti Baru ---")
 
+         
             print("Pilih kategori properti:")
             print("1. Rumah")
             print("2. Villa")
@@ -32,31 +51,80 @@ def home_seller(username):  # <=== Tambahkan parameter username
             else:
                 kategori = "Lainnya"
 
-            nama = input("\nNama Properti: ")
-            lokasi = input("Lokasi: ")
-            harga = int(input("Harga: "))
 
-            properti.append({
+            nama = input("Nama Properti : ")
+            lokasi = input("Lokasi        : ")
+            harga = input("Harga (Rp)    : ")
+
+
+            new_id = 1
+            if os.path.exists(FILE_PROPERTI):
+                with open(FILE_PROPERTI, mode='r') as file:
+                    reader = list(csv.reader(file))
+                
+                    if len(reader) > 0:
+                        new_id = len(reader) 
+
+            data_baru = {
+                "id": str(new_id),
                 "nama": nama,
+                "kategori": kategori,
                 "lokasi": lokasi,
                 "harga": harga,
-                "kategori": kategori
-            })
+                "penjual": username,     
+                "doc_verified": "False"  
+            }
 
-            print(f"\nProperti '{nama}' ({kategori}) berhasil ditambahkan!\n")
+            with open(FILE_PROPERTI, mode='a', newline='') as file:
+                writer = csv.DictWriter(file, fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "doc_verified"])
+          
+                if file.tell() == 0:
+                    writer.writeheader()
+                writer.writerow(data_baru)
 
+            print("\n[SUKSES] Properti berhasil ditambahkan!")
+            print("Status: Menunggu Verifikasi Admin.")
+            input("Tekan ENTER untuk kembali...")
+
+        # =========================
+        # OPSI 2: LIHAT PROPERTI SAYA
+        # =========================
         elif pilihan == "2":
-            print("\n--- Daftar Properti ---")
-            if len(properti) == 0:
-                print("Belum ada properti, silakan tambahkan dulu melalui menu 1.\n")
-            else:
-                for i, p in enumerate(properti, start=1):
-                    print(f"{i}. {p['nama']} ({p['kategori']}) - {p['lokasi']} - Rp {p['harga']}")
-                print()
+            print(f"\n--- Daftar Properti Milik {username} ---")
 
+            with open(FILE_PROPERTI, mode='r') as file:
+                reader = csv.DictReader(file)
+                found = False
+
+                for p in reader:
+           
+                    if p['penjual'] == username:
+                     
+                        if p['doc_verified'] == "True":
+                            status_text = "✅ Terverifikasi"
+                        else:
+                            status_text = "⏳ Menunggu Verifikasi"
+                        
+                        print(f"ID: {p['id']}")
+                        print(f"Nama: {p['nama']} ({p['kategori']})")
+                        print(f"Lokasi: {p['lokasi']}")
+                        print(f"Harga: Rp {p['harga']}")
+                        print(f"Status: {status_text}")
+                        print("-" * 30)
+                        found = True
+
+                if not found:
+                    print("Anda belum memiliki properti yang terdaftar.")
+            
+            input("\nTekan ENTER untuk kembali...")
+
+        # =========================
+        # OPSI 3: LOGOUT
+        # =========================
         elif pilihan == "3":
-            print(f"\nTerima kasih, {username}. Sampai jumpa!\n")
+            print(f"\nSampai jumpa, {username}!")
             break
 
+
         else:
-            print("\nPilihan tidak valid, silakan coba lagi!\n")
+            print("\nPilihan tidak valid, silakan coba lagi!")

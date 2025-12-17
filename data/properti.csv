@@ -1,0 +1,6 @@
+id,nama,kategori,lokasi,harga,penjual,doc_verified
+1,Rumah Panjang,Rumah,Bandung,1000000000,Naufal,True
+2,Villa Air,Villa,Ciwidey,1500000000,Adi,True
+3,Havana Resort,Resort,Cianjur,780000000,Adi,True
+4,Rumah cemara,Rumah,Bandung Selatan,999999999,Naufal,True
+5,Resort Rancawana,Resort,Rancabuaya,120000000,Naufal,True

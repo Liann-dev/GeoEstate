@@ -30,35 +30,38 @@ def show_splash():
 
 def show_onboarding():
   
-    print("\n" * 2)
+    print("\n" * 20)
     print(centerpadding("[Page 1 of 3]"))
     print(centerpadding("========================================="))
     print(centerpadding("📍  TEMUKAN LOKASI STRATEGIS"))
     print(centerpadding("========================================="))
     print(centerpadding("Akses properti terlengkap dengan"))
     print(centerpadding("pemetaan wilayah yang presisi."))
-    print("\n" * 3)
+    print("\n" * 4)
     
    
     input(centerpadding(">> Tekan ENTER untuk lanjut..."))
+    print("\n" * 20)
 
 
-    print("\n" * 2)
+    print("\n" * 20)
     print(centerpadding("[Page 2 of 3]"))
     print(centerpadding("========================================="))
     print(centerpadding("🏠  INTERIOR SESUAI GAYA ANDA"))
     print(centerpadding("========================================="))
     print(centerpadding("Filter pencarian berdasarkan gaya"))
     print(centerpadding("arsitektur, luas ruangan, dan fasilitas."))
-    print("\n" * 3)
+    print("\n" * 4)
     input(centerpadding(">> Tekan ENTER untuk lanjut..."))
+    print("\n" * 20)
 
-    print("\n" * 2)
-    print(centerpadding("[Page 3 of 3]"))
+    print("\n" * 20)
+    print(centerpadding("[Page 1 of 3]"))
     print(centerpadding("========================================="))
     print(centerpadding("🛡️  INVESTASI AMAN DAN TERPERCAYA"))
     print(centerpadding("========================================="))
     print(centerpadding("Semua properti telah diverifikasi"))
     print(centerpadding("oleh tim legal GeoEstate."))
-    print("\n" * 3)
+    print("\n" * 4)
     input(centerpadding(">> Tekan ENTER untuk Masuk ke Aplikasi..."))
+    print("\n" * 20)
