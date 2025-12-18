@@ -56,7 +56,7 @@ def show_onboarding():
     print("\n" * 20)
 
     print("\n" * 20)
-    print(centerpadding("[Page 1 of 3]"))
+    print(centerpadding("[Page 3 of 3]"))
     print(centerpadding("========================================="))
     print(centerpadding("🛡️  INVESTASI AMAN DAN TERPERCAYA"))
     print(centerpadding("========================================="))
