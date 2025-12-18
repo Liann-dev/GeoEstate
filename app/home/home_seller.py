@@ -2,6 +2,8 @@ import csv
 import os
 
 
+from app.features.transaksi_penjual import menu_kelola_pesanan
+
 FILE_PROPERTI = "data/properti.csv"
 
 def home_seller(username):
@@ -9,7 +11,6 @@ def home_seller(username):
 
     if not os.path.exists("data"):
         os.makedirs("data")
-
 
     if not os.path.exists(FILE_PROPERTI):
         with open(FILE_PROPERTI, mode='w', newline='') as file:
@@ -20,48 +21,40 @@ def home_seller(username):
             writer.writeheader()
 
     while True:
- 
         print("\n===== GeoEstate Menu Penjual =====")
         print("1. Tambah Properti Baru")
         print("2. Lihat Properti Saya")
-        print("3. Logout")
+        print("3. Kelola Pesanan Masuk")  
+        print("4. Logout")
         print("==================================")
 
-        pilihan = input("Pilih menu (1-3): ")
+        pilihan = input("Pilih menu (1-4): ")
 
         # =========================
         # OPSI 1: TAMBAH PROPERTI
         # =========================
         if pilihan == "1":
             print("\n--- Tambah Properti Baru ---")
-
-         
+            
             print("Pilih kategori properti:")
             print("1. Rumah")
             print("2. Villa")
             print("3. Resort")
             kategori_pilihan = input("Masukkan pilihan (1/2/3): ")
 
-            if kategori_pilihan == "1":
-                kategori = "Rumah"
-            elif kategori_pilihan == "2":
-                kategori = "Villa"
-            elif kategori_pilihan == "3":
-                kategori = "Resort"
-            else:
-                kategori = "Lainnya"
-
+            if kategori_pilihan == "1": kategori = "Rumah"
+            elif kategori_pilihan == "2": kategori = "Villa"
+            elif kategori_pilihan == "3": kategori = "Resort"
+            else: kategori = "Lainnya"
 
             nama = input("Nama Properti : ")
             lokasi = input("Lokasi        : ")
             harga = input("Harga (Rp)    : ")
 
-
             new_id = 1
             if os.path.exists(FILE_PROPERTI):
                 with open(FILE_PROPERTI, mode='r') as file:
                     reader = list(csv.reader(file))
-                
                     if len(reader) > 0:
                         new_id = len(reader) 
 
@@ -77,19 +70,18 @@ def home_seller(username):
 
             with open(FILE_PROPERTI, mode='a', newline='') as file:
                 writer = csv.DictWriter(file, fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "doc_verified"])
-          
                 if file.tell() == 0:
                     writer.writeheader()
                 writer.writerow(data_baru)
 
             print("\n[SUKSES] Properti berhasil ditambahkan!")
-            print("Status: Menunggu Verifikasi Admin.")
             input("Tekan ENTER untuk kembali...")
 
         # =========================
         # OPSI 2: LIHAT PROPERTI SAYA
         # =========================
         elif pilihan == "2":
+         
             print(f"\n--- Daftar Properti Milik {username} ---")
 
             with open(FILE_PROPERTI, mode='r') as file:
@@ -97,9 +89,7 @@ def home_seller(username):
                 found = False
 
                 for p in reader:
-           
                     if p['penjual'] == username:
-                     
                         if p['doc_verified'] == "True":
                             status_text = "✅ Terverifikasi"
                         else:
@@ -119,12 +109,18 @@ def home_seller(username):
             input("\nTekan ENTER untuk kembali...")
 
         # =========================
-        # OPSI 3: LOGOUT
+        # OPSI 3: KELOLA PESANAN 
         # =========================
         elif pilihan == "3":
+            
+            menu_kelola_pesanan(username) 
+
+        # =========================
+        # OPSI 4: LOGOUT
+        # =========================
+        elif pilihan == "4":
             print(f"\nSampai jumpa, {username}!")
             break
-
 
         else:
             print("\nPilihan tidak valid, silakan coba lagi!")

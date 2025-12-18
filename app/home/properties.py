@@ -14,7 +14,7 @@ def print_card(p):
     print(f" | ID: {p['id']} {' '*26}|")
     print(f" +--------------------------------------+")
 
-def lihat_properti():
+def lihat_properti(username):
 
     if not os.path.exists(FILE_PROPERTI):
         print("Belum ada data properti.")
@@ -57,7 +57,7 @@ def lihat_properti():
 
         if item_pilih:
             
-            detail_properti(item_pilih)
+            detail_properti(username,item_pilih)
         else:
             print("❌ Tidak ada properti dengan ID tersebut.")
             input("Tekan ENTER...")

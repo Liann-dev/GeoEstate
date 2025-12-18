@@ -61,18 +61,14 @@ def home_buyer(username):
 
             
         if pilihan == 'l':  # L = Lihat Semua
-            lihat_properti()
-            
+            lihat_properti(username)
         elif pilihan == 'p':  # P = Profil
             profile(username)
-            
         elif pilihan == 't':  # T = Tentang
             about()
-        
         elif pilihan == 'k':  # K = Keluar
             print("\nTerima kasih telah menggunakan GeoEstate. Sampai jumpa lagi!\n")
-            break
-            
+            break 
         elif pilihan == 'b':  # B = Bantuan
             bantuan()
         elif pilihan  == 'c':
@@ -100,7 +96,7 @@ def home_buyer(username):
             item_pilih = next((item for item in semua_properti if item['id'] == pilihan), None)
             
             if item_pilih:
-              detail_properti(item_pilih)
+              detail_properti(username,item_pilih)
             else:
                 print(f"\n[!] Menu '{pilihan}' tidak dikenali atau ID Properti tidak ditemukan.")
                 input("Tekan ENTER untuk coba lagi...")

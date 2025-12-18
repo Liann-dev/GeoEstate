@@ -1,12 +1,13 @@
 import os
 import time
+from app.features.checkout import checkout
 
-def detail_properti(p):
+
+def detail_properti(username,p):
   
-    os.system('cls' if os.name == 'nt' else 'clear')
 
     harga_txt = f"Rp {int(p['harga']):,}" 
-    print("\n" * 2)
+    print("\n" * 50)
     print("========================================")
     print("           DETAIL PROPERTI             ")
     print("========================================")
@@ -37,16 +38,6 @@ def detail_properti(p):
 
         
     elif pilihan == '2':
-        print("\n--- CHECKOUT ---")
-        print(f"Item  : {p['nama']}")
-        print(f"Harga : {harga_txt}")
-        konfirm = input("Ketik 'BELI' untuk konfirmasi: ")
-        
-        if konfirm == "BELI":
-            print("\n✅ Pembayaran Berhasil! Aset sedang diproses.")
-        else:
-            print("\nTransaksi dibatalkan.")
-        input("Tekan ENTER untuk kembali...")
-    
+        checkout(username,p)
     elif pilihan == '0':
         return 

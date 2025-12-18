@@ -1,7 +1,5 @@
 def collect_feedback():
-    """""
-    Fungsi untuk mengumpulkan feedback dari pengguna dan menyimpannya ke file.
-    """
+
     print("Silakan ketik feedback Anda di bawah ini:")
     
     # Mengambil input feedback dari pengguna
