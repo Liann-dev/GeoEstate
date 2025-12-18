@@ -3,6 +3,7 @@ import os
 
 FILE_USERS = "data/users.csv"
 
+#login
 def login():
     kesempatan = 3
 
@@ -25,5 +26,7 @@ def login():
         kesempatan -= 1
         print(f"Username atau Password salah. Kesempatan tersisa: {kesempatan}\n")
 
+    print("Login gagal. Silakan coba lagi nanti.\n")
+    return None 
     print("Login gagal.\n")
     return None

@@ -5,24 +5,28 @@ FILE_USERS = "data/users.csv"
 
 def register():
     print("--- Register GeoEstate ---")
-    username = input("Masukkan Username: ")
-
+    
     # Pastikan file CSV ada
     if not os.path.exists(FILE_USERS):
         with open(FILE_USERS, mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(["username", "password", "role", "verified"])
+    
+    # Input username
+    username = input("Masukkan Username: ")
 
-    # Cek username sudah ada atau belum
+    # Cek apakah username sudah ada
     with open(FILE_USERS, mode='r', newline='') as file:
         reader = csv.DictReader(file)
         for user in reader:
-            if user["username"] == username:
+            if user and user["username"] == username:
                 print("Username sudah dipakai, silakan coba lagi.\n")
                 return False
 
+    # Input password
     password = input("Masukkan Password: ")
 
+    # Pilih peran (Penjual / Pembeli)
     print("Pilih peran Anda:")
     print("1. Pembeli")
     print("2. Penjual")
@@ -33,7 +37,7 @@ def register():
     elif role_choice == "2":
         role = "penjual"
     else:
-        print("Pilihan tidak valid.\n")
+        print("Pilihan tidak valid, registrasi dibatalkan.\n")
         return False
 
     # Simpan ke CSV
