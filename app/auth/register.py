@@ -26,6 +26,10 @@ def register():
     # Input password
     password = input("Masukkan Password: ")
 
+    if len(password) < 8 or len(password) > 32:
+        print("Password harus memiliki 8 - 32 karakter!\n")
+        return False
+
     # Pilih peran (Penjual / Pembeli)
     print("Pilih peran Anda:")
     print("1. Pembeli")

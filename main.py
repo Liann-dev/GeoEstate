@@ -15,6 +15,7 @@ def main():
     show_onboarding()
     while True:
         print("\n" * 25)
+        
         print(centerpadding("Selamat datang di GeoEstate!"))
         print(centerpadding("1. Register"))
         print(centerpadding("2. Login"))
