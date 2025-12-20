@@ -116,7 +116,7 @@ def menu_kelola_pesanan(user_active):
     while True:
         print(f"\n=== MENU KELOLA PESANAN ({user_active}) ===")
         print("1. Lihat Pesanan Saya")
-        print("2. Update Status Pesanan")
+        print("2. Update Status Pesanan") 
         print("0. Kembali")
         
         pil = input(">> Pilih menu: ")

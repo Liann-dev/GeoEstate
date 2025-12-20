@@ -2,3 +2,5 @@ id_transaksi,username_pembeli,penjual,id_properti,nama_properti,harga,tanggal,st
 GES-6274,Testing,Naufal,1,Rumah Panjang,1000000000,2025-12-18 13:21:40,Lunas / Selesai
 GES-8391,Testing,Adi,3,Havana Resort,780000000,2025-12-18 13:32:30,Dibatalkan
 GES-4214,Testing,Adi,3,Havana Resort,780000000,2025-12-18 16:10:27,Lunas / Selesai
+GES-4778,Adit,Adi,2,Villa Air,1500000000,2025-12-20 12:42:34,Lunas / Selesai
+GES-4232,Adit,Adi,3,Havana Resort,780000000,2025-12-20 13:13:28,Lunas / Selesai

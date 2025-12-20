@@ -1,7 +1,7 @@
 username,password,role,user_verified
 azzurisulthan,Azzuri123,pembeli,False
 Naufal,Naufal123,penjual,False
-Adi,Adi123,penjual,False
+Adi,Adi1234#,penjual,False
 Testing,testing,pembeli,False
 LianDev,Lian123,penjual,False
 Adit,Adit1234,pembeli,False

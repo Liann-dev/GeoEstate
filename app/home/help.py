@@ -11,6 +11,7 @@ def bantuan():
     5) Kompatibilitas GeoEstate
     6) Ketersediaan layanan
     7) Keamanan sistem GeoEstate
+    8) Bantuan lainnya
     """)
 
         try:
