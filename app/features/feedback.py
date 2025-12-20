@@ -8,7 +8,13 @@ def collect_feedback(username, role):
     berdasarkan username dan role pengguna.
     """
     print("\nSilakan ketik feedback Anda di bawah ini:")
-    user_feedback = input("Feedback: ")
+
+    while True:
+        user_feedback = input("Feedback: ")
+        if len(user_feedback) < 1:
+            print("Feedback tidak boleh kosong!\n")
+        else:
+            break
 
     file_name = "data/user_feedback.csv"
     file_exists = os.path.isfile(file_name)
