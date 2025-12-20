@@ -1,5 +1,5 @@
 def info():
-    print(f"===== INFORMASI UMUM GEOESTATE =====\n")
+    print("===== INFORMASI UMUM GEOESTATE =====\n")
 
     while True:
         print("""Apa yang ingin kamu ketahui?
@@ -12,12 +12,15 @@ def info():
     6) Ketersediaan layanan
     7) Keamanan sistem GeoEstate
     8) Informasi lainnya
+    0) Kembali
     """)
 
         try:
             P = int(input("Pilih salah satu : "))
         except ValueError:
-            print("Masukkan angka yang valid!\n")
+            print("\nKarakter tidak valid! Silahkan masukkan angka saja.")
+            input("Tekan ENTER untuk coba lagi...")
+            continue
 
         if P == 1:
             print("\nGeoEstate adalah aplikasi berbasis web untuk jual beli real estate secara digital.")
@@ -34,11 +37,24 @@ def info():
         elif P == 7:
             print("\nGeoEstate menerapkan autentikasi, enkripsi, kontrol akses, dan pemindaian keamanan rutin.")
         elif P == 8:
-            print("\nUntuk informasi lainnya, silahkan hubungi nomor di bawah ini :\n+62 851-7158-0526 (Adi)\n+62 895-3272-66457 (Lian)")
+            print("\nUntuk informasi lainnya, silahkan hubungi nomor di bawah ini :"
+                  "\n+62 851-7158-0526 (Adi)"
+                  "\n+62 895-3272-66457 (Lian)")
+        elif P == 0:
+            print("Kembali ke menu utama...\n")
+            break
         else:
             print("\nOpsi bantuan tidak ditemukan!")
-            
-        lanjut = input("\nIngin mengetahui sesuatu lagi? (Y/N): ").upper()
-        if lanjut == "N":
-            print("Kembali ke menu utama GeoEstate...\n")
-            break
+            input("Tekan ENTER untuk coba lagi...")
+            continue   
+
+        while True:
+            lanjut = input("\nIngin mengetahui sesuatu lagi? (Y/N): ").strip().upper()
+
+            if lanjut == "Y":
+                break  
+            elif lanjut == "N":
+                print("Kembali ke menu utama...\n")
+                return  
+            else:
+                print("Input tidak valid! Silakan pilih Y atau N saja.")

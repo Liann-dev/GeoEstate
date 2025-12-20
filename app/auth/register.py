@@ -30,8 +30,12 @@ def register():
     # Input password
     password = input("Masukkan Password: ")
 
-    if len(password) < 8 or len(password) > 32:
-        print("Password harus memiliki 8 - 32 karakter!\n")
+    for sisa in range(3, 0, -1):
+        if input("Konfirmasi Password: ") == password:
+            break
+        print(f"Password tidak sama! Kesempatan tersisa: {sisa - 1}\n")
+    else:
+        print("Konfirmasi password gagal. Registrasi dibatalkan.\n")
         return False
 
     # Pilih peran (Penjual / Pembeli)
@@ -45,7 +49,7 @@ def register():
     elif role_choice == "2":
         role = "penjual"
     else:
-        print("Pilihan tidak valid, registrasi dibatalkan.\n")
+        print("Pilihan tidak valid. Registrasi dibatalkan.\n")
         return False
 
     # Simpan ke CSV
