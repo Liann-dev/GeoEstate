@@ -74,10 +74,10 @@ def home_buyer(username):
         elif pilihan == 'i':  # I = Informasi
             info()
         elif pilihan == 'u':  # U = Ulasan
-            role = "pembeli"
-            buyer_review(username, role)
+            buyer_review(username)
         elif pilihan == 'f':  # F = Feedback
-            collect_feedback()
+            role = "pembeli"
+            collect_feedback(username, role)
         elif pilihan  == 'c':
             cari = input("Masukkan kata kunci lokasi atau nama properti: ").lower()
             
