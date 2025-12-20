@@ -3,7 +3,7 @@ import os
 from app.home.about import about
 from app.home.profile import profile
 from app.home.properties import lihat_properti
-from app.home.help import bantuan
+from app.home.information import info
 from app.home.detail_properti import detail_properti
 from app.home.review_buyer import buyer_review
 from app.features.feedback import collect_feedback
@@ -51,7 +51,7 @@ def home_buyer(username):
         print(" [L] Lihat Semua Properti")
         print(" [P] Profil Saya")
         print(" [T] Tentang GeoEstate")
-        print(" [B] Bantuan (Help)")
+        print(" [I] Informasi Umum")
         print(" [C] Cari Properti")
         print(" [U] Ulasan Properti (Review)")
         print(" [F] Feedback")
@@ -60,8 +60,6 @@ def home_buyer(username):
         print(" KETIK: Huruf menu atau Angka ID Properti")
         
         pilihan = input(">> ").lower() 
-
-      
 
             
         if pilihan == 'l':  # L = Lihat Semua
@@ -73,8 +71,8 @@ def home_buyer(username):
         elif pilihan == 'k':  # K = Keluar
             print("\nTerima kasih telah menggunakan GeoEstate. Sampai jumpa lagi!\n")
             break 
-        elif pilihan == 'b':  # B = Bantuan
-            bantuan()
+        elif pilihan == 'i':  # I = Informasi
+            info()
         elif pilihan == 'u':  # U = Ulasan
             role = "pembeli"
             buyer_review(username, role)

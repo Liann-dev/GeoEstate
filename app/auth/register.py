@@ -14,6 +14,10 @@ def register():
     
     # Input username
     username = input("Masukkan Username: ")
+        
+    if len(username) < 1:
+        print("Username tidak boleh kosong!\n")
+        return False
 
     # Cek apakah username sudah ada
     with open(FILE_USERS, mode='r', newline='') as file:

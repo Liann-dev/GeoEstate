@@ -1,5 +1,5 @@
-def bantuan():
-    print(f"===== BANTUAN GEOESTATE =====\n")
+def info():
+    print(f"===== INFORMASI UMUM GEOESTATE =====\n")
 
     while True:
         print("""Apa yang ingin kamu ketahui?
@@ -11,7 +11,7 @@ def bantuan():
     5) Kompatibilitas GeoEstate
     6) Ketersediaan layanan
     7) Keamanan sistem GeoEstate
-    8) Bantuan lainnya
+    8) Informasi lainnya
     """)
 
         try:
@@ -34,7 +34,7 @@ def bantuan():
         elif P == 7:
             print("\nGeoEstate menerapkan autentikasi, enkripsi, kontrol akses, dan pemindaian keamanan rutin.")
         elif P == 8:
-            ("\nUntuk bantuan lainnya, silahkan hubungi nomor di bawah ini :\n+62 851-7158-0526 (Adi)\n+62 895-3272-66457 (Lian)")
+            print("\nUntuk informasi lainnya, silahkan hubungi nomor di bawah ini :\n+62 851-7158-0526 (Adi)\n+62 895-3272-66457 (Lian)")
         else:
             print("\nOpsi bantuan tidak ditemukan!")
             
