@@ -3,7 +3,9 @@ import os
 
 
 from app.features.transaksi_penjual import menu_kelola_pesanan
+from app.home.profile import profile
 from app.home.review_seller import seller_review
+from app.features.feedback import collect_feedback
 
 FILE_PROPERTI = "data/properti.csv"
 
@@ -27,10 +29,11 @@ def home_seller(username):
         print("2. Lihat Properti Saya")
         print("3. Kelola Pesanan Masuk")  
         print("4. Lihat Ulasan Properti Saya")
-        print("5. Logout")
+        print("5. Feedback")
+        print("6. Logout")
         print("==================================")
 
-        pilihan = input("Pilih menu (1-5): ")
+        pilihan = input("Pilih menu (1-6): ")
 
         # =========================
         # OPSI 1: TAMBAH PROPERTI
@@ -122,11 +125,18 @@ def home_seller(username):
         # =========================
         elif pilihan == "4":
             seller_review(username)
-
+        
         # =========================
-        # OPSI 5: LOGOUT
+        # OPSI 5: FEEDBACK
         # =========================
         elif pilihan == "5":
+            role = "penjual"
+            collect_feedback(username, role)
+
+        # =========================
+        # OPSI 6: LOGOUT
+        # =========================
+        elif pilihan == "6":
             print(f"\nSampai jumpa, {username}!")
             break
 
