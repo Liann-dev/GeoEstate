@@ -21,7 +21,7 @@ def main():
         print(centerpadding("2. Login"))
         print(centerpadding("3. Admin Verifikasi"))
         print(centerpadding("4. Exit"))
-        pilihan = input(centerpadding("Pilih opsi (1/2/3): "))
+        pilihan = input(centerpadding("Pilih opsi (1/2/3/4): "))
         # =====================
         # REGISTER
         # =====================
