@@ -6,6 +6,7 @@ from app.home.properties import lihat_properti
 from app.home.help import bantuan
 from app.home.detail_properti import detail_properti
 from app.home.review_buyer import buyer_review
+from app.features.feedback import collect_feedback
 
 FILE_PROPERTI = 'data/properti.csv'
 
@@ -53,6 +54,7 @@ def home_buyer(username):
         print(" [B] Bantuan (Help)")
         print(" [C] Cari Properti")
         print(" [U] Ulasan Properti (Review)")
+        print(" [F] Feedback")
         print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
@@ -73,8 +75,11 @@ def home_buyer(username):
             break 
         elif pilihan == 'b':  # B = Bantuan
             bantuan()
-        elif pilihan == 'u':  # B = Bantuan
-            buyer_review(username)
+        elif pilihan == 'u':  # U = Ulasan
+            role = "pembeli"
+            buyer_review(username, role)
+        elif pilihan == 'f':  # F = Feedback
+            collect_feedback()
         elif pilihan  == 'c':
             cari = input("Masukkan kata kunci lokasi atau nama properti: ").lower()
             
