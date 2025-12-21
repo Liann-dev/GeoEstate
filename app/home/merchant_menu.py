@@ -5,12 +5,12 @@ import os
 from app.features.transaksi_penjual import menu_kelola_pesanan
 from app.home.profile import profile
 from app.home.review_seller import seller_review
-from app.features.feedback import collect_feedback
+from app.features.merchant_withdraw import merchant_withdraw_menu
 
 FILE_PROPERTI = "data/properti.csv"
 
-def home_seller(username):
-    print(f"\nHalo {username}, selamat datang di GeoEstate Seller!")
+def merchant_menu(username):
+    print(f"\nHalo {username}, selamat datang di GeoEstate Merchant!")
 
     if not os.path.exists("data"):
         os.makedirs("data")
@@ -24,13 +24,13 @@ def home_seller(username):
             writer.writeheader()
 
     while True:
-        print("\n===== GeoEstate Menu Penjual =====")
+        print("\n===== GeoEstate Menu Merchant =====")
         print("1. Tambah Properti Baru")
         print("2. Lihat Properti Saya")
         print("3. Kelola Pesanan Masuk")  
         print("4. Lihat Ulasan Properti Saya")
-        print("5. Feedback")
-        print("6. Logout")
+        print("5. Ajukan Pengunduran Diri Sebagai Merchant")
+        print("6. Kembali")
         print("==================================")
 
         pilihan = input("Pilih menu (1-6): ")
@@ -125,19 +125,18 @@ def home_seller(username):
         # =========================
         elif pilihan == "4":
             seller_review(username)
-        
-        # =========================
-        # OPSI 5: FEEDBACK
-        # =========================
-        elif pilihan == "5":
-            role = "penjual"
-            collect_feedback(username, role)
 
         # =========================
-        # OPSI 6: LOGOUT
+        # OPSI 5: UNDUR DIRI MERCHANT
+        # =========================
+        elif pilihan == "5":
+            merchant_withdraw_menu(username)
+
+        # =========================
+        # OPSI 6: KEMBALI
         # =========================
         elif pilihan == "6":
-            print(f"\nSampai jumpa, {username}!")
+            print("Kembali ke menu utama...\n")
             break
 
         else:

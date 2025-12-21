@@ -1,5 +1,7 @@
 import csv
 import os
+from app.features.merchant_management import menu_kelola_merchant
+from app.features.admin_feedback import lihat_feedback
 
 FILE_USERS = "data/users.csv"
 FILE_PROPERTI = "data/properti.csv"
@@ -81,19 +83,29 @@ def verifikasi_properti():
     print("✅ Dokumen properti berhasil diverifikasi.\n")
 
 
-def admin_menu():
+def admin_menu(username):
     while True:
-        print("=== MENU ADMIN VERIFIKASI ===")
+        print("\n" * 50) 
+        print("===== MENU ADMIN =====")
         print("1. Verifikasi Data User")
         print("2. Verifikasi Dokumen Properti")
-        print("3. Kembali")
-        pilihan = input("Pilih menu (1-3): ")
+        print("3. Kelola Data Merchant")
+        print("4. Lihat Feedback")
+        print("5. Keluar / Logout")
+        pilihan = input(f"\nPilih menu (1-5): ")
 
         if pilihan == "1":
             verifikasi_user()
         elif pilihan == "2":
             verifikasi_properti()
         elif pilihan == "3":
-            break
+            menu_kelola_merchant()
+        elif pilihan == "4":
+            lihat_feedback()
+        elif pilihan == "5":
+            print("\nTerima kasih telah menggunakan GeoEstate. Sampai jumpa lagi!")
+            input("Tekan ENTER untuk kembali ke halaman awal...")
+            print("\n" * 25)
+            return
         else:
             print("Pilihan tidak valid.\n")

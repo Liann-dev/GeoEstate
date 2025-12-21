@@ -5,8 +5,11 @@ from app.home.profile import profile
 from app.home.properties import lihat_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
+from app.home.merchant_menu import merchant_menu
 from app.home.review_buyer import buyer_review
 from app.features.feedback import collect_feedback
+
+
 
 FILE_PROPERTI = 'data/properti.csv'
 
@@ -19,7 +22,7 @@ def load_properties():
                 data.append(row)
     return data
 
-def home_buyer(username):
+def home_merchant(username):
     while True:
         semua_properti = load_properties()
         
@@ -55,6 +58,7 @@ def home_buyer(username):
         print(" [C] Cari Properti")
         print(" [U] Ulasan Properti (Review)")
         print(" [F] Feedback")
+        print(" [M] Menu Merchant")
         print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
@@ -69,15 +73,18 @@ def home_buyer(username):
         elif pilihan == 't':  # T = Tentang
             about()
         elif pilihan == 'k':  # K = Keluar
-            print("\nTerima kasih telah menggunakan GeoEstate. Sampai jumpa lagi!\n")
-            break 
+            print("\nTerima kasih telah menggunakan GeoEstate. Sampai jumpa lagi!")
+            input("Tekan ENTER untuk kembali ke halaman awal...")
+            print("\n" * 25)
+            return
         elif pilihan == 'i':  # I = Informasi
             info()
         elif pilihan == 'u':  # U = Ulasan
             buyer_review(username)
         elif pilihan == 'f':  # F = Feedback
-            role = "pembeli"
-            collect_feedback(username, role)
+            collect_feedback(username, 'merchant')
+        elif pilihan == 'm':  # M = Merchant
+            merchant_menu(username)
         elif pilihan  == 'c':
             cari = input("Masukkan kata kunci lokasi atau nama properti: ").lower()
             
