@@ -24,14 +24,48 @@ def simpan_csv(data):
         writer.writeheader()
         writer.writerows(data)
 
+def print_card_alt(p):
+    harga_txt = f"Rp {int(p['harga']):,}" 
+    print(f" +--------------------------------------+")
+    print(f" | 🏠 {p['nama']:<32} |")
+    print(f" | 📍 {p['lokasi']:<32} |")
+    print(f" | 💰 {harga_txt:<20} {p['kategori']:>11} |")
+    print(f" | ID: {p['id']} {' '*30}|")
+    print(f" +--------------------------------------+")
+
+def lihat_properti_alt(username):
+    if not os.path.exists(FILE_PROPERTI):
+        print("Belum ada data properti.")
+        return []
+
+    semua_properti = []
+    with open(FILE_PROPERTI, mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for p in reader:
+            semua_properti.append(p)
+
+    print("\n=== Properti Tersedia ===")
+    properti_terverifikasi = []
+
+    for p in semua_properti:
+        if p['doc_verified'].strip().lower() == "true":
+            print_card_alt(p)
+            properti_terverifikasi.append(p)
+
+    if not properti_terverifikasi:
+        print("Belum ada properti yang terverifikasi saat ini.")
+        input("Tekan ENTER untuk kembali...\n")
+
+    return properti_terverifikasi
+
 def tambah_ke_wishlist(username, id_properti):
     data_wishlist = muat_csv()
     id_properti_str = str(id_properti)
-    
 
     for item in data_wishlist:
         if item['username'] == username and item['id_properti'] == id_properti_str:
-            print("\n[INFO] Properti ini sudah ada di Wishlist Anda!")
+            print("\nProperti ini sudah ada di Wishlist Anda!")
+            input("Tekan ENTER untuk kembali...\n")
             return
 
     data_baru = {
@@ -41,7 +75,8 @@ def tambah_ke_wishlist(username, id_properti):
     
     data_wishlist.append(data_baru)
     simpan_csv(data_wishlist)
-    print("\n[SUKSES] Properti berhasil disimpan ke Wishlist (CSV)!")
+    print("\nProperti berhasil disimpan ke Wishlist!")
+    input("Tekan ENTER untuk kembali...\n")
 
 def lihat_wishlist_gue(username):
     list_wishlist = muat_csv()
@@ -53,6 +88,7 @@ def lihat_wishlist_gue(username):
     
     if not id_milik_gue:
         print("\n--- Wishlist Anda Masih Kosong ---")
+        input("Tekan ENTER untuk kembali...\n")
         return
 
     semua_properti = []
@@ -64,6 +100,7 @@ def lihat_wishlist_gue(username):
     else:
         print(f"\n[ERROR] File database properti tidak ditemukan di: {FILE_PROPERTI}")
         print("Pastikan Anda sudah membuat file 'data/properti.csv'!")
+        input("Tekan ENTER untuk kembali...\n")
         return
 
     print(f"\n=== WISHLIST {username.upper()} ===")
@@ -71,7 +108,7 @@ def lihat_wishlist_gue(username):
     
     for prop in semua_properti:
         if prop['id'] in id_milik_gue:
-            nama = prop.get('nama_rumah', 'Tanpa Nama')
+            nama = prop.get('nama', 'Tanpa Nama')
             harga = prop.get('harga', '0')
             lokasi = prop.get('lokasi', '-')
             
@@ -81,6 +118,7 @@ def lihat_wishlist_gue(username):
             
     if not ketemu:
         print("Data properti yang Anda simpan tidak ditemukan di database utama.")
+        input("Tekan ENTER untuk kembali...\n")
 
 def hapus_dari_wishlist(username, id_properti):
     data_wishlist = muat_csv()
@@ -92,10 +130,13 @@ def hapus_dari_wishlist(username, id_properti):
     ]
     
     if len(data_baru) == len(data_wishlist):
-        print("\n[Gagal] ID Properti tidak ditemukan di wishlist Anda.")
+        print("\nID Properti tidak ditemukan di wishlist Anda.")
+        input("Tekan ENTER untuk kembali...\n")
+        
     else:
         simpan_csv(data_baru)
-        print("\n[SUKSES] Properti dihapus dari Wishlist.")
+        print("\nProperti dihapus dari Wishlist.")
+        input("Tekan ENTER untuk kembali...\n")
 
 def cek_status_love(username, id_properti):
     #Mengecek apakah user sudah me-love properti ini
@@ -107,3 +148,47 @@ def cek_status_love(username, id_properti):
             return True # Sudah di-love
     return False # Belum di-love
 
+def menu_wishlist(username):
+    while True:
+        print(f"""
+=== MENU WISHLIST ({username}) ===
+1. Lihat Wishlist
+2. Tambah Properti ke Wishlist
+3. Hapus Properti dari Wishlist
+4. Kembali
+""")
+        pilihan = input("Pilih menu (1-4): ")
+
+        if pilihan == "1":
+            lihat_wishlist_gue(username)
+            input("\nTekan ENTER untuk kembali...\n")
+
+        elif pilihan == "2":
+            lihat_properti_alt(username)
+            while True:
+                id_properti = input("Masukkan ID Properti yang ingin ditambahkan ke Wishlist: ")
+                if not id_properti:
+                    print("ID Properti tidak boleh kosong!\n")
+                else:
+                    break
+            if cek_status_love(username, id_properti):
+                print("\nProperti ini sudah ada di Wishlist Anda!")
+                input("Tekan ENTER untuk kembali...\n")
+            else:
+                tambah_ke_wishlist(username, id_properti)
+
+        elif pilihan == "3":
+            lihat_wishlist_gue(username)
+            while True:
+                id_properti = input("Masukkan ID Properti yang ingin dihapus dari Wishlist: ")
+                if not id_properti:
+                    print("ID Properti tidak boleh kosong!\n")
+                else:
+                    break
+            hapus_dari_wishlist(username, id_properti)
+
+        elif pilihan == "4":
+            break
+
+        else:
+            print("[ERROR] Pilihan tidak valid, silakan pilih antara 1-4.")

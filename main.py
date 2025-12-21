@@ -2,7 +2,6 @@ from app.auth.register import register
 from app.auth.login import login
 from app.home.home_user import home_user
 from app.home.home_merchant import home_merchant
-from app.home.merchant_menu import merchant_menu
 
 from app.Utils.OnboardingScreen import show_splash, show_onboarding
 from app.Utils.padding import pad_center as centerpadding

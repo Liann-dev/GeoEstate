@@ -98,7 +98,7 @@ def merchant_menu(username):
                         if p['doc_verified'] == "True":
                             status_text = "✅ Terverifikasi"
                         else:
-                            status_text = "⏳ Menunggu Verifikasi"
+                            status_text = "❌ Belum Terverifikasi"
                         
                         print(f"ID: {p['id']}")
                         print(f"Nama: {p['nama']} ({p['kategori']})")

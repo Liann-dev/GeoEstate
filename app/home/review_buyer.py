@@ -75,7 +75,7 @@ def buyer_review(username):
     init_review_file()
 
     while True:
-        print("\n=== MENU REVIEW BUYER ===")
+        print("\n=== MENU REVIEW  ===")
         print("1. Tambah Review")
         print("2. Lihat Review Saya")
         print("3. Kembali")

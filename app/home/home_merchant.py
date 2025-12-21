@@ -2,11 +2,13 @@ import csv
 import os
 from app.home.about import about
 from app.home.profile import profile
-from app.home.properties import lihat_properti
+from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
 from app.home.merchant_menu import merchant_menu
 from app.home.review_buyer import buyer_review
+from app.features.cari_properti import cari_properti
+from app.features.wishlist import menu_wishlist
 from app.features.feedback import collect_feedback
 
 
@@ -58,6 +60,7 @@ def home_merchant(username):
         print(" [C] Cari Properti")
         print(" [U] Ulasan Properti (Review)")
         print(" [F] Feedback")
+        print(" [W] Wishlist")
         print(" [M] Menu Merchant")
         print(" [K] Keluar / Logout")
         print("========================================")
@@ -67,7 +70,7 @@ def home_merchant(username):
 
             
         if pilihan == 'l':  # L = Lihat Semua
-            lihat_properti(username)
+            pilih_properti(username)
         elif pilihan == 'p':  # P = Profil
             profile(username)
         elif pilihan == 't':  # T = Tentang
@@ -83,28 +86,13 @@ def home_merchant(username):
             buyer_review(username)
         elif pilihan == 'f':  # F = Feedback
             collect_feedback(username, 'merchant')
+        elif pilihan == 'w':  # W = Wishlist
+            menu_wishlist(username)
         elif pilihan == 'm':  # M = Merchant
             merchant_menu(username)
-        elif pilihan  == 'c':
-            cari = input("Masukkan kata kunci lokasi atau nama properti: ").lower()
+        elif pilihan  == 'c': # C = Cari Properti
+            cari_properti(username)
             
-            hasil_cari = [item for item in semua_properti if cari in item['nama'].lower() or cari in item['lokasi'].lower()]
-            
-            print("\n=== Hasil Pencarian ===")
-            if not hasil_cari:
-                print("Tidak ada properti yang sesuai dengan pencarian Anda.")
-            else:
-                for p in hasil_cari:
-                    harga_txt = f"Rp {int(p['harga']):,}"
-                    print(f" +--------------------------------------+")
-                    print(f" | 🏠 {p['nama']:<32} |")
-                    print(f" | 📍 {p['lokasi']:<32} |")
-                    print(f" | 💰 {harga_txt:<20} {p['kategori']:>11} |")
-                    print(f" | ID: {p['id']} {' '*26}|")
-                    print(f" +--------------------------------------+")
-            input("Tekan ENTER untuk kembali...")
-            
-
         else:
           
             item_pilih = next((item for item in semua_properti if item['id'] == pilihan), None)
