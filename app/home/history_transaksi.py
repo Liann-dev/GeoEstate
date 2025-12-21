@@ -3,6 +3,26 @@ import os
 
 FILE_TRANSAKSI = "data/transaksi.csv"
 
+def hapus_transaksi(id_transaksi):
+    if not os.path.exists(FILE_TRANSAKSI):
+        return
+
+    semua_data = []
+    with open(FILE_TRANSAKSI, mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            semua_data.append(row)
+
+    data_baru = [
+        row for row in semua_data
+        if row['id_transaksi'] != id_transaksi
+    ]
+
+    with open(FILE_TRANSAKSI, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=semua_data[0].keys())
+        writer.writeheader()
+        writer.writerows(data_baru)
+
 def history_transaksi(username):
 
     print("\n" * 50)
@@ -31,8 +51,8 @@ def history_transaksi(username):
         print("\n==============================================================")
     else:
       
-        print(f" {'Penjual':<12} | {'TANGGAL':<12} | {'NAMA PROPERTI':<20} | {'HARGA':<13} | {'STATUS'}" )
-        print(" " + "-" * 60)
+        print(f" {'Penjual':<12} | {'TANGGAL':<12} | {'NAMA PROPERTI':<20} | {'HARGA':<20} | {'STATUS'}" )
+        print(" " + "-" * 80)
 
         for trx in my_history:
             penjual = trx['penjual']
@@ -52,9 +72,9 @@ def history_transaksi(username):
             else:
                 status_icon = raw_status
 
-            print(f" {penjual:<12} | {tgl_short:<12} | {nama_display:<20} | {harga_display:<13} | {status_icon}")
+            print(f" {penjual:<12} | {tgl_short:<12} | {nama_display:<20} | {harga_display:<20} | {status_icon}")
 
-        print("\n==============================================================")
+        print("\n==================================================================================")
         print(f" Total Transaksi: {len(my_history)}")
 
 

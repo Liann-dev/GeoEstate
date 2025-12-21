@@ -37,10 +37,9 @@ def merchant_withdraw_menu(current_user):
 
     # === EMAIL ===
     while True:
-        email = input("Masukkan Email: ").strip()
+        email = input("Masukkan Email (Tekan ENTER untuk membatalkan): ").strip()
         if not email:
-            print("Email tidak boleh kosong\n")
-            continue
+            return
         if email != user_data["email"]:
             print("Email tidak sesuai dengan akun yang sedang login.\n")
             continue
@@ -48,21 +47,30 @@ def merchant_withdraw_menu(current_user):
 
     # === PASSWORD ===
     while True:
-        password = input("Masukkan Password: ").strip()
+        password = input("Masukkan Password (Tekan ENTER untuk membatalkan): ").strip()
         if not password:
-            print("Password tidak boleh kosong.\n")
-            continue
+            return
         if password != user_data["password"]:
             print("Password salah.\n")
+            continue
+        break
+    
+    # === KONFIRMASI PASSWORD ===
+    while True:
+        confirm_password = input("Konfirmasi Password (Tekan ENTER untuk membatalkan): ").strip()
+        if not confirm_password:
+            return
+
+        if confirm_password != password:
+            print("Konfirmasi password tidak sesuai.\n")
             continue
         break
 
     # === ALASAN ===
     while True:
-        reason = input("Alasan pengunduran diri: ").strip()
+        reason = input("Alasan pengunduran diri (Tekan ENTER untuk membatalkan): ").strip()
         if not reason:
-            print("Alasan tidak boleh kosong.\n")
-            continue
+            return
         break
 
     # === CEK SUDAH PERNAH AJUKAN ===
@@ -81,7 +89,7 @@ def merchant_withdraw_menu(current_user):
     with open(WITHDRAW_FILE, mode="a", newline="") as file:
         writer = csv.writer(file)
         writer.writerow([wd_id, current_user, email, password, reason, "pending"])
-        
+
     print("\nPengajuan pengunduran diri berhasil.")
     print(f"ID Pengajuan: {wd_id}")
     print("Menunggu persetujuan admin.\n")

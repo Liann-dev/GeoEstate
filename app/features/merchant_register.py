@@ -38,10 +38,9 @@ def merchant_registration_menu(current_user):
 
     # === EMAIL ===
     while True:
-        email = input("Masukkan Email: ").strip()
+        email = input("Masukkan Email (Tekan ENTER untuk membatalkan): ").strip()
         if not email:
-            print("Email tidak boleh kosong\n")
-            continue
+            return
         if email != user_data["email"]:
             print("Email tidak sesuai dengan akun yang sedang login.\n")
             continue
@@ -49,10 +48,9 @@ def merchant_registration_menu(current_user):
 
     # === PASSWORD ===
     while True:
-        password = input("Masukkan Password: ").strip()
+        password = input("Masukkan Password (Tekan ENTER untuk membatalkan): ").strip()
         if not password:
-            print("Password tidak boleh kosong\n")
-            continue
+            return
         if password != user_data["password"]:
             print("Password salah.\n")
             continue
@@ -60,7 +58,9 @@ def merchant_registration_menu(current_user):
 
     # === KONFIRMASI PASSWORD ===
     while True:
-        confirm_password = input("Konfirmasi Password: ").strip()
+        confirm_password = input("Konfirmasi Password (Tekan ENTER untuk membatalkan): ").strip()
+        if not confirm_password:
+            return
         if confirm_password != password:
             print("Konfirmasi password tidak sesuai.\n")
             continue
@@ -68,10 +68,9 @@ def merchant_registration_menu(current_user):
 
     # === ALASAN ===
     while True:
-        reason = input("Alasan mendaftar sebagai merchant: ").strip()
+        reason = input("Alasan mendaftar sebagai merchant (Tekan ENTER untuk membatalkan): ").strip()
         if not reason:
-            print("Alasan pendaftaran tidak boleh kosong\n")
-            continue
+            return
         break
 
     # === CEK SUDAH DAFTAR ===

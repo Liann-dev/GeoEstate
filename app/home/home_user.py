@@ -45,7 +45,7 @@ def home_user(username):
                 print(f" | 🏠 {p['nama']:<32} |")
                 print(f" | 📍 {p['lokasi']:<32} |")
                 print(f" | 💰 {harga_txt:<20} {p['kategori']:>11} |")
-                print(f" | ID: {p['id']} {' '*26}|")
+                print(f" | ID: {p['id']} {' '*30}|")
                 print(f" +--------------------------------------+")
                 count += 1
         
