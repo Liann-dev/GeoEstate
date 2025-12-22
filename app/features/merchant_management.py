@@ -102,15 +102,15 @@ def verifikasi_merchant():
                 input(f"Tekan ENTER untuk kembali...\n")
                 return
 
-            keputusan = input("Terima atau Tolak? (t/r): ").lower()
+            keputusan = input("Setujui registrasi? (y/n): ").lower()
 
-            if keputusan == "t":
+            if keputusan == "y":
                 row["status"] = "approved"
                 update_user_role(row["username"], "merchant")
                 print("Merchant diterima.\n")
                 input(f"Tekan ENTER untuk kembali...\n")
 
-            elif keputusan == "r":
+            elif keputusan == "n":
                 row["status"] = "rejected"
                 print("Merchant ditolak.\n")
                 input(f"Tekan ENTER untuk kembali...\n")

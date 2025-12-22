@@ -56,7 +56,7 @@ def main():
             break
 
         else:
-            print("Opsi tidak valid, silakan coba lagi.\n")
+            print("\nOpsi tidak valid, silakan coba lagi.")
             input("Tekan ENTER untuk kembali ke halaman awal...")
 
 

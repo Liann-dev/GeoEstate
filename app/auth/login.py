@@ -44,7 +44,7 @@ def login():
             continue
 
         # Login berhasil
-        print(f"Login berhasil sebagai {user_found['role']}!\n")
+        print(f"\nLogin berhasil. Selamat datang {user_found['username']}!")
         return user_found
 
     print("Login gagal. Silakan coba lagi nanti.")

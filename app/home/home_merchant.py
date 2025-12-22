@@ -7,6 +7,7 @@ from app.home.information import info
 from app.home.detail_properti import detail_properti
 from app.home.merchant_menu import merchant_menu
 from app.home.review_buyer import buyer_review
+from app.features.chat import menu_chat
 from app.features.cari_properti import cari_properti
 from app.features.wishlist import menu_wishlist
 from app.features.feedback import collect_feedback
@@ -57,7 +58,8 @@ def home_merchant(username):
         print(" [P] Profil Saya")
         print(" [T] Tentang GeoEstate")
         print(" [I] Informasi Umum")
-        print(" [C] Cari Properti")
+        print(" [S] Cari Properti")
+        print(" [C] Kirim Pesan (Chat)")
         print(" [U] Ulasan Properti (Review)")
         print(" [F] Feedback")
         print(" [W] Wishlist")
@@ -84,13 +86,15 @@ def home_merchant(username):
             info()
         elif pilihan == 'u':  # U = Ulasan
             buyer_review(username)
+        elif pilihan == 'c':  # C = Chat
+            menu_chat(username)
         elif pilihan == 'f':  # F = Feedback
             collect_feedback(username, 'merchant')
         elif pilihan == 'w':  # W = Wishlist
             menu_wishlist(username)
         elif pilihan == 'm':  # M = Merchant
             merchant_menu(username)
-        elif pilihan  == 'c': # C = Cari Properti
+        elif pilihan  == 's': # S = Cari Properti
             cari_properti(username)
             
         else:
