@@ -13,19 +13,15 @@ def login():
     while kesempatan > 0:
         print(f"\n--- Login GeoEstate ---")
 
-        login_input = input("Masukkan Username atau Email: ").strip()
-        password = input("Masukkan Password: ").strip()
+        login_input = input("Masukkan Username atau Email (ENTER untuk batal): ").strip()
+        if login_input == "":
+            return None
 
-        if not login_input:
-            print("Username atau Email tidak boleh kosong!\n")
-            continue
-
-        if not password:
-            print("Password tidak boleh kosong!\n")
-            continue
+        password = input("Masukkan Password (ENTER untuk batal): ").strip()
+        if password == "":
+            return None
 
         user_found = None
-
         with open(FILE_USERS, mode='r', newline='') as file:
             reader = csv.DictReader(file)
             for user in reader:

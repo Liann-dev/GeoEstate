@@ -15,14 +15,11 @@ def register():
 
     # Input username
     while True:
-        username = input("Masukkan Username: ").strip()
-
-        if not username:
-            print("Username tidak boleh kosong!\n")
-            continue
+        username = input("Masukkan Username (ENTER untuk batal): ").strip()
+        if username == "":
+            return False
 
         username_dipakai = False
-
         with open(FILE_USERS, mode='r', newline='') as file:
             reader = csv.DictReader(file)
             for user in reader:
@@ -33,25 +30,22 @@ def register():
 
         if username_dipakai:
             continue
-
         break
 
     # Input email
     while True:
-        email = input("Masukkan Email: ").strip()
+        email = input("Masukkan Email (ENTER untuk batal): ").strip()
+        if email == "":
+            return False
 
-        if not email:
-            print("Email tidak boleh kosong!\n")
-            continue
-
-        pattern = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}$'
-
+        # Regex email optimal
+        pattern = r'^[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{1,}$'
         if not re.match(pattern, email):
-            print("Email tidak valid!")
+            print("Email tidak valid! Contoh email valid: user@domain.com, user@mail.co.id\n")
             continue
 
+        # Cek email sudah dipakai
         email_dipakai = False
-
         with open(FILE_USERS, mode='r', newline='') as file:
             reader = csv.DictReader(file)
             for user in reader:
@@ -62,16 +56,13 @@ def register():
 
         if email_dipakai:
             continue
-
         break
 
     # Input password
     while True:
-        password = input("Masukkan Password: ")
-
-        if not password:
-            print("Password tidak boleh kosong!\n")
-            continue
+        password = input("Masukkan Password (ENTER untuk batal): ")
+        if password == "":
+            return False
 
         if not (8 <= len(password) <= 32):
             print("Password harus terdiri dari 8 hingga 32 karakter!\n")
@@ -83,21 +74,23 @@ def register():
 
         break
 
-
+    # Konfirmasi password
+    sisa = 3
     while True:
-        sisa = 3
-        konfirmasi_password = input("Konfirmasi Password: ")
+        konfirmasi_password = input("Konfirmasi Password (ENTER untuk batal): ")
+        if konfirmasi_password == "":
+            return False
+
         if konfirmasi_password == password:
             break
-        if not konfirmasi_password:
-            print("Konfirmasi password tidak boleh kosong!\n")
-            continue
-        if konfirmasi_password != password:
-            print(f"Password tidak sama! Kesempatan tersisa: {sisa - 1}\n")
+
+        sisa -= 1
         if sisa == 0:
-            print("Konfirmasi password gagal. Registrasi dibatalkan.")
+            print("\nKonfirmasi password gagal. Registrasi dibatalkan.")
             input("Tekan ENTER untuk kembali ke halaman awal...")
             return False
+
+        print(f"Password tidak sama! Kesempatan tersisa: {sisa}\n")
 
     role = "user"
 
@@ -106,6 +99,6 @@ def register():
         writer = csv.writer(file)
         writer.writerow([username, email, password, role, False])
 
-    print(f"Register berhasil!")
+    print(f"\nRegister berhasil!")
     input("Tekan ENTER untuk kembali ke halaman awal...")
     return True
