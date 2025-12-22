@@ -6,6 +6,22 @@ FILE_TRANSAKSI = "data/transaksi.csv"
 FILE_PROPERTI = "data/properti.csv"
 FILE_RIWAYAT = "data/properti_dimiliki.csv"
 
+def sedang_dalam_transaksi(username, id_properti):
+    if not os.path.exists(FILE_TRANSAKSI):
+        return False
+
+    with open(FILE_TRANSAKSI, mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if (
+                row['username_pembeli'] == username
+                and row['id_properti'] == id_properti
+                and row['status'] not in ["Lunas / Selesai", "Dibatalkan"]
+            ):
+                return True
+
+    return False
+
 def baca_data_csv():
     transaksi_list = []
     if os.path.exists(FILE_TRANSAKSI):
@@ -16,7 +32,7 @@ def baca_data_csv():
     return transaksi_list
 
 def simpan_perubahan_csv(data_baru):
-    fieldnames = ['id_transaksi', 'username_pembeli', 'penjual', 'id_properti', 'nama_properti', 'harga', 'tanggal', 'status']
+    fieldnames = ['id_transaksi', 'username_pembeli', 'penjual', 'id_properti', 'nama_properti', 'harga', 'tanggal', 'transaksi', 'status',]
     
     os.makedirs(os.path.dirname(FILE_TRANSAKSI), exist_ok=True)
     
@@ -150,7 +166,8 @@ def simpan_ke_riwayat(row_transaksi):
         "harga": properti['harga'],
         "penjual": properti['penjual'],
         "doc_verified": properti['doc_verified'],
-        "tanggal": tanggal
+        "tanggal": tanggal,
+        "transaksi" : 'Beli'
     }
 
     file_ada = os.path.exists(FILE_RIWAYAT)
@@ -158,7 +175,7 @@ def simpan_ke_riwayat(row_transaksi):
     with open(FILE_RIWAYAT, mode='a', newline='') as file:
         fieldnames = [
             "id_transaksi", "username", "id", "nama", "kategori",
-            "lokasi", "harga", "penjual", "doc_verified", "tanggal"
+            "lokasi", "harga", "penjual", "doc_verified", "tanggal", "transaksi"
         ]
         writer = csv.DictWriter(file, fieldnames=fieldnames)
 

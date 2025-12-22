@@ -7,12 +7,12 @@ def collect_feedback(username, role):
     Mengumpulkan feedback dan menyimpannya ke CSV
     berdasarkan username dan role pengguna.
     """
-    print("\nSilakan ketik feedback Anda di bawah ini:")
+    print("\nSilakan ketik feedback Anda di bawah ini (Tekan ENTER untuk membatalkan):")
 
     while True:
         user_feedback = input("Feedback: ")
-        if len(user_feedback) < 1:
-            print("Feedback tidak boleh kosong!\n")
+        if not user_feedback:
+            return   
         else:
             break
 
