@@ -71,14 +71,14 @@ def tampilkan_transaksi_selesai(username):
 
     print("\n----------------------------------------")
 
-def buyer_review(username):
+def user_review(username):
     init_review_file()
 
     while True:
         print("\n=== MENU REVIEW  ===")
         print("1. Tambah Review")
         print("2. Lihat Review Saya")
-        print("3. Kembali")
+        print("3. Kembali\n")
 
         pilihan = input("Pilih menu: ")
 
@@ -87,9 +87,13 @@ def buyer_review(username):
         # =============================
         if pilihan == "1":
             tampilkan_transaksi_selesai(username)
-            id_transaksi = input("Masukkan ID Transaksi: ")
+            id_transaksi = input("Masukkan ID Transaksi (Tekan ENTER untuk kembali): ")
+
+            if not id_transaksi:
+                continue
 
             trx = get_valid_transaction(username, id_transaksi)
+
             if not trx:
                 print("❌ Transaksi tidak valid atau belum selesai.")
                 input("Tekan ENTER untuk kembali...")
@@ -99,9 +103,28 @@ def buyer_review(username):
                 print("❌ Transaksi ini sudah direview sebelumnya.")
                 input("Tekan ENTER untuk kembali...")
                 continue
+            
+            rating = input("Rating (1-5) (Tekan ENTER untuk kembali): ").strip()
 
-            rating = int(input("Rating (1-5): "))
-            review_text = input("Ulasan: ")
+            if not rating:
+                continue
+
+            try:
+                rate = int(rating)
+            except ValueError:
+                print("Rating tidak valid!")
+                input("Tekan ENTER untuk kembali...")
+                continue
+
+            if rate < 1 or rate > 5:
+                print("Rating melebihi batas!")
+                input("Tekan ENTER untuk kembali...")
+                continue
+
+            review_text = input("Ulasan (Tekan ENTER untuk kembali): ")
+
+            if not review_text:
+                continue
 
             with open(REVIEW_FILE, "a", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
@@ -153,3 +176,7 @@ def buyer_review(username):
 
         elif pilihan == "3":
             break
+
+        else:
+            print("\nPilihan tidak valid!")
+            input("Tekan ENTER untuk coba lagi...")

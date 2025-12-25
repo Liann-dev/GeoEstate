@@ -55,7 +55,7 @@ def tambah_properti(username):
             continue
 
         break
-
+    
     # Generate ID
     new_id = 1
     if os.path.exists(FILE_PROPERTI):

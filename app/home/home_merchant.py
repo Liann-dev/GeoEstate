@@ -6,7 +6,7 @@ from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
 from app.home.merchant_menu import merchant_menu
-from app.home.review_buyer import buyer_review
+from app.home.review_user import user_review
 from app.features.chat import menu_chat
 from app.features.cari_properti import cari_properti
 from app.features.wishlist import menu_wishlist
@@ -64,6 +64,7 @@ def home_merchant(username):
         print(" [F] Feedback")
         print(" [W] Wishlist")
         print(" [M] Menu Merchant")
+        print(" [V] Ajukan Verifikasi User")
         print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
@@ -85,7 +86,7 @@ def home_merchant(username):
         elif pilihan == 'i':  # I = Informasi
             info()
         elif pilihan == 'u':  # U = Ulasan
-            buyer_review(username)
+            user_review(username)
         elif pilihan == 'c':  # C = Chat
             menu_chat(username)
         elif pilihan == 'f':  # F = Feedback

@@ -105,23 +105,23 @@ profilnya.
 
         elif pilihan == "2":
             tampilkan_user()
-            while True:
-                cari = input("Masukkan username: ")
-                if not cari:
-                    print("Kolom ini tidak boleh kosong!\n")
-                else:
-                    break
-            verifikasi_user(cari)
+            
+            cari = input("Masukkan username (ENTER untuk batal): ")
+            if not cari:
+                continue
+            else:
+                verifikasi_user(cari)
+                continue
 
         elif pilihan == "3":
             tampilkan_user()
-            while True:
-                cari = input("Masukkan username: ")
-                if not cari:
-                    print("Kolom ini tidak boleh kosong!\n")
-                else:
-                    break
-            hapus_verifikasi_user(cari)
+            
+            cari = input("Masukkan username (ENTER untuk batal): ")
+            if not cari:
+                continue
+            else:
+                hapus_verifikasi_user(cari)
+                continue
 
         elif pilihan == "4":
             break

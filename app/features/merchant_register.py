@@ -88,7 +88,7 @@ def merchant_registration_menu(current_user):
 
     with open(MERCHANT_REG_FILE, mode="a", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow([reg_id, current_user, email, password, reason, "pending"])
+        writer.writerow([reg_id, current_user, email, reason, "pending"])
 
     print("\nPendaftaran merchant berhasil.")
     print(f"ID Pendaftaran Anda: {reg_id}")

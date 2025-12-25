@@ -88,7 +88,7 @@ def merchant_withdraw_menu(current_user):
 
     with open(WITHDRAW_FILE, mode="a", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow([wd_id, current_user, email, password, reason, "pending"])
+        writer.writerow([wd_id, current_user, email, reason, "pending"])
 
     print("\nPengajuan pengunduran diri berhasil.")
     print(f"ID Pengajuan: {wd_id}")
