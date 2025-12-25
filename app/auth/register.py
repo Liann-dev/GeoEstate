@@ -1,49 +1,104 @@
 import csv
 import os
+import re
 
 FILE_USERS = "data/users.csv"
 
 def register():
-    print("--- Register GeoEstate ---")
-    
+    print(f"\n--- Register GeoEstate ---")
+
     # Pastikan file CSV ada
     if not os.path.exists(FILE_USERS):
         with open(FILE_USERS, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["username", "password", "role", "verified"])
-    
-    # Input username
-    username = input("Masukkan Username: ")
+            writer.writerow(["username", "email", "password", "role", "verified"])
 
-    # Cek apakah username sudah ada
-    with open(FILE_USERS, mode='r', newline='') as file:
-        reader = csv.DictReader(file)
-        for user in reader:
-            if user and user["username"] == username:
-                print("Username sudah dipakai, silakan coba lagi.\n")
-                return False
+    # Input username
+    while True:
+        username = input("Masukkan Username (ENTER untuk batal): ").strip()
+        if username == "":
+            return False
+
+        username_dipakai = False
+        with open(FILE_USERS, mode='r', newline='') as file:
+            reader = csv.DictReader(file)
+            for user in reader:
+                if user["username"] == username:
+                    print("Username sudah dipakai, silakan coba lagi.\n")
+                    username_dipakai = True
+                    break
+
+        if username_dipakai:
+            continue
+        break
+
+    # Input email
+    while True:
+        email = input("Masukkan Email (ENTER untuk batal): ").strip()
+        if email == "":
+            return False
+
+        # Regex email optimal
+        pattern = r'^[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{1,}$'
+        if not re.match(pattern, email):
+            print("Email tidak valid! Contoh email valid: user@domain.com, user@mail.co.id\n")
+            continue
+
+        # Cek email sudah dipakai
+        email_dipakai = False
+        with open(FILE_USERS, mode='r', newline='') as file:
+            reader = csv.DictReader(file)
+            for user in reader:
+                if user["email"] == email:
+                    print("Email sudah dipakai, silakan coba lagi.\n")
+                    email_dipakai = True
+                    break
+
+        if email_dipakai:
+            continue
+        break
 
     # Input password
-    password = input("Masukkan Password: ")
+    while True:
+        password = input("Masukkan Password (ENTER untuk batal): ")
+        if password == "":
+            return False
 
-    # Pilih peran (Penjual / Pembeli)
-    print("Pilih peran Anda:")
-    print("1. Pembeli")
-    print("2. Penjual")
-    role_choice = input("Masukkan pilihan (1/2): ")
+        if not (8 <= len(password) <= 32):
+            print("Password harus terdiri dari 8 hingga 32 karakter!\n")
+            continue
 
-    if role_choice == "1":
-        role = "pembeli"
-    elif role_choice == "2":
-        role = "penjual"
-    else:
-        print("Pilihan tidak valid, registrasi dibatalkan.\n")
-        return False
+        if not any(c.isalpha() for c in password) or not any(c.isdigit() for c in password):
+            print("Password harus mengandung huruf dan angka!\n")
+            continue
+
+        break
+
+    # Konfirmasi password
+    sisa = 3
+    while True:
+        konfirmasi_password = input("Konfirmasi Password (ENTER untuk batal): ")
+        if konfirmasi_password == "":
+            return False
+
+        if konfirmasi_password == password:
+            break
+
+        sisa -= 1
+        if sisa == 0:
+            print("\nKonfirmasi password gagal. Registrasi dibatalkan.")
+            input("Tekan ENTER untuk kembali ke halaman awal...")
+            return False
+
+        print(f"Password tidak sama! Kesempatan tersisa: {sisa}\n")
+
+    role = "user"
 
     # Simpan ke CSV
     with open(FILE_USERS, mode='a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([username, password, role, False])
+        writer.writerow([username, email, password, role, False])
 
-    print(f"Register berhasil sebagai {role}!\n")
+    print(f"\nRegister berhasil!")
+    input("Tekan ENTER untuk kembali ke halaman awal...")
     return True

@@ -11,7 +11,7 @@ def simpan_transaksi(username, properti):
     with open(FILE_TRANSAKSI, mode='a', newline='') as file:
         writer = csv.writer(file)
         if not file_exists:
-            writer.writerow(['id_transaksi', 'username_pembeli', 'penjual', 'id_properti', 'nama_properti', 'harga', 'tanggal', 'status'])
+            writer.writerow(['id_transaksi', 'username_pembeli', 'penjual', 'id_properti', 'nama_properti', 'harga', 'tanggal', 'transaksi', 'status'])
         
 
         trc_id = f"GES-{random.randint(1000, 9999)}"
@@ -25,7 +25,8 @@ def simpan_transaksi(username, properti):
             properti['id'], 
             properti['nama'], 
             properti['harga'], 
-            tanggal, 
+            tanggal,
+            "Beli",
             "Menunggu Konfirmasi"
         ])
         return trc_id

@@ -1,0 +1,2 @@
+id_transaksi,username,id,nama,kategori,lokasi,harga,penjual,doc_verified,tanggal,transaksi
+GES-5838,Adit,2,Villa Air,Villa,Ciwidey,1500000000,Adi,True,2025-12-22 10:42:10,Beli
