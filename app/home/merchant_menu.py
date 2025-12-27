@@ -86,6 +86,97 @@ def tambah_properti(username):
     print("\n[SUKSES] Properti berhasil ditambahkan!")
     input("Tekan ENTER untuk kembali...")
 
+def lihat_properti_saya(username):
+    print(f"\n--- Daftar Properti Milik {username} ---")
+
+    with open(FILE_PROPERTI, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        found = False
+
+        for p in reader:
+            if p['penjual'].strip().lower() == username.strip().lower():
+
+                if p['doc_verified'] == "True":
+                    status_text = "✅ Terverifikasi"
+                else:
+                    status_text = "❌ Belum Terverifikasi"
+
+                if p['tersedia'] == "True":
+                    ketersediaan = "✅ Tersedia"
+                else:
+                    ketersediaan = "❌ Terjual"
+                print(f"ID: {p['id']}")
+                print(f"Nama: {p['nama']} ({p['kategori']})")
+                print(f"Lokasi: {p['lokasi']}")
+                print(f"Harga: Rp {p['harga']}")
+                print(f"Status: {status_text}")
+                print(f"Ketersediaan : {ketersediaan}")
+                print("-" * 30)
+
+                found = True
+
+        if not found:
+            print("Anda belum memiliki properti yang terdaftar.")
+
+
+def hapus_properti_saya(username):
+    if not os.path.exists(FILE_PROPERTI):
+        print("❌ Data properti tidak ditemukan.")
+        return
+
+    id_input = input("Masukkan ID Properti yang ingin dihapus (Tekan ENTER untuk kembali): ").strip()
+
+    if not id_input:
+        return
+
+    if not id_input.isdigit():
+        print("❌ ID harus berupa angka!")
+        input("Tekan ENTER untuk kembali...")
+        return
+
+    id_input = id_input.strip()
+
+    properti_list = []
+    properti_dihapus = False
+
+    with open(FILE_PROPERTI, newline='', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        fieldnames = reader.fieldnames
+
+        for p in reader:
+            # jika ID cocok
+            if p['id'] == id_input:
+                # cek pemilik
+                if p['penjual'].strip().lower() != username.strip().lower():
+                    print("❌ Anda tidak berhak menghapus properti ini!")
+                    input("Tekan ENTER untuk kembali...")
+                    return
+
+                # cek status tersedia
+                if p['tersedia'].strip().lower() != 'true':
+                    print("❌ Properti sudah tidak tersedia / terjual!")
+                    input("Tekan ENTER untuk kembali...")
+                    return
+
+                properti_dihapus = True
+                continue  # ⬅️ skip baris ini (hapus)
+
+            properti_list.append(p)
+
+    if not properti_dihapus:
+        print("❌ Properti tidak ditemukan.")
+        input("Tekan ENTER untuk kembali...")
+        return
+
+    # tulis ulang file
+    with open(FILE_PROPERTI, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(properti_list)
+
+    print("✅ Properti berhasil dihapus.")
+    input("Tekan ENTER untuk kembali...")
+
 def merchant_menu(username):
     print(f"\nHalo {username}, selamat datang di GeoEstate Merchant!")
 
@@ -104,10 +195,11 @@ def merchant_menu(username):
         print("\n===== GeoEstate Menu Merchant =====")
         print("1. Tambah Properti Baru")
         print("2. Lihat Properti Saya")
-        print("3. Kelola Pesanan Masuk")  
-        print("4. Lihat Ulasan Properti Saya")
-        print("5. Ajukan Pengunduran Diri Sebagai Merchant")
-        print("6. Kembali")
+        print("3. Hapus Properti Saya")
+        print("4. Kelola Pesanan Masuk")  
+        print("5. Lihat Ulasan Properti Saya")
+        print("6. Ajukan Pengunduran Diri Sebagai Merchant")
+        print("7. Kembali")
         print("==================================")
 
         pilihan = input("Pilih menu (1-6): ")
@@ -122,55 +214,38 @@ def merchant_menu(username):
         # OPSI 2: LIHAT PROPERTI SAYA
         # =========================
         elif pilihan == "2":
-         
-            print(f"\n--- Daftar Properti Milik {username} ---")
-
-            with open(FILE_PROPERTI, mode='r') as file:
-                reader = csv.DictReader(file)
-                found = False
-
-                for p in reader:
-                    if p['penjual'] == username:
-                        if p['doc_verified'] == "True":
-                            status_text = "✅ Terverifikasi"
-                        else:
-                            status_text = "❌ Belum Terverifikasi"
-                        
-                        print(f"ID: {p['id']}")
-                        print(f"Nama: {p['nama']} ({p['kategori']})")
-                        print(f"Lokasi: {p['lokasi']}")
-                        print(f"Harga: Rp {p['harga']}")
-                        print(f"Status: {status_text}")
-                        print("-" * 30)
-                        found = True
-
-                if not found:
-                    print("Anda belum memiliki properti yang terdaftar.")
-            
+            lihat_properti_saya(username)
             input("\nTekan ENTER untuk kembali...")
 
         # =========================
-        # OPSI 3: KELOLA PESANAN 
+        # OPSI 3: HAPUS PROPERTI SAYA
         # =========================
         elif pilihan == "3":
+            lihat_properti_saya(username)
+            hapus_properti_saya(username)
+
+        # =========================
+        # OPSI 4: KELOLA PESANAN 
+        # =========================
+        elif pilihan == "4":
             menu_kelola_pesanan(username) 
         
         # =========================
-        # OPSI 4: LIHAT ULASAN
+        # OPSI 5: LIHAT ULASAN
         # =========================
-        elif pilihan == "4":
+        elif pilihan == "5":
             seller_review(username)
 
         # =========================
-        # OPSI 5: UNDUR DIRI MERCHANT
+        # OPSI 6: UNDUR DIRI MERCHANT
         # =========================
-        elif pilihan == "5":
+        elif pilihan == "6":
             merchant_withdraw_menu(username)
 
         # =========================
-        # OPSI 6: KEMBALI
+        # OPSI 7: KEMBALI
         # =========================
-        elif pilihan == "6":
+        elif pilihan == "7":
             print("Kembali ke menu utama...\n")
             break
 
