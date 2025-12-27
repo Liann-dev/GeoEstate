@@ -2,7 +2,7 @@ import csv
 import os
 import random
 
-MERCHANT_REG_FILE = "data/merchreg.csv"
+MERCHANT_REG_FILE = "data/sellreg.csv"
 USERS_FILE = "data/users.csv"
 
 def get_user_by_username(username):
@@ -26,7 +26,7 @@ def generate_reg_id(existing_ids):
         if reg_id not in existing_ids:
             return reg_id
 
-def merchant_registration_menu(current_user):
+def seller_registration_menu(current_user):
     init_merchreg_file()
 
     user_data = get_user_by_username(current_user)
@@ -90,7 +90,7 @@ def merchant_registration_menu(current_user):
         writer = csv.writer(file)
         writer.writerow([reg_id, current_user, email, reason, "pending"])
 
-    print("\nPendaftaran merchant berhasil.")
+    print("\nPendaftaran Seller berhasil.")
     print(f"ID Pendaftaran Anda: {reg_id}")
     print("Menunggu verifikasi admin.\n")
     input("Tekan ENTER untuk kembali...")

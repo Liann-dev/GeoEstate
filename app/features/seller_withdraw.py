@@ -2,7 +2,7 @@ import csv
 import os
 import random
 
-WITHDRAW_FILE = "data/merchdraw.csv"
+WITHDRAW_FILE = "data/selldraw.csv"
 USERS_FILE = "data/users.csv"
 
 def get_user_by_username(username):
@@ -25,7 +25,7 @@ def generate_wd_id(existing_ids):
         if wd_id not in existing_ids:
             return wd_id
 
-def merchant_withdraw_menu(current_user):
+def seller_withdraw_menu(current_user):
     init_withdraw_file()
     
     user_data = get_user_by_username(current_user)

@@ -1,6 +1,6 @@
 import csv
 import os
-from app.features.merchant_management import menu_kelola_merchant
+from app.features.seller_management import menu_kelola_merchant
 from app.features.admin_feedback import lihat_feedback
 from app.features.user_verification import menu_verifikasi_user
 from app.features.property_verification import menu_verifikasi_properti

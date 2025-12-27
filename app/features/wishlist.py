@@ -224,7 +224,7 @@ def menu_wishlist(username):
 1. Lihat Wishlist
 2. Tambah Properti ke Wishlist
 3. Hapus Properti dari Wishlist
-4. Kembali
+("Tekan ENTER untuk kembali...\n")
 """)
         pilihan = input("Pilih menu (1-4): ")
 
@@ -279,7 +279,7 @@ def menu_wishlist(username):
             hapus_dari_wishlist(username, id_properti)
 
 
-        elif pilihan == "4":
+        elif not pilihan:
             break
 
         else:

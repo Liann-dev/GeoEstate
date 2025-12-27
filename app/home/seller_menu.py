@@ -4,7 +4,7 @@ import os
 
 from app.features.transaksi_penjual import menu_kelola_pesanan
 from app.home.review_seller import seller_review
-from app.features.merchant_withdraw import merchant_withdraw_menu
+from app.features.seller_withdraw import seller_withdraw_menu
 
 FILE_PROPERTI = "data/properti.csv"
 
@@ -177,7 +177,7 @@ def hapus_properti_saya(username):
     print("✅ Properti berhasil dihapus.")
     input("Tekan ENTER untuk kembali...")
 
-def merchant_menu(username):
+def seller_menu(username):
     print(f"\nHalo {username}, selamat datang di GeoEstate Merchant!")
 
     if not os.path.exists("data"):
@@ -240,7 +240,7 @@ def merchant_menu(username):
         # OPSI 6: UNDUR DIRI MERCHANT
         # =========================
         elif pilihan == "6":
-            merchant_withdraw_menu(username)
+            seller_withdraw_menu(username)
 
         # =========================
         # OPSI 7: KEMBALI

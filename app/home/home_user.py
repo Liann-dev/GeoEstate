@@ -10,7 +10,7 @@ from app.features.feedback import collect_feedback
 from app.features.chat import menu_chat
 from app.features.wishlist import menu_wishlist
 from app.features.cari_properti import cari_properti
-from app.features.merchant_register import merchant_registration_menu
+from app.features.seller_register import seller_registration_menu
 
 
 FILE_PROPERTI = 'data/properti.csv'
@@ -62,7 +62,7 @@ def home_user(username):
         print(" [U] Ulasan Properti (Review)")
         print(" [F] Feedback")
         print(" [W] Wishlist")
-        print(" [M] Daftarkan Sebagai Merchant")
+        print(" [M] Daftarkan Sebagai Seller")
         print(" [V] Ajukan Verifikasi User")
         print(" [K] Keluar / Logout")
         print("========================================")
@@ -90,8 +90,8 @@ def home_user(username):
             menu_chat(username)
         elif pilihan == 'f':  # F = Feedback
             collect_feedback(username, 'user')
-        elif pilihan == 'm':  # M = Merchant
-            merchant_registration_menu(username)
+        elif pilihan == 'm':  # M = Seller
+            seller_registration_menu(username)
         elif pilihan == 'w':  # W = Wishlist
             menu_wishlist(username)
         elif pilihan  == 's': # S = Cari Properti
