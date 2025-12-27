@@ -90,10 +90,10 @@ def home_merchant(username):
         elif pilihan == 'c':  # C = Chat
             menu_chat(username)
         elif pilihan == 'f':  # F = Feedback
-            collect_feedback(username, 'merchant')
+            collect_feedback(username, 'seller')
         elif pilihan == 'w':  # W = Wishlist
             menu_wishlist(username)
-        elif pilihan == 'm':  # M = Merchant
+        elif pilihan == 'm':  # M = seller
             seller_menu(username)
         elif pilihan  == 's': # S = Cari Properti
             cari_properti(username)

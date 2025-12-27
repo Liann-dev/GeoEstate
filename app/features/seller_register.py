@@ -34,7 +34,7 @@ def seller_registration_menu(current_user):
         print("Data user tidak ditemukan.\n")
         return
 
-    print("\n=== Pendaftaran Merchant ===")
+    print("\n=== Pendaftaran Seller ===")
 
     # === EMAIL ===
     while True:
