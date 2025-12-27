@@ -1,6 +1,6 @@
 import csv
 import os
-from app.features.seller_management import menu_kelola_merchant
+from app.features.seller_management import menu_kelola_seller
 from app.features.admin_feedback import lihat_feedback
 from app.features.user_verification import menu_verifikasi_user
 from app.features.property_verification import menu_verifikasi_properti
@@ -91,7 +91,7 @@ def admin_menu(username):
         print("===== MENU ADMIN =====")
         print("1. Verifikasi Data User")
         print("2. Verifikasi Dokumen Properti")
-        print("3. Kelola Data Merchant")
+        print("3. Kelola Data seller")
         print("4. Lihat Feedback")
         print("5. Keluar / Logout")
         pilihan = input(f"\nPilih menu (1-5): ")
@@ -101,7 +101,7 @@ def admin_menu(username):
         elif pilihan == "2":
             menu_verifikasi_properti()
         elif pilihan == "3":
-            menu_kelola_merchant()
+            menu_kelola_seller()
         elif pilihan == "4":
             lihat_feedback()
         elif pilihan == "5":

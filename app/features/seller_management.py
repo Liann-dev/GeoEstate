@@ -2,8 +2,8 @@ import csv
 import os
 
 USERS_FILE = "data/users.csv"
-MERCH_FILE = "data/merchreg.csv"
-WITHDRAW_FILE = "data/merchdraw.csv"
+MERCH_FILE = "data/sellreg.csv"
+WITHDRAW_FILE = "data/selldraw.csv"
 
 def read_csv(file_path):
     if not os.path.exists(file_path):
@@ -25,7 +25,7 @@ def write_csv(file_path, fieldnames, data):
         writer.writeheader()
         writer.writerows(clean_data)
 
-def tampilkan_daftar_merchant():
+def tampilkan_daftar_seller():
     users = read_csv(USERS_FILE)
 
     merchants = [u for u in users if u.get("role") == "merchant"]
@@ -56,7 +56,7 @@ def tampilkan_daftar_merchant():
 #=======================================================================
 #=======================================================================
 
-def tampilkan_merchreg(data):
+def tampilkan_sellreg(data):
     if not data:
         print("Belum ada pendaftaran merchant.\n")
         return
@@ -84,9 +84,9 @@ def update_user_role(username, new_role):
         users
     )
 
-def verifikasi_merchant():
+def verifikasi_seller():
     data = read_csv(MERCH_FILE)
-    tampilkan_merchreg(data)
+    tampilkan_sellreg(data)
 
     if not data:
         return
@@ -140,7 +140,7 @@ def tampilkan_withdraw(data):
         print("Belum ada pengajuan pengunduran diri.\n")
         return
 
-    print("\n=== Daftar Pengunduran Diri Merchant ===")
+    print("\n=== Daftar Pengunduran Diri Seller ===")
     print("-" * 70)
     print(f"{'WD ID':<12}{'Username':<15}{'Email':<30}{'Status':<10}")
     print("-" * 70)
@@ -195,7 +195,7 @@ def verifikasi_withdraw():
 
     print("WD ID tidak ditemukan.\n")
 
-def menu_kelola_merchant():
+def menu_kelola_seller():
     while True:
         print("""
 === Menu Pengelolaan Merchant ===
@@ -208,9 +208,9 @@ def menu_kelola_merchant():
         pilihan = input("Pilih menu (1-4): ").strip()
 
         if pilihan == "1":
-            tampilkan_daftar_merchant()
+            tampilkan_daftar_seller()
         elif pilihan == "2":
-            verifikasi_merchant()
+            verifikasi_seller()
         elif pilihan == "3":
             verifikasi_withdraw()
         elif pilihan == "4":
