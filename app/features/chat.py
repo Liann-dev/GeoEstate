@@ -137,8 +137,6 @@ def lihat_chat_user(username, kontak, width=50, msg_width=30):
         input("Tekan ENTER untuk kembali...")
         return []
 
-
-
 # =========================
 # Fungsi hapus chat
 # =========================

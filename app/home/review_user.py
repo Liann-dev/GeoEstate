@@ -29,7 +29,8 @@ def get_valid_transaction(username, id_transaksi):
             if (
                 row["id_transaksi"] == id_transaksi and
                 row["username_pembeli"] == username and
-                row["status"] == "Lunas / Selesai"
+                row["status"] == "Lunas / Selesai" and
+                row["transaksi"] == "Beli"
             ):
                 return row
     return None
@@ -44,14 +45,15 @@ def already_reviewed(id_transaksi, username):
         for row in reader:
             if (
                 row["id_transaksi"] == id_transaksi and
-                row["username_pembeli"] == username
+                row["username_pembeli"] == username and
+                row["transaksi"] == "Beli"
             ):
                 return True
     return False
 
 def tampilkan_transaksi_selesai(username):
     print("\n========================================")
-    print("   TRANSAKSI SELESAI YANG BISA DIREVIEW  ")
+    print("  TRANSAKSI SELESAI YANG BISA DIREVIEW  ")
     print("========================================\n")
 
     ditemukan = False
@@ -61,13 +63,14 @@ def tampilkan_transaksi_selesai(username):
         for i, row in enumerate(reader, start=1):
             if (
                 row["username_pembeli"] == username and
-                row["status"] == "Lunas / Selesai"
+                row["status"] == "Lunas / Selesai" and
+                row["transaksi"] == "Beli"
             ):
                 print(f"{i}. 🧾 {row['id_transaksi']} | 🏠 {row['nama_properti']}")
                 ditemukan = True
 
     if not ditemukan:
-        print("⚠️  Tidak ada transaksi selesai yang bisa direview.")
+        print("Tidak ada transaksi selesai yang bisa direview.")
 
     print("\n----------------------------------------")
 
@@ -95,12 +98,12 @@ def user_review(username):
             trx = get_valid_transaction(username, id_transaksi)
 
             if not trx:
-                print("❌ Transaksi tidak valid atau belum selesai.")
+                print("Transaksi tidak valid atau belum selesai.")
                 input("Tekan ENTER untuk kembali...")
                 continue
 
             if already_reviewed(id_transaksi, username):
-                print("❌ Transaksi ini sudah direview sebelumnya.")
+                print("Transaksi ini sudah direview sebelumnya.")
                 input("Tekan ENTER untuk kembali...")
                 continue
             
@@ -138,7 +141,7 @@ def user_review(username):
                     datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 ])
 
-            print("✅ Review berhasil ditambahkan!")
+            print("Review berhasil ditambahkan!")
             input("Tekan ENTER untuk kembali...")
 
         # =============================
@@ -146,7 +149,7 @@ def user_review(username):
         # =============================
         elif pilihan == "2":
             print("\n========================================")
-            print("            REVIEW SAYA                 ")
+            print("             REVIEW SAYA                ")
             print("========================================\n")
 
             reviews = []
@@ -158,7 +161,7 @@ def user_review(username):
                         reviews.append(row)
 
             if not reviews:
-                print("⚠️  Belum ada review.")
+                print("Belum ada review.")
                 input("\nTekan ENTER untuk kembali...")
                 continue
 
