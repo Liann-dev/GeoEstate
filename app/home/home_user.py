@@ -5,13 +5,12 @@ from app.home.profile import profile
 from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
-from app.home.seller_menu import seller_menu
 from app.home.review_user import user_review
-from app.features.chat import menu_chat
-from app.features.cari_properti import cari_properti
-from app.features.wishlist import menu_wishlist
 from app.features.feedback import collect_feedback
-
+from app.features.chat import menu_chat
+from app.features.wishlist import menu_wishlist
+from app.features.cari_properti import cari_properti
+from app.features.seller_register import seller_registration_menu
 
 
 FILE_PROPERTI = 'data/properti.csv'
@@ -25,7 +24,7 @@ def load_properties():
                 data.append(row)
     return data
 
-def home_merchant(username):
+def home_user(username):
     while True:
         semua_properti = load_properties()
         
@@ -63,7 +62,7 @@ def home_merchant(username):
         print(" [U] Ulasan Properti (Review)")
         print(" [F] Feedback")
         print(" [W] Wishlist")
-        print(" [M] Menu Seller")
+        print(" [M] Daftarkan Sebagai Seller")
         print(" [V] Ajukan Verifikasi User")
         print(" [K] Keluar / Logout")
         print("========================================")
@@ -90,14 +89,14 @@ def home_merchant(username):
         elif pilihan == 'c':  # C = Chat
             menu_chat(username)
         elif pilihan == 'f':  # F = Feedback
-            collect_feedback(username, 'seller')
+            collect_feedback(username, 'user')
+        elif pilihan == 'm':  # M = Seller
+            seller_registration_menu(username)
         elif pilihan == 'w':  # W = Wishlist
             menu_wishlist(username)
-        elif pilihan == 'm':  # M = seller
-            seller_menu(username)
         elif pilihan  == 's': # S = Cari Properti
             cari_properti(username)
-            
+
         else:
           
             item_pilih = next((item for item in semua_properti if item['id'] == pilihan), None)

@@ -11,19 +11,43 @@ def login():
         return None
 
     while kesempatan > 0:
-        print("--- Login GeoEstate ---")
-        username = input("Masukkan Username: ")
-        password = input("Masukkan Password: ")
+        print(f"\n--- Login GeoEstate ---")
 
+        login_input = input("Masukkan Username atau Email: ").strip()
+        password = input("Masukkan Password: ").strip()
+
+        # Validasi jika input kosong agar tidak langsung mengurangi kesempatan
+        if login_input == "" or password == "":
+            print("Username/Email dan Password tidak boleh kosong!")
+            continue
+
+        user_found = None
         with open(FILE_USERS, mode='r', newline='') as file:
             reader = csv.DictReader(file)
             for user in reader:
-                if user["username"] == username and user["password"] == password:
-                    print(f"Login berhasil sebagai {user['role']}!\n")
-                    return user   # ← penting, return dict
+                if user["username"] == login_input or user["email"] == login_input:
+                    user_found = user
+                    break
 
-        kesempatan -= 1
-        print(f"Username atau Password salah. Kesempatan tersisa: {kesempatan}\n")
+        # Cek jika username tidak ditemukan
+        if not user_found:
+            kesempatan -= 1
+            print(f"Username atau Email salah. Kesempatan tersisa: {kesempatan}\n")
+            if kesempatan == 0: break
+            continue
 
-    print("Login gagal.\n")
+        # Cek jika password salah
+        if user_found["password"] != password:
+            kesempatan -= 1
+            print(f"Password salah. Kesempatan tersisa: {kesempatan}\n")
+            if kesempatan == 0: break
+            continue
+
+        # Login berhasil
+        print(f"\nLogin berhasil. Selamat datang {user_found['username']}!")
+        return user_found
+
+    # Hanya bisa sampai ke sini jika kesempatan sudah 0 (sudah mengisi tapi salah)
+    print("Login gagal. Jatah percobaan Anda telah habis.")
+    input("Tekan ENTER untuk kembali ke halaman awal...")
     return None
