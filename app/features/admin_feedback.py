@@ -15,6 +15,7 @@ def lihat_feedback():
 
         if not reader:
             print("Belum ada feedback yang masuk.\n")
+            input("Tekan ENTER untuk kembali...\n")
             return
 
         print("-" * 120)

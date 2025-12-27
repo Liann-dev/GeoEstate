@@ -102,24 +102,26 @@ atau kelengkapan suatu properti sudah valid sebelum dipublikasikan.
 
         elif pilihan == "2":
             tampilkan_properti()
-            while True:
-                id_properti = input("Masukkan ID properti yang ingin diverifikasi: ")
+            
+            id_properti = input("Masukkan ID properti yang ingin diverifikasi (ENTER untuk batal): ")
 
-                if not id_properti:
-                    print("Kolom ini tidak boleh kosong!")
-                else:
-                    break
-            verifikasi_properti(id_properti)
+            if not id_properti:
+                continue
+            else:
+                verifikasi_properti(id_properti)
+                continue
+            
 
         elif pilihan == "3":
             tampilkan_properti()
-            while True:
-                id_properti = input("Masukkan ID properti yang ingin dihapus verifikasinya: ")
-                if not id_properti:
-                        print("Kolom ini tidak boleh kosong!")
-                else:
-                    break
-            hapus_verifikasi_properti(id_properti)
+           
+            id_properti = input("Masukkan ID properti yang ingin dihapus verifikasinya (ENTER untuk batal): ")
+            if not id_properti:
+                continue
+            else:
+                hapus_verifikasi_properti(id_properti)
+                continue
+            
 
         elif pilihan == "4":
             break
