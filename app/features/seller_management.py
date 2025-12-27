@@ -198,10 +198,10 @@ def verifikasi_withdraw():
 def menu_kelola_seller():
     while True:
         print("""
-=== Menu Pengelolaan Merchant ===
-1. Lihat Daftar Merchant
-2. Verifikasi Pendaftaran Merchant
-3. Data Pengunduran Diri Merchant
+=== Menu Pengelolaan Seller ===
+1. Lihat Daftar Seller
+2. Verifikasi Pendaftaran Seller
+3. Data Pengunduran Diri Seller
 4. Kembali           
 """)
 
