@@ -1,7 +1,26 @@
 import csv
 import os
+from datetime import datetime
 
 FILE_TRANSAKSI = "data/transaksi.csv"
+FILE_PROPERTI = "data/properti.csv"
+FILE_RIWAYAT = "data/properti_dimiliki.csv"
+
+def sedang_dalam_transaksi(username, id_properti):
+    if not os.path.exists(FILE_TRANSAKSI):
+        return False
+
+    with open(FILE_TRANSAKSI, mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if (
+                row['username_pembeli'] == username
+                and row['id_properti'] == id_properti
+                and row['status'] not in ["Lunas / Selesai", "Dibatalkan"]
+            ):
+                return True
+
+    return False
 
 def baca_data_csv():
     transaksi_list = []
@@ -13,7 +32,7 @@ def baca_data_csv():
     return transaksi_list
 
 def simpan_perubahan_csv(data_baru):
-    fieldnames = ['id_transaksi', 'username_pembeli', 'penjual', 'id_properti', 'nama_properti', 'harga', 'tanggal', 'status']
+    fieldnames = ['id_transaksi', 'username_pembeli', 'penjual', 'id_properti', 'nama_properti', 'harga', 'tanggal', 'transaksi', 'status',]
     
     os.makedirs(os.path.dirname(FILE_TRANSAKSI), exist_ok=True)
     
@@ -38,7 +57,7 @@ def tampilkan_pesanan(penjual_login):
        
         return [] 
 
-    header = f"| {'ID Trx':<10} | {'Pembeli':<15} | {'Properti':<20} | {'Harga':<15} | {'Status':<20} |"
+    header = f"| {'ID Trx':<10} | {'Pembeli':<15} | {'Properti':<20} | {'Harga':<20} | {'Status':<20} |"
     lebar_tabel = len(header)
 
     print_separator(lebar_tabel)
@@ -52,7 +71,7 @@ def tampilkan_pesanan(penjual_login):
         except ValueError:
             harga_fmt = t['harga']
 
-        print(f"| {t['id_transaksi']:<10} | {t['username_pembeli']:<15} | {t['nama_properti'][:20]:<20} | {harga_fmt:<15} | {t['status']:<20} |")
+        print(f"| {t['id_transaksi']:<10} | {t['username_pembeli']:<15} | {t['nama_properti'][:20]:<20} | {harga_fmt:<20} | {t['status']:<20} |")
     
     print_separator(lebar_tabel)
     
@@ -65,7 +84,10 @@ def update_status_pesanan(penjual_login):
         return
 
     print("\n--- Update Status Pesanan ---")
-    id_input = input("Masukkan ID Transaksi (contoh: GES-1234): ")
+    id_input = input("Masukkan ID Transaksi (contoh: GES-1234) (Tekan ENTER untuk kembali): ")
+    
+    if not id_input:
+        return
     
     semua_data = baca_data_csv()
     found = False
@@ -80,6 +102,17 @@ def update_status_pesanan(penjual_login):
                 return 
 
             found = True
+
+            if row['status'] in ["Lunas / Selesai", "Dibatalkan"]:
+                print(f"\n>> Transaksi ini sudah berstatus '{row['status']}'.")
+                print(">> Status final tidak dapat diubah kembali.")
+                return
+
+            if row['status'] in ["Pending / Menunggu"]:
+                print(f"\n>> Transaksi ini sudah berstatus '{row['status']}'.")
+                print(">> Silahkan ubah status menjadi 'Lunas / Selesai' ATAU 'Dibatalkan' untuk memproses pesanan.")
+                return
+        
             print(f"\nItem Ditemukan: {row['nama_properti']}")
             print(f"Pembeli       : {row['username_pembeli']}")
             print(f"Status Saat Ini: {row['status']}")
@@ -97,12 +130,16 @@ def update_status_pesanan(penjual_login):
             elif pilihan == "2":
                 status_baru = "Dibatalkan"
             elif pilihan == "3":
-                status_baru = "Menunggu Konfirmasi"
+                status_baru = "Pending / Menunggu"
             else:
                 print(">> Pilihan tidak valid. Batal update.")
                 return
 
             row['status'] = status_baru
+            row['status'] = status_baru
+
+            if status_baru == "Lunas / Selesai":
+                simpan_ke_riwayat(row)
             
             simpan_perubahan_csv(semua_data)
             print(f">> Berhasil! Status transaksi {id_input} diubah menjadi '{status_baru}'.")
@@ -110,6 +147,50 @@ def update_status_pesanan(penjual_login):
     
     if not found:
         print(">> ID Transaksi tidak ditemukan di database Anda.")
+
+def simpan_ke_riwayat(row_transaksi):
+    tanggal = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Cari data properti
+    properti = None
+    with open(FILE_PROPERTI, mode='r', newline='') as f:
+        reader = csv.DictReader(f)
+        for p in reader:
+            if p['id'] == row_transaksi['id_properti']:
+                properti = p
+                break
+
+    if not properti:
+        print(">> ERROR: Data properti tidak ditemukan.")
+        return
+
+    data_riwayat = {
+        "id_transaksi": row_transaksi['id_transaksi'],
+        "username": row_transaksi['username_pembeli'],
+        "id": properti['id'],
+        "nama": properti['nama'],
+        "kategori": properti['kategori'],
+        "lokasi": properti['lokasi'],
+        "harga": properti['harga'],
+        "penjual": properti['penjual'],
+        "doc_verified": properti['doc_verified'],
+        "tanggal": tanggal,
+        "transaksi" : 'Beli'
+    }
+
+    file_ada = os.path.exists(FILE_RIWAYAT)
+
+    with open(FILE_RIWAYAT, mode='a', newline='') as file:
+        fieldnames = [
+            "id_transaksi", "username", "id", "nama", "kategori",
+            "lokasi", "harga", "penjual", "doc_verified", "tanggal", "transaksi"
+        ]
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+
+        if not file_ada:
+            writer.writeheader()
+
+        writer.writerow(data_riwayat)
 
 def menu_kelola_pesanan(user_active):
    

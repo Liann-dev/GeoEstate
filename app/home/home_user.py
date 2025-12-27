@@ -2,11 +2,16 @@ import csv
 import os
 from app.home.about import about
 from app.home.profile import profile
-from app.home.properties import lihat_properti
+from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
-from app.home.review_buyer import buyer_review
+from app.home.review_user import user_review
 from app.features.feedback import collect_feedback
+from app.features.chat import menu_chat
+from app.features.wishlist import menu_wishlist
+from app.features.cari_properti import cari_properti
+from app.features.merchant_register import merchant_registration_menu
+
 
 FILE_PROPERTI = 'data/properti.csv'
 
@@ -19,7 +24,7 @@ def load_properties():
                 data.append(row)
     return data
 
-def home_buyer(username):
+def home_user(username):
     while True:
         semua_properti = load_properties()
         
@@ -41,7 +46,7 @@ def home_buyer(username):
                 print(f" | 🏠 {p['nama']:<32} |")
                 print(f" | 📍 {p['lokasi']:<32} |")
                 print(f" | 💰 {harga_txt:<20} {p['kategori']:>11} |")
-                print(f" | ID: {p['id']} {' '*26}|")
+                print(f" | ID: {p['id']} {' '*30}|")
                 print(f" +--------------------------------------+")
                 count += 1
         
@@ -52,9 +57,13 @@ def home_buyer(username):
         print(" [P] Profil Saya")
         print(" [T] Tentang GeoEstate")
         print(" [I] Informasi Umum")
-        print(" [C] Cari Properti")
+        print(" [S] Cari Properti")
+        print(" [C] Kirim Pesan (Chat)")
         print(" [U] Ulasan Properti (Review)")
         print(" [F] Feedback")
+        print(" [W] Wishlist")
+        print(" [M] Daftarkan Sebagai Merchant")
+        print(" [V] Ajukan Verifikasi User")
         print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
@@ -63,40 +72,30 @@ def home_buyer(username):
 
             
         if pilihan == 'l':  # L = Lihat Semua
-            lihat_properti(username)
+            pilih_properti(username)
         elif pilihan == 'p':  # P = Profil
             profile(username)
         elif pilihan == 't':  # T = Tentang
             about()
         elif pilihan == 'k':  # K = Keluar
-            print("\nTerima kasih telah menggunakan GeoEstate. Sampai jumpa lagi!\n")
-            break 
+            print("\nTerima kasih telah menggunakan GeoEstate. Sampai jumpa lagi!")
+            input("Tekan ENTER untuk kembali ke halaman awal...")
+            print("\n" * 25)
+            return
         elif pilihan == 'i':  # I = Informasi
             info()
         elif pilihan == 'u':  # U = Ulasan
-            buyer_review(username)
+            user_review(username)
+        elif pilihan == 'c':  # C = Chat
+            menu_chat(username)
         elif pilihan == 'f':  # F = Feedback
-            role = "pembeli"
-            collect_feedback(username, role)
-        elif pilihan  == 'c':
-            cari = input("Masukkan kata kunci lokasi atau nama properti: ").lower()
-            
-            hasil_cari = [item for item in semua_properti if cari in item['nama'].lower() or cari in item['lokasi'].lower()]
-            
-            print("\n=== Hasil Pencarian ===")
-            if not hasil_cari:
-                print("Tidak ada properti yang sesuai dengan pencarian Anda.")
-            else:
-                for p in hasil_cari:
-                    harga_txt = f"Rp {int(p['harga']):,}"
-                    print(f" +--------------------------------------+")
-                    print(f" | 🏠 {p['nama']:<32} |")
-                    print(f" | 📍 {p['lokasi']:<32} |")
-                    print(f" | 💰 {harga_txt:<20} {p['kategori']:>11} |")
-                    print(f" | ID: {p['id']} {' '*26}|")
-                    print(f" +--------------------------------------+")
-            input("Tekan ENTER untuk kembali...")
-            
+            collect_feedback(username, 'user')
+        elif pilihan == 'm':  # M = Merchant
+            merchant_registration_menu(username)
+        elif pilihan == 'w':  # W = Wishlist
+            menu_wishlist(username)
+        elif pilihan  == 's': # S = Cari Properti
+            cari_properti(username)
 
         else:
           
