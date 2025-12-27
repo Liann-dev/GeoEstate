@@ -13,13 +13,13 @@ def login():
     while kesempatan > 0:
         print(f"\n--- Login GeoEstate ---")
 
-        login_input = input("Masukkan Username atau Email (ENTER untuk batal): ").strip()
-        if login_input == "":
-            return None
+        login_input = input("Masukkan Username atau Email: ").strip()
+        password = input("Masukkan Password: ").strip()
 
-        password = input("Masukkan Password (ENTER untuk batal): ").strip()
-        if password == "":
-            return None
+        # Validasi jika input kosong agar tidak langsung mengurangi kesempatan
+        if login_input == "" or password == "":
+            print("Username/Email dan Password tidak boleh kosong!")
+            continue
 
         user_found = None
         with open(FILE_USERS, mode='r', newline='') as file:
@@ -29,20 +29,25 @@ def login():
                     user_found = user
                     break
 
+        # Cek jika username tidak ditemukan
         if not user_found:
             kesempatan -= 1
             print(f"Username atau Email salah. Kesempatan tersisa: {kesempatan}\n")
+            if kesempatan == 0: break
             continue
 
+        # Cek jika password salah
         if user_found["password"] != password:
             kesempatan -= 1
             print(f"Password salah. Kesempatan tersisa: {kesempatan}\n")
+            if kesempatan == 0: break
             continue
 
         # Login berhasil
         print(f"\nLogin berhasil. Selamat datang {user_found['username']}!")
         return user_found
 
-    print("Login gagal. Silakan coba lagi nanti.")
+    # Hanya bisa sampai ke sini jika kesempatan sudah 0 (sudah mengisi tapi salah)
+    print("Login gagal. Jatah percobaan Anda telah habis.")
     input("Tekan ENTER untuk kembali ke halaman awal...")
     return None
