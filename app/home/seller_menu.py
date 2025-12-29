@@ -56,13 +56,21 @@ def tambah_properti(username):
 
         break
     
-    # Generate ID
+    # Generate ID (ambil ID terbesar + 1)
     new_id = 1
+
     if os.path.exists(FILE_PROPERTI):
-        with open(FILE_PROPERTI, mode='r', newline='') as file:
-            reader = list(csv.reader(file))
-            if len(reader) > 1:
-                new_id = len(reader)
+        with open(FILE_PROPERTI, mode='r', newline='', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            ids = []
+
+            for row in reader:
+                if row.get("id") and row["id"].isdigit():
+                    ids.append(int(row["id"]))
+
+            if ids:
+                new_id = max(ids) + 1
+
 
     data_baru = {
         "id": str(new_id),
@@ -71,13 +79,14 @@ def tambah_properti(username):
         "lokasi": lokasi,
         "harga": harga,
         "penjual": username,
-        "doc_verified": "False"
+        "doc_verified": "False",
+        "tersedia" : "True"
     }
 
     with open(FILE_PROPERTI, mode='a', newline='') as file:
         writer = csv.DictWriter(
             file,
-            fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "doc_verified"]
+            fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "doc_verified", "tersedia"]
         )
         if file.tell() == 0:
             writer.writeheader()
