@@ -35,7 +35,7 @@ def main():
                 if user['role'] == 'user':
                     input("Tekan ENTER untuk masuk...")
                     home_user(user['username'])
-                elif user['role'] == 'merchant':
+                elif user['role'] == 'seller':
                     input("Tekan ENTER untuk masuk...")
                     home_merchant(user['username'])
                 elif user['role'] == 'admin':

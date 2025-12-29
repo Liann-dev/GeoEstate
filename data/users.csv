@@ -1,9 +1,9 @@
 username,email,password,role,user_verified
 azzurisulthan,azzuri@gmail.com,Azzuri123,user,False
-Naufal,naufal@gmail.com,Naufal123,merchant,False
-Adi,adisn@gmail.com,adi1234#,merchant,False
+Naufal,naufal@gmail.com,Naufal123,seller,False
+Adi,adisn@gmail.com,adi1234#,seller,False
 Testing,test@gmail.com,testing1,user,False
-LianDev,lian@gmail.com,Lian123,merchant,False
+LianDev,lian@gmail.com,Lian123,seller,False
 Adit,adit@yahoo.com,adit1234,user,False
 Admin,admin@gmail.com,admin1234,admin,True
 Lian123,Lian@gmail.com,Lian12345,user,False
