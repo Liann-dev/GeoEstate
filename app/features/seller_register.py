@@ -80,6 +80,7 @@ def seller_registration_menu(current_user):
         for row in reader:
             existing_ids.append(row["reg_id"])
             if row["username"] == current_user:
+               
                 print("Anda sudah mengajukan pendaftaran seller.\n")
                 input("Tekan ENTER untuk kembali...")
                 return
