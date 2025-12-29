@@ -2,7 +2,7 @@ import csv
 import os
 
 USERS_FILE = "data/users.csv"
-MERCH_FILE = "data/sellreg.csv"
+SELLER_FILE = "data/sellreg.csv"
 WITHDRAW_FILE = "data/selldraw.csv"
 
 def read_csv(file_path):
@@ -28,10 +28,10 @@ def write_csv(file_path, fieldnames, data):
 def tampilkan_daftar_seller():
     users = read_csv(USERS_FILE)
 
-    merchants = [u for u in users if u.get("role") == "merchant"]
+    seller = [u for u in users if u.get("role") == "merchant"]
 
-    if not merchants:
-        print("Belum ada user dengan role merchant.\n")
+    if not seller:
+        print("Belum ada user dengan role seller.\n")
         return
 
     print("\n=== Daftar User Merchant ===")
@@ -39,7 +39,7 @@ def tampilkan_daftar_seller():
     print(f"{'No':<5}{'Username':<20}{'Email':<30}{'Verified User'}")
     print("-" * 70)
 
-    for i, user in enumerate(merchants, start=1):
+    for i, user in enumerate(seller, start=1):
         print(
             f"{i:<5}"
             f"{user.get('username', ''):<20}"
@@ -58,10 +58,10 @@ def tampilkan_daftar_seller():
 
 def tampilkan_sellreg(data):
     if not data:
-        print("Belum ada pendaftaran merchant.\n")
+        print("Belum ada pendaftaran seller.\n")
         return
 
-    print("\n=== Daftar Pendaftaran Merchant ===")
+    print("\n=== Daftar Pendaftaran Seller ===")
     print("-" * 90)
     print(f"{'REG ID':<12}{'Username':<15}{'Email':<30}{'Status':<10}")
     print("-" * 90)
@@ -85,7 +85,7 @@ def update_user_role(username, new_role):
     )
 
 def verifikasi_seller():
-    data = read_csv(MERCH_FILE)
+    data = read_csv(SELLER_FILE)
     tampilkan_sellreg(data)
 
     if not data:
@@ -106,13 +106,13 @@ def verifikasi_seller():
 
             if keputusan == "y":
                 row["status"] = "approved"
-                update_user_role(row["username"], "merchant")
-                print("Merchant diterima.\n")
+                update_user_role(row["username"], "seller")
+                print("Seller diterima.\n")
                 input(f"Tekan ENTER untuk kembali...\n")
 
             elif keputusan == "n":
                 row["status"] = "rejected"
-                print("Merchant ditolak.\n")
+                print("Seller ditolak.\n")
                 input(f"Tekan ENTER untuk kembali...\n")
 
             else:
@@ -121,7 +121,7 @@ def verifikasi_seller():
                 return
 
             write_csv(
-                MERCH_FILE,
+                SELLER_FILE,
                 ["reg_id", "username", "email", "reason", "status"],
                 data
             )
@@ -198,10 +198,10 @@ def verifikasi_withdraw():
 def menu_kelola_seller():
     while True:
         print("""
-=== Menu Pengelolaan Merchant ===
-1. Lihat Daftar Merchant
-2. Verifikasi Pendaftaran Merchant
-3. Data Pengunduran Diri Merchant
+=== Menu Pengelolaan Seller ===
+1. Lihat Daftar Seller
+2. Verifikasi Pendaftaran Seller
+3. Data Pengunduran Diri Seller
 4. Kembali           
 """)
 

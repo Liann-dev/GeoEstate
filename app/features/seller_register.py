@@ -2,7 +2,7 @@ import csv
 import os
 import random
 
-MERCHANT_REG_FILE = "data/sellreg.csv"
+SELLER_REG_FILE = "data/sellreg.csv"
 USERS_FILE = "data/users.csv"
 
 def get_user_by_username(username):
@@ -14,8 +14,8 @@ def get_user_by_username(username):
     return None
 
 def init_merchreg_file():
-    if not os.path.exists(MERCHANT_REG_FILE):
-        with open(MERCHANT_REG_FILE, mode="w", newline="") as file:
+    if not os.path.exists(SELLER_REG_FILE):
+        with open(SELLER_REG_FILE, mode="w", newline="") as file:
             writer = csv.writer(file)
             writer.writerow(["reg_id", "username", "email", "reason", "status"])
 
@@ -68,25 +68,25 @@ def seller_registration_menu(current_user):
 
     # === ALASAN ===
     while True:
-        reason = input("Alasan mendaftar sebagai merchant (Tekan ENTER untuk membatalkan): ").strip()
+        reason = input("Alasan mendaftar sebagai seller (Tekan ENTER untuk membatalkan): ").strip()
         if not reason:
             return
         break
 
     # === CEK SUDAH DAFTAR ===
     existing_ids = []
-    with open(MERCHANT_REG_FILE, mode="r", newline="") as file:
+    with open(SELLER_REG_FILE, mode="r", newline="") as file:
         reader = csv.DictReader(file)
         for row in reader:
             existing_ids.append(row["reg_id"])
             if row["username"] == current_user:
-                print("Anda sudah mengajukan pendaftaran merchant.\n")
+                print("Anda sudah mengajukan pendaftaran seller.\n")
                 input("Tekan ENTER untuk kembali...")
                 return
 
     reg_id = generate_reg_id(existing_ids)
 
-    with open(MERCHANT_REG_FILE, mode="a", newline="") as file:
+    with open(SELLER_REG_FILE, mode="a", newline="") as file:
         writer = csv.writer(file)
         writer.writerow([reg_id, current_user, email, reason, "pending"])
 
