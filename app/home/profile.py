@@ -63,7 +63,7 @@ def informasi_pribadi(username):
         for row in reader:
             print()
             print("=" * 40)
-            print("        KARTU TANDA PENDUDUK")
+            print("        INFORMASI PRIBADI USER")
             print("=" * 40)
             print(f"NIK               : {row['nik']}")
             print(f"Nama              : {row['nama_lengkap']}")
