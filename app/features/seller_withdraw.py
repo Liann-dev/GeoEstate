@@ -33,7 +33,7 @@ def seller_withdraw_menu(current_user):
         print("Data user tidak ditemukan.\n")
         return
 
-    print("\n=== Pengunduran Diri seller ===")
+    print("\n=== Pengunduran Diri Seller ===")
 
     # === EMAIL ===
     while True:
