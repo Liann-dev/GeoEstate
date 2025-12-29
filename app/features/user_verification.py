@@ -17,7 +17,7 @@ def tampilkan_user():
     print("-" * 85)
 
     for user in data:
-        status = "Ya" if user['user_verified'] == "True" else "Tidak"
+        status = "Ya" if user['user_verified'] == "true" else "Tidak"
         print(f"{user['username']:<15}{user['email']:<30}{user['role']:<15}{status:<10}")
 
     print("-" * 85)
@@ -31,12 +31,12 @@ def verifikasi_user(cari):
         for row in reader:
             if row['username'] == cari:
                 ditemukan = True
-                if row['user_verified'] == "True":
+                if row['user_verified'] == "true":
                     print("User sudah terverifikasi.\n")
                     input("Tekan ENTER untuk kembali...")
                     return
                 else:
-                    row['user_verified'] = "True"
+                    row['user_verified'] = "true"
             users.append(row)
 
     if not ditemukan:
@@ -61,12 +61,12 @@ def hapus_verifikasi_user(cari):
         for row in reader:
             if row['username'] == cari:
                 ditemukan = True
-                if row['user_verified'] == "False":
+                if row['user_verified'] == "false":
                     print("User memang belum terverifikasi.\n")
                     input("Tekan ENTER untuk kembali...")
                     return
                 else:
-                    row['user_verified'] = "False"
+                    row['user_verified'] = "false"
             users.append(row)
 
     if not ditemukan:
