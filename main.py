@@ -52,6 +52,7 @@ def main():
             input("Tekan ENTER untuk kembali ke halaman awal...")
 
 
+
 if __name__ == "__main__":
     loading()
     main()
