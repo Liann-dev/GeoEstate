@@ -29,7 +29,10 @@ def hapus_transaksi(username, id_transaksi):
                     and row['penjual'] == username
                 ):
                     milik_user = True
-
+    if row['status'] == 'Menunggu Konfirmasi' or 'Pending / Menunggu':
+        print("Transaksi yang belum selesai tidak dapat dihapus")
+        return False
+    
     if not ditemukan:
         print("ID Transaksi tidak ditemukan.")
         return False
@@ -116,7 +119,7 @@ def history_transaksi(username):
         raw_status = trx['status']
         if raw_status == 'Berhasil':
             status_icon = "✅ Berhasil"
-        elif raw_status == 'Menunggu Konfirmasi':
+        elif raw_status == 'Menunggu Konfirmasi' or 'Pending / Menunggu':
             status_icon = "⏳ Menunggu"
         elif raw_status == 'Ditolak':
             status_icon = "❌ Ditolak"
@@ -139,7 +142,7 @@ def history_transaksi(username):
     while True:
         pilihan = input(">> Pilih opsi: ")
         if pilihan == '1':
-            id_pilih = input("Pilih ID Transaksi yang ingin dihapus [ENTER untuk batal]: ").strip()
+            id_pilih = input("Pilih ID Transaksi yang ingin dihapus (Tekan ENTER untuk kembali): ").strip()
             if not id_pilih:
                 return
             hapus_transaksi(username, id_pilih)

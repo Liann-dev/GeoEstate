@@ -5,8 +5,8 @@ from app.home.profile import profile
 from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
-from app.home.merchant_menu import merchant_menu
-from app.home.review_buyer import buyer_review
+from app.home.seller_menu import seller_menu
+from app.home.review_user import user_review
 from app.features.chat import menu_chat
 from app.features.cari_properti import cari_properti
 from app.features.wishlist import menu_wishlist
@@ -25,7 +25,7 @@ def load_properties():
                 data.append(row)
     return data
 
-def home_merchant(username):
+def home_seller(username):
     while True:
         semua_properti = load_properties()
         
@@ -63,7 +63,8 @@ def home_merchant(username):
         print(" [U] Ulasan Properti (Review)")
         print(" [F] Feedback")
         print(" [W] Wishlist")
-        print(" [M] Menu Merchant")
+        print(" [M] Menu Seller")
+        print(" [V] Ajukan Verifikasi User")
         print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
@@ -85,15 +86,15 @@ def home_merchant(username):
         elif pilihan == 'i':  # I = Informasi
             info()
         elif pilihan == 'u':  # U = Ulasan
-            buyer_review(username)
+            user_review(username)
         elif pilihan == 'c':  # C = Chat
             menu_chat(username)
         elif pilihan == 'f':  # F = Feedback
-            collect_feedback(username, 'merchant')
+            collect_feedback(username, 'seller')
         elif pilihan == 'w':  # W = Wishlist
             menu_wishlist(username)
-        elif pilihan == 'm':  # M = Merchant
-            merchant_menu(username)
+        elif pilihan == 'm':  # M = seller
+            seller_menu(username)
         elif pilihan  == 's': # S = Cari Properti
             cari_properti(username)
             

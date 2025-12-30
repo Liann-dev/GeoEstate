@@ -11,7 +11,7 @@ def register():
     if not os.path.exists(FILE_USERS):
         with open(FILE_USERS, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["username", "email", "password", "role", "verified"])
+            writer.writerow(["username", "email", "password", "role", "user_verified"])
 
     # Input username
     while True:
@@ -97,7 +97,7 @@ def register():
     # Simpan ke CSV
     with open(FILE_USERS, mode='a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([username, email, password, role, False])
+        writer.writerow([username, email, password, role, "false"])
 
     print(f"\nRegister berhasil!")
     input("Tekan ENTER untuk kembali ke halaman awal...")

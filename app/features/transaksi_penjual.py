@@ -84,7 +84,10 @@ def update_status_pesanan(penjual_login):
         return
 
     print("\n--- Update Status Pesanan ---")
-    id_input = input("Masukkan ID Transaksi (contoh: GES-1234): ")
+    id_input = input("Masukkan ID Transaksi (contoh: GES-1234) (Tekan ENTER untuk kembali): ")
+    
+    if not id_input:
+        return
     
     semua_data = baca_data_csv()
     found = False
@@ -104,6 +107,11 @@ def update_status_pesanan(penjual_login):
                 print(f"\n>> Transaksi ini sudah berstatus '{row['status']}'.")
                 print(">> Status final tidak dapat diubah kembali.")
                 return
+
+            if row['status'] in ["Pending / Menunggu"]:
+                print(f"\n>> Transaksi ini sudah berstatus '{row['status']}'.")
+                print(">> Silahkan ubah status menjadi 'Lunas / Selesai' ATAU 'Dibatalkan' untuk memproses pesanan.")
+                return
         
             print(f"\nItem Ditemukan: {row['nama_properti']}")
             print(f"Pembeli       : {row['username_pembeli']}")
@@ -122,7 +130,7 @@ def update_status_pesanan(penjual_login):
             elif pilihan == "2":
                 status_baru = "Dibatalkan"
             elif pilihan == "3":
-                status_baru = "Menunggu Konfirmasi"
+                status_baru = "Pending / Menunggu"
             else:
                 print(">> Pilihan tidak valid. Batal update.")
                 return

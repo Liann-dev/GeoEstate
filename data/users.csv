@@ -1,4 +1,5 @@
 username,email,password,role,user_verified
+<<<<<<< HEAD
 azzurisulthan,azzuri@gmail.com,Azzuri123,user,False
 Naufal,naufal@gmail.com,Naufal123,user,False
 Adi,adisn@gmail.com,adi1234#,merchant,False
@@ -8,3 +9,14 @@ Adit,adit@yahoo.com,adit1234,user,False
 Admin,admin@gmail.com,admin1234,admin,True
 sd,asd@a.a,sdas1234,user,False
 Lian,berliandamputra@gmail.com,Xonica123,user,True
+=======
+azzurisulthan,azzuri@gmail.com,Azzuri123,user,false
+Naufal,naufal@gmail.com,Naufal123,seller,false
+Adi,adisn@gmail.com,adi1234#,seller,false
+Testing,test@gmail.com,testing1,user,false
+LianDev,lian@gmail.com,Lian123,seller,false
+Adit,adit@yahoo.com,adit1234,user,false
+Admin,admin@gmail.com,admin1234,admin,true
+Lian123,Lian@gmail.com,Lian12345,seller,false
+LianDevelop,Liian@gmail.com,Lian12345,admin,false
+>>>>>>> 088b663707cf6c40ac906bdfa38a7c4aeae4c715

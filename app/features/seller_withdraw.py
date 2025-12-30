@@ -2,7 +2,7 @@ import csv
 import os
 import random
 
-WITHDRAW_FILE = "data/merchdraw.csv"
+WITHDRAW_FILE = "data/selldraw.csv"
 USERS_FILE = "data/users.csv"
 
 def get_user_by_username(username):
@@ -25,7 +25,7 @@ def generate_wd_id(existing_ids):
         if wd_id not in existing_ids:
             return wd_id
 
-def merchant_withdraw_menu(current_user):
+def seller_withdraw_menu(current_user):
     init_withdraw_file()
     
     user_data = get_user_by_username(current_user)
@@ -33,7 +33,7 @@ def merchant_withdraw_menu(current_user):
         print("Data user tidak ditemukan.\n")
         return
 
-    print("\n=== Pengunduran Diri Merchant ===")
+    print("\n=== Pengunduran Diri Seller ===")
 
     # === EMAIL ===
     while True:
@@ -88,7 +88,7 @@ def merchant_withdraw_menu(current_user):
 
     with open(WITHDRAW_FILE, mode="a", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow([wd_id, current_user, email, password, reason, "pending"])
+        writer.writerow([wd_id, current_user, email, reason, "pending"])
 
     print("\nPengajuan pengunduran diri berhasil.")
     print(f"ID Pengajuan: {wd_id}")
