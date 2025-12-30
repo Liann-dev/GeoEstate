@@ -1,4 +1,4 @@
-from app.auth.login import login
+from app.auth.login import login_admin
 from app.home.admin_menu import admin_menu
 
 from app.Utils.padding import pad_center as centerpadding
@@ -14,15 +14,16 @@ def main_admin():
         pilihan = input(centerpadding("Pilih opsi (1/2): "))
 
         if pilihan == "1":
-            user = login()
+            user = login_admin()
             if not user:
                 continue
 
             if user["role"] != "admin":
-                print("❌ Akses ditolak. Ini khusus ADMIN.")
+                print("\n❌ Akses ditolak. Ini khusus ADMIN.")
                 input("Tekan ENTER...")
                 continue
-
+            
+            print("\nLogin berhasil!")
             input("Tekan ENTER untuk masuk Admin Panel...")
             admin_menu(user["username"])
 

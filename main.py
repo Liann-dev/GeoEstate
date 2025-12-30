@@ -37,6 +37,8 @@ def main():
                 elif user['role'] == 'seller':
                     input("Tekan ENTER untuk masuk...")
                     home_seller(user['username'])
+                elif user['role'] == 'admin':
+                    return
 
         # =====================
         # EXIT
