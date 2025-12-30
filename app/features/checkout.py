@@ -53,4 +53,6 @@ def checkout(username, p):
 
     print("\n✅ Booking berhasil!")
     print("📌 Status: Menunggu Konfirmasi")
-    time.sleep(2)
+    while True:
+        input("Tekan ENTER untuk kembali...")
+        break
