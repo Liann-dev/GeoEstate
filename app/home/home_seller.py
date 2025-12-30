@@ -25,7 +25,7 @@ def load_properties():
                 data.append(row)
     return data
 
-def home_merchant(username):
+def home_seller(username):
     while True:
         semua_properti = load_properties()
         
