@@ -5,6 +5,20 @@ from datetime import datetime
 FILE_TRANSAKSI = "data/transaksi.csv"
 FILE_PROPERTI = "data/properti.csv"
 FILE_RIWAYAT = "data/properti_dimiliki.csv"
+FILE_SCHEDULE = "data/booking_schedule.csv"
+
+def get_schedule_by_transaksi(id_transaksi):
+    if not os.path.exists(FILE_SCHEDULE):
+        return "-"
+
+    with open(FILE_SCHEDULE, mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row['id_transaksi'] == id_transaksi:
+                return row['schedule']
+
+    return "-"
+
 
 def sedang_dalam_transaksi(username, id_properti):
     if not os.path.exists(FILE_TRANSAKSI):
@@ -57,7 +71,10 @@ def tampilkan_pesanan(penjual_login):
        
         return [] 
 
-    header = f"| {'ID Trx':<10} | {'Pembeli':<15} | {'Properti':<20} | {'Harga':<20} | {'Status':<20} |"
+    header = (
+    f"| {'ID Trx':<10} | {'Pembeli':<15} | {'Properti':<20} | "
+    f"{'Tanggal Pesan':<19} | {'Jadwal':<12} | {'Harga':<20} | {'Status':<20} |"
+    )
     lebar_tabel = len(header)
 
     print_separator(lebar_tabel)
@@ -68,11 +85,21 @@ def tampilkan_pesanan(penjual_login):
         try:
             harga_int = int(t['harga'])
             harga_fmt = f"Rp {harga_int:,}".replace(",", ".")
+            jadwal = get_schedule_by_transaksi(t['id_transaksi'])
+            tanggal_pesan = t.get("tanggal", "-")
         except ValueError:
             harga_fmt = t['harga']
 
-        print(f"| {t['id_transaksi']:<10} | {t['username_pembeli']:<15} | {t['nama_properti'][:20]:<20} | {harga_fmt:<20} | {t['status']:<20} |")
-    
+        print(
+    f"| {t['id_transaksi']:<10} | "
+    f"{t['username_pembeli']:<15} | "
+    f"{t['nama_properti'][:20]:<20} | "
+    f"{tanggal_pesan:<19} | "
+    f"{jadwal:<12} | "
+    f"{harga_fmt:<20} | "
+    f"{t['status']:<20} |"
+    )
+
     print_separator(lebar_tabel)
     
     return transaksi_milik_penjual

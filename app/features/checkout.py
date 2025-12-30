@@ -1,32 +1,44 @@
 import csv
 import os
 import uuid
-import time
+import random
 from datetime import datetime
 
 TRANSAKSI_FILE = "data/transaksi.csv"
+SCHEDULE_FILE = "data/booking_schedule.csv"
+
+
+def input_schedule():
+    while True:
+        schedule = input("Masukkan jadwal (YYYY-MM-DD): ").strip()
+        try:
+            return datetime.strptime(schedule, "%Y-%m-%d").date()
+        except ValueError:
+            print("❌ Format tanggal salah. Contoh: 2025-01-10")
 
 
 def checkout(username, p):
     print("\n=== BOOKING PROPERTI ===")
 
     harga = p.get("harga", 0)
-    penjual = p.get("penjual", "Naufal")  # sementara / default
+    penjual = p.get("penjual", "Naufal")  # sementara
 
     print(f"Properti : {p['nama']}")
     print(f"Harga    : Rp {harga}")
 
+    # ================= INPUT SCHEDULE =================
+    schedule = input_schedule()
+
     tanggal_booking = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    id_transaksi = f"GES-{random.randint(1000, 9999)}"
 
-    id_transaksi = str(uuid.uuid4())[:8]
-
-    file_exists = os.path.exists(TRANSAKSI_FILE)
+    # ================= SIMPAN TRANSAKSI =================
+    transaksi_exists = os.path.exists(TRANSAKSI_FILE)
 
     with open(TRANSAKSI_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
 
-        # HEADER HARUS SAMA PERSIS
-        if not file_exists:
+        if not transaksi_exists:
             writer.writerow([
                 "id_transaksi",
                 "username_pembeli",
@@ -41,17 +53,35 @@ def checkout(username, p):
 
         writer.writerow([
             id_transaksi,
-            username,           # username_pembeli
-            penjual,            # penjual
-            p["id"],            # id_properti
-            p["nama"],          # nama_properti
+            username,
+            penjual,
+            p["id"],
+            p["nama"],
             harga,
-            tanggal_booking,    # tanggal
-            "Booking Properti", # transaksi
+            tanggal_booking,
+            "booking",
             "Menunggu Konfirmasi"
         ])
 
+    # ================= SIMPAN SCHEDULE =================
+    schedule_exists = os.path.exists(SCHEDULE_FILE)
+
+    with open(SCHEDULE_FILE, "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+
+        if not schedule_exists:
+            writer.writerow([
+                "id_transaksi",
+                "schedule"
+            ])
+
+        writer.writerow([
+            id_transaksi,
+            schedule.strftime("%Y-%m-%d")
+        ])
+
     print("\n✅ Booking berhasil!")
+    print(f"📅 Jadwal: {schedule}")
     print("📌 Status: Menunggu Konfirmasi")
     while True:
         input("Tekan ENTER untuk kembali...")
