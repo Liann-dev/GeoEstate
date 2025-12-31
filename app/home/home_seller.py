@@ -1,6 +1,5 @@
 import csv
 import os
-from app.home.about import about
 from app.home.profile import profile
 from app.home.properties import pilih_properti
 from app.home.information import info
@@ -8,7 +7,6 @@ from app.home.detail_properti import detail_properti
 from app.home.seller_menu import seller_menu
 from app.home.review_user import user_review
 from app.features.chat import menu_chat
-from app.features.cari_properti import cari_properti
 from app.features.wishlist import menu_wishlist
 from app.features.feedback import collect_feedback
 
@@ -56,9 +54,7 @@ def home_seller(username):
   
         print(" [L] Lihat Semua Properti")
         print(" [P] Profil Saya")
-        print(" [T] Tentang GeoEstate")
         print(" [I] Informasi Umum")
-        print(" [S] Cari Properti")
         print(" [C] Kirim Pesan (Chat)")
         print(" [U] Ulasan Properti (Review)")
         print(" [F] Feedback")
@@ -76,8 +72,6 @@ def home_seller(username):
             pilih_properti(username)
         elif pilihan == 'p':  # P = Profil
             profile(username)
-        elif pilihan == 't':  # T = Tentang
-            about()
         elif pilihan == 'k':  # K = Keluar
             print("\nTerima kasih telah menggunakan GeoEstate. Sampai jumpa lagi!")
             input("Tekan ENTER untuk kembali ke halaman awal...")
@@ -95,8 +89,6 @@ def home_seller(username):
             menu_wishlist(username)
         elif pilihan == 'm':  # M = seller
             seller_menu(username)
-        elif pilihan  == 's': # S = Cari Properti
-            cari_properti(username)
             
         else:
           

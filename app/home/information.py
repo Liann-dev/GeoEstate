@@ -4,7 +4,7 @@ def info():
     while True:
         print("""Apa yang ingin kamu ketahui?
 
-    1) GeoEstate secara umum
+    1) Tentang GeoEstate
     2) Sistem transaksi GeoEstate
     3) Fitur yang ditawarkan GeoEstate
     4) Pihak yang terlibat
@@ -23,7 +23,9 @@ def info():
             continue
 
         if P == 1:
-            print("\nGeoEstate adalah aplikasi berbasis web untuk jual beli real estate secara digital.")
+            print("GeoEstate adalah platform jual beli properti berbasis digital.")
+            print("Kami memudahkan pengguna untuk mencari properti impian dengan fitur pemetaan geografis, filter lokasi, dan informasi lengkap.")
+            print("GeoEstate hadir untuk menciptakan pengalaman transaksi properti yang lebih transparan, cepat, dan aman.\n")
         elif P == 2:
             print("\nTransaksi finansial dilakukan langsung antara pembeli dan penjual di luar sistem GeoEstate.")
         elif P == 3:
