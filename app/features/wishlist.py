@@ -137,7 +137,7 @@ def tambah_ke_wishlist(username, id_properti):
     print("\n✅ Properti berhasil disimpan ke Wishlist!")
     input("Tekan ENTER untuk kembali...\n")
 
-def lihat_wishlist_gue(username):
+def lihat_wishlist(username):
     list_wishlist = muat_csv()
 
     id_milik_gue = [
@@ -222,40 +222,16 @@ def menu_wishlist(username):
         print(f"""
 === MENU WISHLIST ({username}) ===
 1. Lihat Wishlist
-2. Tambah Properti ke Wishlist
-3. Hapus Properti dari Wishlist
+2. Hapus Properti dari Wishlist
 ("Tekan ENTER untuk kembali...\n")
 """)
         pilihan = input("Pilih menu (1-4): ")
 
         if pilihan == "1":
-            lihat_wishlist_gue(username)
+            lihat_wishlist(username)
             input("Tekan ENTER untuk kembali...\n")
 
         elif pilihan == "2":
-            properti_tersedia = lihat_properti_alt(username)
-            if not properti_tersedia:
-                continue
-
-            id_properti = input("Masukkan ID Properti yang ingin ditambahkan ke Wishlist [ENTER untuk batal]: ").strip()
-            if not id_properti:
-                continue
-
-            # Validasi ID harus ada & tersedia
-            valid = next((p for p in properti_tersedia if p['id'] == id_properti), None)
-            if not valid:
-                print("\n❌ ID Properti tidak ditemukan.")
-                input("Tekan ENTER untuk kembali...\n")
-                continue
-
-            if cek_status_love(username, id_properti):
-                print("\nProperti ini sudah ada di Wishlist Anda!")
-                input("Tekan ENTER...\n")
-            else:
-                tambah_ke_wishlist(username, id_properti)
-
-
-        elif pilihan == "3":
 
             # 🚫 Wishlist masih kosong
             if wishlist_kosong(username):
@@ -264,7 +240,7 @@ def menu_wishlist(username):
                 input("Tekan ENTER untuk kembali...\n")
                 continue
 
-            lihat_wishlist_gue(username)
+            lihat_wishlist(username)
 
             if wishlist_kosong(username):
                 print("\n--- Wishlist Anda Masih Kosong ---")
