@@ -3,6 +3,7 @@ import os
 import time
 from app.home.history_transaksi import history_transaksi
 from app.home.jual_properti import jual_kembali_properti
+from app.features.seller_register import seller_registration_menu
 
 FILE_USERS = "data/users.csv"
 FILE_RIWAYAT = "data/properti_dimiliki.csv"
@@ -113,9 +114,11 @@ def profile(username):
         print(" [H] History Transaksi")
         print(" [K] Keamanan dan Password")
         print(" [P] Properti Saya (Dimiliki)")
+        print(" [M] Daftar Sebagai Seller")
+        print(" [V] Ajukan Verifikasi User")
         print(" [B] Kembali")
 
-        pilihan = input("Pilih menu (I/H/K/P/B): ").lower()
+        pilihan = input("Pilih menu (I/H/K/P/M/V/B): ").lower()
         if pilihan  == "i":
             informasi_pribadi(username)
             continue
@@ -128,6 +131,9 @@ def profile(username):
             continue
         elif pilihan == "p":
             properti_saya(username)
+            continue
+        elif pilihan == 'm':  # M = Seller
+            seller_registration_menu(username)
             continue
         elif pilihan == "b":
             break

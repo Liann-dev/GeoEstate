@@ -4,11 +4,10 @@ from app.home.profile import profile
 from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
-from app.home.review_user import user_review
+from app.home.review_user import  history_transaksi
 from app.features.feedback import collect_feedback
 from app.features.chat import menu_chat
 from app.features.wishlist import menu_wishlist
-from app.features.seller_register import seller_registration_menu
 
 
 FILE_PROPERTI = 'data/properti.csv'
@@ -55,11 +54,9 @@ def home_user(username):
         print(" [P] Profil Saya")
         print(" [I] Informasi Umum")
         print(" [C] Kirim Pesan (Chat)")
-        print(" [U] Ulasan Properti (Review)")
+        print(" [H] Histori")
         print(" [F] Feedback")
         print(" [W] Wishlist")
-        print(" [M] Daftarkan Sebagai Seller")
-        print(" [V] Ajukan Verifikasi User")
         print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
@@ -78,14 +75,12 @@ def home_user(username):
             return
         elif pilihan == 'i':  # I = Informasi
             info()
-        elif pilihan == 'u':  # U = Ulasan
-            user_review(username)
+        elif pilihan == 'h':  # U = Ulasan
+            history_transaksi(username)
         elif pilihan == 'c':  # C = Chat
             menu_chat(username)
         elif pilihan == 'f':  # F = Feedback
             collect_feedback(username, 'user')
-        elif pilihan == 'm':  # M = Seller
-            seller_registration_menu(username)
         elif pilihan == 'w':  # W = Wishlist
             menu_wishlist(username)
 
