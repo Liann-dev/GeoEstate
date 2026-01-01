@@ -13,7 +13,11 @@ def login():
     while kesempatan > 0:
         print(f"\n--- Login GeoEstate ---")
 
-        login_input = input("Masukkan Username atau Email: ").strip()
+        login_input = input("Masukkan Username atau Email (ENTER untuk batal): ").strip()
+
+        if not login_input:
+            return
+        
         password = input("Masukkan Password: ").strip()
 
         # Validasi jika input kosong agar tidak langsung mengurangi kesempatan
