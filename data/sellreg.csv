@@ -1,8 +1,5 @@
 reg_id,username,email,reason,status
 REG-7705,Adit,adit@yahoo.com,Semangat,approved
 REG-6448,Adi,adisn@gmail.com,Mau jadi Elon Musk,approved
-<<<<<<< HEAD:data/merchreg.csv
 REG-7031,Lian,berliandamputra@gmail.com,Xonica123,adadsadawadas,pending
-=======
 REG-1647,Lian123,Lian@gmail.com,Cihuy,approved
->>>>>>> 088b663707cf6c40ac906bdfa38a7c4aeae4c715:data/sellreg.csv
