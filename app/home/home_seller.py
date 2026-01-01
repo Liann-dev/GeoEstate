@@ -1,14 +1,12 @@
 import csv
 import os
-from app.home.about import about
 from app.home.profile import profile
 from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
 from app.home.seller_menu import seller_menu
-from app.home.review_user import user_review
+from app.home.review_seller import seller_review
 from app.features.chat import menu_chat
-from app.features.cari_properti import cari_properti
 from app.features.wishlist import menu_wishlist
 from app.features.feedback import collect_feedback
 
@@ -25,7 +23,7 @@ def load_properties():
                 data.append(row)
     return data
 
-def home_merchant(username):
+def home_seller(username):
     while True:
         semua_properti = load_properties()
         
@@ -56,15 +54,12 @@ def home_merchant(username):
   
         print(" [L] Lihat Semua Properti")
         print(" [P] Profil Saya")
-        print(" [T] Tentang GeoEstate")
         print(" [I] Informasi Umum")
-        print(" [S] Cari Properti")
         print(" [C] Kirim Pesan (Chat)")
-        print(" [U] Ulasan Properti (Review)")
+        print(" [U] Ulasan Saya")
         print(" [F] Feedback")
         print(" [W] Wishlist")
         print(" [M] Menu Seller")
-        print(" [V] Ajukan Verifikasi User")
         print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
@@ -76,8 +71,6 @@ def home_merchant(username):
             pilih_properti(username)
         elif pilihan == 'p':  # P = Profil
             profile(username)
-        elif pilihan == 't':  # T = Tentang
-            about()
         elif pilihan == 'k':  # K = Keluar
             print("\nTerima kasih telah menggunakan GeoEstate. Sampai jumpa lagi!")
             input("Tekan ENTER untuk kembali ke halaman awal...")
@@ -86,7 +79,7 @@ def home_merchant(username):
         elif pilihan == 'i':  # I = Informasi
             info()
         elif pilihan == 'u':  # U = Ulasan
-            user_review(username)
+            seller_review(username)
         elif pilihan == 'c':  # C = Chat
             menu_chat(username)
         elif pilihan == 'f':  # F = Feedback
@@ -95,8 +88,6 @@ def home_merchant(username):
             menu_wishlist(username)
         elif pilihan == 'm':  # M = seller
             seller_menu(username)
-        elif pilihan  == 's': # S = Cari Properti
-            cari_properti(username)
             
         else:
           

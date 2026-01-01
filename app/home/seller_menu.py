@@ -4,7 +4,6 @@ import os
 
 from app.features.transaksi_penjual import menu_kelola_pesanan
 from app.home.review_seller import seller_review
-from app.features.seller_withdraw import seller_withdraw_menu
 
 FILE_PROPERTI = "data/properti.csv"
 
@@ -56,13 +55,21 @@ def tambah_properti(username):
 
         break
     
-    # Generate ID
+    # Generate ID (ambil ID terbesar + 1)
     new_id = 1
+
     if os.path.exists(FILE_PROPERTI):
-        with open(FILE_PROPERTI, mode='r', newline='') as file:
-            reader = list(csv.reader(file))
-            if len(reader) > 1:
-                new_id = len(reader)
+        with open(FILE_PROPERTI, mode='r', newline='', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            ids = []
+
+            for row in reader:
+                if row.get("id") and row["id"].isdigit():
+                    ids.append(int(row["id"]))
+
+            if ids:
+                new_id = max(ids) + 1
+
 
     data_baru = {
         "id": str(new_id),
@@ -71,13 +78,14 @@ def tambah_properti(username):
         "lokasi": lokasi,
         "harga": harga,
         "penjual": username,
-        "doc_verified": "False"
+        "doc_verified": "False",
+        "tersedia" : "True"
     }
 
     with open(FILE_PROPERTI, mode='a', newline='') as file:
         writer = csv.DictWriter(
             file,
-            fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "doc_verified"]
+            fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "doc_verified", "tersedia"]
         )
         if file.tell() == 0:
             writer.writeheader()
@@ -178,7 +186,7 @@ def hapus_properti_saya(username):
     input("Tekan ENTER untuk kembali...")
 
 def seller_menu(username):
-    print(f"\nHalo {username}, selamat datang di GeoEstate Merchant!")
+    print(f"\nHalo {username}, selamat datang di GeoEstate Seller!")
 
     if not os.path.exists("data"):
         os.makedirs("data")
@@ -192,14 +200,13 @@ def seller_menu(username):
             writer.writeheader()
 
     while True:
-        print("\n===== GeoEstate Menu Merchant =====")
+        print("\n===== GeoEstate Menu Seller =====")
         print("1. Tambah Properti Baru")
         print("2. Lihat Properti Saya")
         print("3. Hapus Properti Saya")
         print("4. Kelola Pesanan Masuk")  
         print("5. Lihat Ulasan Properti Saya")
-        print("6. Ajukan Pengunduran Diri Sebagai Merchant")
-        print("7. Kembali")
+        print("6. Kembali")
         print("==================================")
 
         pilihan = input("Pilih menu (1-6): ")
@@ -237,15 +244,9 @@ def seller_menu(username):
             seller_review(username)
 
         # =========================
-        # OPSI 6: UNDUR DIRI MERCHANT
+        # OPSI 6: KEMBALI
         # =========================
         elif pilihan == "6":
-            seller_withdraw_menu(username)
-
-        # =========================
-        # OPSI 7: KEMBALI
-        # =========================
-        elif pilihan == "7":
             print("Kembali ke menu utama...\n")
             break
 

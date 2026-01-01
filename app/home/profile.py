@@ -3,9 +3,11 @@ import os
 import time
 from app.home.history_transaksi import history_transaksi
 from app.home.jual_properti import jual_kembali_properti
+from app.features.seller_register import seller_registration_menu
 
 FILE_USERS = "data/users.csv"
 FILE_RIWAYAT = "data/properti_dimiliki.csv"
+FILE_BIODATA = "data/biodata.csv"
 
 def properti_saya(username):
     if not os.path.exists(FILE_RIWAYAT):
@@ -55,6 +57,33 @@ def properti_saya(username):
         input("Tekan ENTER untuk kembali...")
         return
 
+def informasi_pribadi(username):
+
+    with open(FILE_BIODATA, newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            print()
+            print("=" * 40)
+            print("        INFORMASI PRIBADI USER")
+            print("=" * 40)
+            print(f"NIK               : {row['nik']}")
+            print(f"Nama              : {row['nama_lengkap']}")
+            print(f"Jenis Kelamin     : {row['jenis_kelamin']}")
+            print(f"Alamat            : {row['alamat']}")
+            print(f"Agama             : {row['agama']}")
+            print(f"Status Perkawinan : {row['status_kawin']}")
+            print(f"Pekerjaan         : {row['pekerjaan']}")
+            print(f"Kewarganegaraan   : {row['kewarganegaraan']}")
+            print("-" * 40)
+            print(f"Username          : {row['username']}")
+            print(f"Email             : {row['email']}")
+            print(f"No. Telepon       : {row['no_telepon']}")
+            print(f"Role              : {row['role']}")
+            print(f"User Verified     : {row['user_verified']}")
+            print("=" * 40)
+            print()
+            input("Tekan ENTER untuk kembali...")
+
 def profile(username):
     
     while True:
@@ -85,12 +114,13 @@ def profile(username):
         print(" [H] History Transaksi")
         print(" [K] Keamanan dan Password")
         print(" [P] Properti Saya (Dimiliki)")
+        print(" [M] Daftar Sebagai Seller")
+        print(" [V] Ajukan Verifikasi User")
         print(" [B] Kembali")
 
-        pilihan = input("Pilih menu (I/H/K/P/B): ").lower()
+        pilihan = input("Pilih menu (I/H/K/P/M/V/B): ").lower()
         if pilihan  == "i":
-            print("Coming Soon: Informasi Pribadi")
-            time.sleep(2)
+            informasi_pribadi(username)
             continue
         elif pilihan == "h":
             history_transaksi(username)
@@ -101,6 +131,9 @@ def profile(username):
             continue
         elif pilihan == "p":
             properti_saya(username)
+            continue
+        elif pilihan == 'm':  # M = Seller
+            seller_registration_menu(username)
             continue
         elif pilihan == "b":
             break

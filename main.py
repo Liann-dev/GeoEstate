@@ -1,11 +1,9 @@
 from app.auth.register import register
 from app.auth.login import login
 from app.home.home_user import home_user
-from app.home.home_seller import home_merchant
-
+from app.home.home_seller import home_seller
 from app.Utils.OnboardingScreen import show_splash, show_onboarding
 from app.Utils.padding import pad_center as centerpadding
-from app.home.admin_menu import admin_menu
 
 
 def loading():
@@ -35,18 +33,11 @@ def main():
                 if user['role'] == 'user':
                     input("Tekan ENTER untuk masuk...")
                     home_user(user['username'])
-                elif user['role'] == 'merchant':
+                elif user['role'] == 'seller':
                     input("Tekan ENTER untuk masuk...")
-                    home_merchant(user['username'])
+                    home_seller(user['username'])
                 elif user['role'] == 'admin':
-                    input("Tekan ENTER untuk masuk...")
-                    admin_menu(user['username'])
-
-                # if user['role'] == 'pembeli':
-                #     home_buyer(user['username'])
-
-                # elif user['role'] == 'penjual':
-                #     home_seller(user['username'])
+                    return
 
         # =====================
         # EXIT
@@ -58,6 +49,7 @@ def main():
         else:
             print("\nOpsi tidak valid, silakan coba lagi.")
             input("Tekan ENTER untuk kembali ke halaman awal...")
+
 
 
 if __name__ == "__main__":

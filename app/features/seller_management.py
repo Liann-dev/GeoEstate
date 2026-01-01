@@ -2,7 +2,7 @@ import csv
 import os
 
 USERS_FILE = "data/users.csv"
-MERCH_FILE = "data/sellreg.csv"
+SELLER_FILE = "data/sellreg.csv"
 WITHDRAW_FILE = "data/selldraw.csv"
 
 def read_csv(file_path):
@@ -28,18 +28,19 @@ def write_csv(file_path, fieldnames, data):
 def tampilkan_daftar_seller():
     users = read_csv(USERS_FILE)
 
-    merchants = [u for u in users if u.get("role") == "merchant"]
+    seller = [u for u in users if u.get("role") == "seller"]
 
-    if not merchants:
-        print("Belum ada user dengan role merchant.\n")
+    if not seller:
+        print("Belum ada user dengan role seller.\n")
+        input("Tekan ENTER untuk kembali...\n")
         return
 
-    print("\n=== Daftar User Merchant ===")
+    print("\n=== Daftar User Seller ===")
     print("-" * 70)
     print(f"{'No':<5}{'Username':<20}{'Email':<30}{'Verified User'}")
     print("-" * 70)
 
-    for i, user in enumerate(merchants, start=1):
+    for i, user in enumerate(seller, start=1):
         print(
             f"{i:<5}"
             f"{user.get('username', ''):<20}"
@@ -48,7 +49,7 @@ def tampilkan_daftar_seller():
         )
 
     print("-" * 70)
-    input(f"Tekan ENTER untuk kembali...\n")
+    input("Tekan ENTER untuk kembali...\n")
 
 #=======================================================================
 #=======================================================================
@@ -58,10 +59,10 @@ def tampilkan_daftar_seller():
 
 def tampilkan_sellreg(data):
     if not data:
-        print("Belum ada pendaftaran merchant.\n")
+        print("Belum ada pendaftaran seller.\n")
         return
 
-    print("\n=== Daftar Pendaftaran Merchant ===")
+    print("\n=== Daftar Pendaftaran Seller ===")
     print("-" * 90)
     print(f"{'REG ID':<12}{'Username':<15}{'Email':<30}{'Status':<10}")
     print("-" * 90)
@@ -85,49 +86,50 @@ def update_user_role(username, new_role):
     )
 
 def verifikasi_seller():
-    data = read_csv(MERCH_FILE)
+    data = read_csv(SELLER_FILE)
     tampilkan_sellreg(data)
 
     if not data:
         return
 
-    reg_id = input("Masukkan REG ID (0 untuk batal): ").strip()
-    if reg_id == "0":
+    reg_id = input("Masukkan REG ID (Tekan ENTER untuk kembali): ").strip()
+    if not reg_id:
         return
 
     for row in data:
         if row["reg_id"] == reg_id:
             if row["status"] != "pending":
                 print("Registrasi ini sudah diproses.")
-                input(f"Tekan ENTER untuk kembali...\n")
+                input("Tekan ENTER untuk kembali...\n")
                 return
 
             keputusan = input("Setujui registrasi? (y/n): ").lower()
 
             if keputusan == "y":
                 row["status"] = "approved"
-                update_user_role(row["username"], "merchant")
-                print("Merchant diterima.\n")
-                input(f"Tekan ENTER untuk kembali...\n")
+                update_user_role(row["username"], "seller")
+                print("Seller diterima.\n")
+                input("Tekan ENTER untuk kembali...\n")
 
             elif keputusan == "n":
                 row["status"] = "rejected"
-                print("Merchant ditolak.\n")
-                input(f"Tekan ENTER untuk kembali...\n")
+                print("Seller ditolak.\n")
+                input("Tekan ENTER untuk kembali...\n")
 
             else:
                 print("Pilihan tidak valid.\n")
-                input(f"Tekan ENTER untuk kembali...\n")
+                input("Tekan ENTER untuk kembali...\n")
                 return
 
             write_csv(
-                MERCH_FILE,
+                SELLER_FILE,
                 ["reg_id", "username", "email", "reason", "status"],
                 data
             )
             return
 
-    print("REG ID tidak ditemukan.\n")
+    print("REG ID tidak ditemukan.")
+    input("Tekan ENTER untuk kembali...\n")
 
 #=======================================================================
 #=======================================================================
@@ -157,15 +159,16 @@ def verifikasi_withdraw():
     if not data:
         return
 
-    wd_id = input("Masukkan WD ID (0 untuk batal): ").strip()
-    if wd_id == "0":
+    wd_id = input("Masukkan WD ID (Tekan ENTER untuk kembali): ").strip()
+
+    if not wd_id:
         return
 
     for row in data:
         if row["wd_id"] == wd_id:
             if row["status"] != "pending":
                 print("Pengajuan ini sudah diproses.")
-                input(f"Tekan ENTER untuk kembali...\n")
+                input("Tekan ENTER untuk kembali...\n")
                 return
 
             keputusan = input("Setujui pengunduran diri? (y/n): ").lower()
@@ -174,16 +177,16 @@ def verifikasi_withdraw():
                 row["status"] = "approved"
                 update_user_role(row["username"], "user")
                 print("Pengunduran diri disetujui.\n")
-                input(f"Tekan ENTER untuk kembali...\n")
+                input("Tekan ENTER untuk kembali...\n")
 
             elif keputusan == "n":
                 row["status"] = "rejected"
                 print("Pengunduran diri ditolak.\n")
-                input(f"Tekan ENTER untuk kembali...\n")
+                input("Tekan ENTER untuk kembali...\n")
 
             else:
                 print("Pilihan tidak valid.\n")
-                input(f"Tekan ENTER untuk kembali...\n")
+                input("Tekan ENTER untuk kembali...\n")
                 return
 
             write_csv(
@@ -193,7 +196,8 @@ def verifikasi_withdraw():
             )
             return
 
-    print("WD ID tidak ditemukan.\n")
+    print("WD ID tidak ditemukan.")
+    input("Tekan ENTER untuk kembali...\n")
 
 def menu_kelola_seller():
     while True:

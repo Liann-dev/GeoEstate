@@ -7,8 +7,13 @@ from app.features.transaksi_penjual import sedang_dalam_transaksi
 FILE_PROPERTI = "data/properti.csv"
 FILE_RIWAYAT = "data/properti_dimiliki.csv"
 
+
+# =========================
+# UTIL
+# =========================
 def to_bool(val):
     return str(val).strip().lower() == "true"
+
 
 def print_card(p):
     harga_txt = f"Rp {int(p['harga']):,}"
@@ -22,13 +27,14 @@ def print_card(p):
     print(f" | ID: {p['id']:<10}{status:>20} |")
     print(f" +--------------------------------------+")
 
+
 def get_properti_milik_user(username):
     properti_dimiliki = set()
 
     if not os.path.exists(FILE_RIWAYAT):
         return properti_dimiliki
 
-    with open(FILE_RIWAYAT, mode='r', newline='') as file:
+    with open(FILE_RIWAYAT, newline='') as file:
         reader = csv.DictReader(file)
         for row in reader:
             if row['username'] == username:
@@ -36,76 +42,243 @@ def get_properti_milik_user(username):
 
     return properti_dimiliki
 
-def lihat_properti(username):
+
+# =========================
+# LOAD & FILTER
+# =========================
+def load_properti_terverifikasi():
     if not os.path.exists(FILE_PROPERTI):
-        print("Belum ada data properti.")
         return []
 
-    semua_properti = []
-    with open(FILE_PROPERTI, mode='r', newline='') as file:
+    data = []
+    with open(FILE_PROPERTI, newline='') as file:
         reader = csv.DictReader(file)
         for p in reader:
-            semua_properti.append(p)
+            if to_bool(p.get('doc_verified', 'false')):
+                data.append(p)
 
-    print("\n=== Properti Tersedia ===")
-    properti_terverifikasi = []
+    return data
 
-    for p in semua_properti:
-        if to_bool(p['doc_verified']):
-            print_card(p)
-            properti_terverifikasi.append(p)
 
-    if not properti_terverifikasi:
-        print("Belum ada properti yang terverifikasi saat ini.")
-        input("Tekan ENTER untuk kembali...")
+def filter_properti(data, status=None, harga_min=None, harga_max=None, kategori=None):
+    hasil = []
 
-    return properti_terverifikasi
+    for p in data:
+        harga = int(p['harga'])
+        tersedia = to_bool(p.get('tersedia', 'true'))
 
+        if status == "tersedia" and not tersedia:
+            continue
+        if status == "terjual" and tersedia:
+            continue
+        if harga_min is not None and harga < harga_min:
+            continue
+        if harga_max is not None and harga > harga_max:
+            continue
+        if kategori and p['kategori'].lower() != kategori.lower():
+            continue
+
+        hasil.append(p)
+
+    return hasil
+
+
+def sort_properti(data, mode):
+    if mode == "1":      # harga termurah
+        return sorted(data, key=lambda x: int(x['harga']))
+    elif mode == "2":    # harga termahal
+        return sorted(data, key=lambda x: int(x['harga']), reverse=True)
+    elif mode == "3":    # nama A-Z
+        return sorted(data, key=lambda x: x['nama'].lower())
+    return data
+
+
+def search_properti(data, keyword):
+    keyword = keyword.lower()
+    hasil = []
+
+    for p in data:
+        if keyword in p['nama'].lower() or keyword in p['lokasi'].lower():
+            hasil.append(p)
+
+    return hasil
+
+
+# =========================
+# MAIN FLOW
+# =========================
 def pilih_properti(username):
+    semua_properti = load_properti_terverifikasi()
+    properti_milik_user = get_properti_milik_user(username)
+
+    if not semua_properti:
+        print("\nBelum ada properti terverifikasi.")
+        input("Tekan ENTER untuk kembali...")
+        return
+
+    data_tampil = semua_properti
+
     while True:
-        properti_terverifikasi = lihat_properti(username)
-        if not properti_terverifikasi:
+        print("\n" * 50)
+        print("=========== LIHAT PROPERTI ===========")
+
+        if not data_tampil:
+            print("⚠️  Tidak ada properti sesuai filter.")
+        else:
+            for p in data_tampil:
+                print_card(p)
+
+        print("-------------------------------------")
+        print("[F] Filter Properti")
+        print("[S] Sorting")
+        print("[C] Cari Properti")
+        print("[0] Kembali")
+        print("Atau ketik ID Properti untuk melihat detailnya")
+        print("-------------------------------------")
+
+        pilihan = input(">> ").strip().lower()
+
+        # =====================
+        # KEMBALI
+        # =====================
+        if pilihan == "0":
             return
 
-        properti_milik_user = get_properti_milik_user(username)
+        # =====================
+        # FILTER
+        # =====================
+        if pilihan == "f":
 
-        print("----------------------------------------")
-        print("Ketik ID Properti untuk Detail, Survei & Beli")
-        print("Atau tekan ENTER langsung untuk Kembali")
-        print("----------------------------------------")
+            # =====================
+            # FILTER STATUS
+            # =====================
+            while True:
+                print("\nFilter Status:")
+                print("1. Tersedia")
+                print("2. Terjual")
+                print("3. Semua")
+                st = input("Pilih (1-3): ").strip()
 
-        pilihan = input(">> Pilih ID Properti: ").strip()
-        if not pilihan:
-            break
+                if st in ("1", "2", "3"):
+                    break
+                print("❌ Pilihan tidak valid. Masukkan angka 1-3.")
 
-        item_pilih = next(
-            (item for item in properti_terverifikasi if item['id'] == pilihan),
-            None
-        )
+            status = None
+            if st == "1":
+                status = "tersedia"
+            elif st == "2":
+                status = "terjual"
 
-        if not item_pilih:
-            print("❌ Tidak ada properti dengan ID tersebut.")
-            input("Tekan ENTER untuk kembali...")
+            # =====================
+            # FILTER HARGA
+            # =====================
+            try:
+                print("\nFilter Harga:")
+                h_min = input("Harga minimum (ENTER jika tidak ada): ").strip()
+                h_max = input("Harga maksimum (ENTER jika tidak ada): ").strip()
+                h_min = int(h_min) if h_min else None
+                h_max = int(h_max) if h_max else None
+            except ValueError:
+                print("❌ Harga tidak valid.")
+                input("Tekan ENTER...")
+                continue
+
+            # =====================
+            # FILTER JENIS PROPERTI
+            # =====================
+            while True:
+                print("\nFilter Jenis Properti:")
+                print("1. Rumah")
+                print("2. Villa")
+                print("3. Resort")
+                print("4. Semua")
+                kp = input("Pilih (1-4): ").strip()
+
+                if kp in ("1", "2", "3", "4"):
+                    break
+                print("❌ Pilihan tidak valid. Masukkan angka 1-4.")
+
+            kategori = None
+            if kp == "1":
+                kategori = "Rumah"
+            elif kp == "2":
+                kategori = "Villa"
+            elif kp == "3":
+                kategori = "Resort"
+
+            # =====================
+            # APPLY FILTER
+            # =====================
+            data_tampil = filter_properti(
+                semua_properti,
+                status=status,
+                harga_min=h_min,
+                harga_max=h_max,
+                kategori=kategori
+            )
             continue
 
-        # ❌ Properti tidak tersedia
-        if not to_bool(item_pilih.get('tersedia', 'true')):
-            print("\n❌ Properti ini sudah terjual dan tidak tersedia.")
-            input("Tekan ENTER untuk kembali...")
+
+        # =====================
+        # SORTING
+        # =====================
+        if pilihan == "s":
+            print("\nSorting:")
+            print("1. Harga Termurah")
+            print("2. Harga Termahal")
+            print("3. Nama A-Z")
+            mode = input("Pilih (1-3): ").strip()
+
+            data_tampil = sort_properti(data_tampil, mode)
             continue
 
-        # ❌ Sudah dimiliki user
+
+        # =====================
+        # SEARCH PROPERTI
+        # =====================
+
+        if pilihan == "c":
+            keyword = input("Masukkan kata kunci (nama/lokasi): ").strip()
+
+            if not keyword:
+                print("❌ Kata kunci tidak boleh kosong.")
+                input("Tekan ENTER...")
+                continue
+
+            hasil = search_properti(semua_properti, keyword)
+
+            if not hasil:
+                print("⚠️ Tidak ditemukan properti dengan kata kunci tersebut.")
+                input("Tekan ENTER...")
+                continue
+
+            data_tampil = hasil
+            continue
+
+
+        # =====================
+        # PILIH ID PROPERTI
+        # =====================
+        item = next((p for p in data_tampil if p['id'] == pilihan), None)
+
+        if not item:
+            print("❌ ID Properti tidak ditemukan.")
+            input("Tekan ENTER...")
+            continue
+
+        if not to_bool(item.get('tersedia', 'true')):
+            print("❌ Properti sudah terjual.")
+            input("Tekan ENTER...")
+            continue
+
         if pilihan in properti_milik_user:
-            print("\n❌ Anda sudah memiliki properti ini.")
-            input("Tekan ENTER untuk kembali...")
+            print("❌ Anda sudah memiliki properti ini.")
+            input("Tekan ENTER...")
             continue
 
-        # ❌ Sedang dalam transaksi
         if sedang_dalam_transaksi(username, pilihan):
-            print("\n⏳ Properti ini sedang dalam proses transaksi Anda.")
-            print("   Silakan tunggu hingga transaksi selesai.")
-            input("Tekan ENTER untuk kembali...")
+            print("⏳ Properti sedang dalam transaksi.")
+            input("Tekan ENTER...")
             continue
 
-        # ✅ Aman → detail
-        detail_properti(username, item_pilih)
+        detail_properti(username, item)

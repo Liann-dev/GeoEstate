@@ -42,9 +42,64 @@ def login():
             print(f"Password salah. Kesempatan tersisa: {kesempatan}\n")
             if kesempatan == 0: break
             continue
-
+        
+        #Jika user adalah admin
+        if user_found['role'] == "admin":
+            print("\nHalaman login ini hanya dikhususkan untuk user!")
+            print("Silahkan menggunakan halaman login admin untuk login sebagai admin.")
+            input("\nTekan ENTER untuk keluar dari halaman login user...")
+            return user_found
+        
         # Login berhasil
         print(f"\nLogin berhasil. Selamat datang {user_found['username']}!")
+        return user_found
+
+    # Hanya bisa sampai ke sini jika kesempatan sudah 0 (sudah mengisi tapi salah)
+    print("Login gagal. Jatah percobaan Anda telah habis.")
+    input("Tekan ENTER untuk kembali ke halaman awal...")
+    return None
+
+def login_admin():
+    kesempatan = 3
+
+    if not os.path.exists(FILE_USERS):
+        print("Belum ada admin terdaftar.\n")
+        return None
+
+    while kesempatan > 0:
+        print(f"\n--- Login Admin GeoEstate ---")
+
+        login_input = input("Masukkan Username atau Email: ").strip()
+        password = input("Masukkan Password: ").strip()
+
+        # Validasi jika input kosong agar tidak langsung mengurangi kesempatan
+        if login_input == "" or password == "":
+            print("Username/Email dan Password tidak boleh kosong!")
+            continue
+
+        user_found = None
+        with open(FILE_USERS, mode='r', newline='') as file:
+            reader = csv.DictReader(file)
+            for user in reader:
+                if user["username"] == login_input or user["email"] == login_input:
+                    user_found = user
+                    break
+
+        # Cek jika username tidak ditemukan
+        if not user_found:
+            kesempatan -= 1
+            print(f"Username atau Email salah. Kesempatan tersisa: {kesempatan}\n")
+            if kesempatan == 0: break
+            continue
+
+        # Cek jika password salah
+        if user_found["password"] != password:
+            kesempatan -= 1
+            print(f"Password salah. Kesempatan tersisa: {kesempatan}\n")
+            if kesempatan == 0: break
+            continue
+        
+        # Login selesai
         return user_found
 
     # Hanya bisa sampai ke sini jika kesempatan sudah 0 (sudah mengisi tapi salah)
