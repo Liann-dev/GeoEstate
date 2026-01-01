@@ -3,7 +3,6 @@ import os
 from app.features.seller_management import menu_kelola_seller
 from app.features.admin_feedback import lihat_feedback
 from app.features.user_verification import menu_verifikasi_user
-from app.features.property_verification import menu_verifikasi_properti
 
 # FILE_USERS = "data/users.csv"
 # FILE_PROPERTI = "data/properti.csv"
@@ -90,21 +89,18 @@ def admin_menu(username):
         print("\n" * 50) 
         print("===== MENU ADMIN =====")
         print("1. Verifikasi Data User")
-        print("2. Verifikasi Dokumen Properti")
-        print("3. Kelola Data Seller")
-        print("4. Lihat Feedback")
-        print("5. Keluar / Logout")
-        pilihan = input(f"\nPilih menu (1-5): ")
+        print("2. Kelola Data Seller")
+        print("3. Lihat Feedback")
+        print("4. Keluar / Logout")
+        pilihan = input(f"\nPilih menu (1-4): ")
 
         if pilihan == "1":
             menu_verifikasi_user()
         elif pilihan == "2":
-            menu_verifikasi_properti()
-        elif pilihan == "3":
             menu_kelola_seller()
-        elif pilihan == "4":
+        elif pilihan == "3":
             lihat_feedback()
-        elif pilihan == "5":
+        elif pilihan == "4":
             print("\nLogout berhasil!")
             input("Tekan ENTER untuk kembali ke halaman awal...")
             print("\n" * 25)

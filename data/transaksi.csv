@@ -4,4 +4,9 @@ GES-8391,Testing,Adi,3,Havana Resort,780000000,2025-12-18 13:32:30,Beli,Dibatalk
 GES-4214,Testing,Adi,3,Havana Resort,780000000,2025-12-18 16:10:27,Beli,Lunas / Selesai
 GES-5838,Adit,Adi,2,Villa Air,1500000000,2025-12-22 10:41:02,Beli,Lunas / Selesai
 GES-6452,Adi,Adit,2,Villa Air,1500000000,2025-12-22 11:37:11,Jual,Lunas / Selesai
+<<<<<<< HEAD
+GES-1226,Testing,Naufal,5,Resort Rancawana,120000000,2025-12-30 22:54:40,booking,Dibatalkan
+GES-5098,Adi,Naufal,5,Resort Rancawana,120000000,2025-12-31 09:59:08,booking,Menunggu Konfirmasi
+=======
 GES-5189,Testing,LianDev,7,Cibiru Kost,200000000,2025-12-31 15:50:51,Beli,Lunas / Selesai
+>>>>>>> da6ad86a4f10d963b6e4b536712b17d72f98d12c

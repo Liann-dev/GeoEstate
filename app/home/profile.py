@@ -100,7 +100,6 @@ def profile(username):
             print("Data pengguna error.")
             return
 
-
         print("\n========================================")
         print("              PROFIL SAYA               ")
         print("========================================")
@@ -114,11 +113,19 @@ def profile(username):
         print(" [H] History Transaksi")
         print(" [K] Keamanan dan Password")
         print(" [P] Properti Saya (Dimiliki)")
-        print(" [M] Daftar Sebagai Seller")
-        print(" [V] Ajukan Verifikasi User")
+        if user_data['role'] == "user":
+            print(" [M] Daftar Sebagai Seller")
+        if user_data['user_verified'] == "false":
+            print(" [V] Ajukan Verifikasi User")
         print(" [B] Kembali")
 
-        pilihan = input("Pilih menu (I/H/K/P/M/V/B): ").lower()
+        if user_data['role'] == "user" and user_data['user_verified'] == "false":
+            pilihan = input("Pilih menu (I/H/K/P/M/V/B): ").lower()
+        elif user_data['role'] == "user":
+            pilihan = input("Pilih menu (I/H/K/P/M/B): ").lower()
+        else:
+            pilihan = input("Pilih menu (I/H/K/P/B): ").lower()
+
         if pilihan  == "i":
             informasi_pribadi(username)
             continue
@@ -132,8 +139,24 @@ def profile(username):
         elif pilihan == "p":
             properti_saya(username)
             continue
-        elif pilihan == 'm':  # M = Seller
-            seller_registration_menu(username)
+        elif pilihan == 'm':
+            if user_data['role'] == "user":
+                if user_data['user_verified'] == "true":
+                    seller_registration_menu(username)
+                else:
+                    print("Akun anda belum terverifikasi!")
+                    input("Tekan ENTER untuk kembali...")
+            else:
+                print("Pilihan tidak valid!")
+            continue
+        elif pilihan == "v":
+            if user_data['user_verified'] == "false":
+                print("Coming Soon: Ajukan Verifikasi User")
+                time.sleep(2)
+            else:
+                print("Pilihan tidak valid!")
             continue
         elif pilihan == "b":
             break
+        else:
+            print("Pilihan tidak valid!")
