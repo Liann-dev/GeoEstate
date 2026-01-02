@@ -40,7 +40,7 @@ def detail_properti(username, p):
 
     print("\n[ OPSI ]")
     print("1. 📅 Jadwalkan Survei")
-    print("2. 🛒 Beli Sekarang (Checkout)")
+    print("2. 🛒 Booking")
     print("3. ➕ Tambahkan Ke Wishlist")
     print("0. 🔙 Kembali")
     print("----------------------------------------")

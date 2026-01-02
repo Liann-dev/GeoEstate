@@ -76,13 +76,14 @@ def history_transaksi(username):
 
             # 🔥 FILTER SESUAI DESAIN BARU
             if (
-                row['transaksi'] == 'Beli'
+                row['transaksi'] in ['Beli', 'booking']
                 and row['username_pembeli'] == username
             ) or (
                 row['transaksi'] == 'Jual'
                 and row['penjual'] == username
             ):
                 my_history.append(row)
+
 
     if not my_history:
         print("\n   [INFO] Kamu belum pernah melakukan transaksi.")

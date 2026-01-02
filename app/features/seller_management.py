@@ -3,7 +3,6 @@ import os
 
 USERS_FILE = "data/users.csv"
 SELLER_FILE = "data/sellreg.csv"
-WITHDRAW_FILE = "data/selldraw.csv"
 
 def read_csv(file_path):
     if not os.path.exists(file_path):
@@ -50,12 +49,6 @@ def tampilkan_daftar_seller():
 
     print("-" * 70)
     input("Tekan ENTER untuk kembali...\n")
-
-#=======================================================================
-#=======================================================================
-#=======================================================================
-#=======================================================================
-#=======================================================================
 
 def tampilkan_sellreg(data):
     if not data:
@@ -131,93 +124,22 @@ def verifikasi_seller():
     print("REG ID tidak ditemukan.")
     input("Tekan ENTER untuk kembali...\n")
 
-#=======================================================================
-#=======================================================================
-#=======================================================================
-#=======================================================================
-#=======================================================================
-
-def tampilkan_withdraw(data):
-    if not data:
-        print("Belum ada pengajuan pengunduran diri.\n")
-        return
-
-    print("\n=== Daftar Pengunduran Diri Seller ===")
-    print("-" * 70)
-    print(f"{'WD ID':<12}{'Username':<15}{'Email':<30}{'Status':<10}")
-    print("-" * 70)
-
-    for row in data:
-        print(f"{row['wd_id']:<12}{row['username']:<15}{row['email']:<30}{row['status']:<10}")
-
-    print("-" * 70)
-
-def verifikasi_withdraw():
-    data = read_csv(WITHDRAW_FILE)
-    tampilkan_withdraw(data)
-
-    if not data:
-        return
-
-    wd_id = input("Masukkan WD ID (Tekan ENTER untuk kembali): ").strip()
-
-    if not wd_id:
-        return
-
-    for row in data:
-        if row["wd_id"] == wd_id:
-            if row["status"] != "pending":
-                print("Pengajuan ini sudah diproses.")
-                input("Tekan ENTER untuk kembali...\n")
-                return
-
-            keputusan = input("Setujui pengunduran diri? (y/n): ").lower()
-
-            if keputusan == "y":
-                row["status"] = "approved"
-                update_user_role(row["username"], "user")
-                print("Pengunduran diri disetujui.\n")
-                input("Tekan ENTER untuk kembali...\n")
-
-            elif keputusan == "n":
-                row["status"] = "rejected"
-                print("Pengunduran diri ditolak.\n")
-                input("Tekan ENTER untuk kembali...\n")
-
-            else:
-                print("Pilihan tidak valid.\n")
-                input("Tekan ENTER untuk kembali...\n")
-                return
-
-            write_csv(
-                WITHDRAW_FILE,
-                ["wd_id", "username", "reason", "status"],
-                data
-            )
-            return
-
-    print("WD ID tidak ditemukan.")
-    input("Tekan ENTER untuk kembali...\n")
-
 def menu_kelola_seller():
     while True:
         print("""
 === Menu Pengelolaan Seller ===
 1. Lihat Daftar Seller
 2. Verifikasi Pendaftaran Seller
-3. Data Pengunduran Diri Seller
-4. Kembali           
+3. Kembali           
 """)
 
-        pilihan = input("Pilih menu (1-4): ").strip()
+        pilihan = input("Pilih menu (1-3): ").strip()
 
         if pilihan == "1":
             tampilkan_daftar_seller()
         elif pilihan == "2":
             verifikasi_seller()
         elif pilihan == "3":
-            verifikasi_withdraw()
-        elif pilihan == "4":
-            break
+            return
         else:
             print("Pilihan tidak valid.\n")

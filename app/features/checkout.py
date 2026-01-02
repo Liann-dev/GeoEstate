@@ -1,70 +1,88 @@
 import csv
 import os
-import datetime
+import uuid
 import random
+from datetime import datetime
 
-FILE_TRANSAKSI = "data/transaksi.csv"
+TRANSAKSI_FILE = "data/transaksi.csv"
+SCHEDULE_FILE = "data/booking_schedule.csv"
 
-def simpan_transaksi(username, properti):
-    file_exists = os.path.exists(FILE_TRANSAKSI)
-    
-    with open(FILE_TRANSAKSI, mode='a', newline='') as file:
-        writer = csv.writer(file)
-        if not file_exists:
-            writer.writerow(['id_transaksi', 'username_pembeli', 'penjual', 'id_properti', 'nama_properti', 'harga', 'tanggal', 'transaksi', 'status'])
-        
 
-        trc_id = f"GES-{random.randint(1000, 9999)}"
-        tanggal = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
+def input_schedule():
+    while True:
+        schedule = input("Masukkan jadwal (YYYY-MM-DD): ").strip()
+        try:
+            return datetime.strptime(schedule, "%Y-%m-%d").date()
+        except ValueError:
+            print("❌ Format tanggal salah. Contoh: 2025-01-10")
+
+
+def checkout(username, p):
+    print("\n=== BOOKING PROPERTI ===")
+
+    harga = p.get("harga", 0)
+    penjual = p.get("penjual", "Naufal")  # sementara
+
+    print(f"Properti : {p['nama']}")
+    print(f"Harga    : Rp {harga}")
+
+    # ================= INPUT SCHEDULE =================
+    schedule = input_schedule()
+
+    tanggal_booking = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    id_transaksi = f"GES-{random.randint(1000, 9999)}"
+
+    # ================= SIMPAN TRANSAKSI =================
+    transaksi_exists = os.path.exists(TRANSAKSI_FILE)
+
+    with open(TRANSAKSI_FILE, "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+
+        if not transaksi_exists:
+            writer.writerow([
+                "id_transaksi",
+                "username_pembeli",
+                "penjual",
+                "id_properti",
+                "nama_properti",
+                "harga",
+                "tanggal",
+                "transaksi",
+                "status"
+            ])
 
         writer.writerow([
-            trc_id, 
-            username, 
-            properti['penjual'],
-            properti['id'], 
-            properti['nama'], 
-            properti['harga'], 
-            tanggal,
-            "Beli",
+            id_transaksi,
+            username,
+            penjual,
+            p["id"],
+            p["nama"],
+            harga,
+            tanggal_booking,
+            "booking",
             "Menunggu Konfirmasi"
         ])
-        return trc_id
 
-def checkout(user_active, properti):
-    
-    harga_fmt = f"Rp {int(properti['harga']):,}"
-    print("\n" * 50)
-    print("\n========================================")
-    print("           HALAMAN CHECKOUT             ")
-    print("========================================")
-    print("Rincian Pesanan:")
-    print(f"Rumah     : {properti['nama']}")
-    print(f"Lokasi    : {properti['lokasi']}")
-    print(f"Penjual   : {properti['penjual']}")
-    print(f"Harga     : {harga_fmt}")
-    print("----------------------------------------")
-    print("Biaya Admin : Rp 5,000")
-    print(f"Total       : Rp {int(properti['harga']) + 5000:,}")
-    print("========================================")
-    
+    # ================= SIMPAN SCHEDULE =================
+    schedule_exists = os.path.exists(SCHEDULE_FILE)
+
+    with open(SCHEDULE_FILE, "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+
+        if not schedule_exists:
+            writer.writerow([
+                "id_transaksi",
+                "schedule"
+            ])
+
+        writer.writerow([
+            id_transaksi,
+            schedule.strftime("%Y-%m-%d")
+        ])
+
+    print("\n✅ Booking berhasil!")
+    print(f"📅 Jadwal: {schedule}")
+    print("📌 Status: Menunggu Konfirmasi")
     while True:
-        confirm = input("Konfirmasi pembelian? (y/n): ").lower()
-        
-        if confirm == 'y':
-            trc_id = simpan_transaksi(user_active, properti)
-            
-            print("\n[BERHASIL] Pesanan telah dibuat!")
-            print(f"ID Transaksi: {trc_id}")
-            print("Status saat ini: MENUNGGU KONFIRMASI PENJUAL.")
-            print("Silakan cek menu 'Profil Saya' untuk memantau status.")
-            input("\nTekan ENTER untuk kembali...")
-            break
-        if not confirm:
-            print("\nPembelian dibatalkan.")
-            input("Tekan ENTER untuk kembali...")
-            break
-        else:
-            print("\nPilihan tidak valid!.")
-            input("Tekan ENTER untuk coba lagi...\n")
-            
+        input("Tekan ENTER untuk kembali...")
+        break

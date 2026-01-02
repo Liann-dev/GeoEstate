@@ -70,7 +70,6 @@ def tambah_properti(username):
             if ids:
                 new_id = max(ids) + 1
 
-
     data_baru = {
         "id": str(new_id),
         "nama": nama,
