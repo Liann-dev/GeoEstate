@@ -1,5 +1,6 @@
 from app.auth.register import register
 from app.auth.login import login
+from app.auth.lupa_password import lupa_password
 from app.home.home_user import home_user
 from app.home.home_seller import home_seller
 from app.Utils.OnboardingScreen import show_splash, show_onboarding
@@ -16,8 +17,9 @@ def main():
         print(centerpadding("Selamat datang di GeoEstate!"))
         print(centerpadding("1. Register"))
         print(centerpadding("2. Login"))
-        print(centerpadding("3. Exit"))
-        pilihan = input(centerpadding("Pilih opsi (1/2/3): "))
+        print(centerpadding("3. Lupa Password?"))
+        print(centerpadding("4. Exit"))
+        pilihan = input(centerpadding("Pilih opsi (1/2/3/4): "))
         # =====================
         # REGISTER
         # =====================
@@ -40,9 +42,15 @@ def main():
                     return
 
         # =====================
-        # EXIT
+        # LUPA PASSWORD
         # =====================
         elif pilihan == '3':
+            lupa_password()
+
+        # =====================
+        # EXIT
+        # =====================
+        elif pilihan == '4':
             print("Terima kasih telah menggunakan GeoEstate!")
             break
 
