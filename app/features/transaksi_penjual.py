@@ -19,7 +19,6 @@ def get_schedule_by_transaksi(id_transaksi):
 
     return "-"
 
-
 def sedang_dalam_transaksi(username, id_properti):
     if not os.path.exists(FILE_TRANSAKSI):
         return False
@@ -58,13 +57,56 @@ def simpan_perubahan_csv(data_baru):
 def print_separator(lebar):
     print("-" * lebar)
 
+def get_jadwal_lama(id_transaksi):
+    if not os.path.exists(FILE_SCHEDULE):
+        return None
+
+    with open(FILE_SCHEDULE, mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row['id_transaksi'] == id_transaksi:
+                return row['schedule']
+    return None
+
+def update_jadwal_booking(id_transaksi, jadwal_baru):
+    data = []
+    ditemukan = False
+
+    # Jika file belum ada, buat baru
+    if not os.path.exists(FILE_SCHEDULE):
+        with open(FILE_SCHEDULE, mode='w', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=['id_transaksi', 'schedule'])
+            writer.writeheader()
+
+    # Baca data lama
+    with open(FILE_SCHEDULE, mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row['id_transaksi'] == id_transaksi:
+                row['schedule'] = jadwal_baru
+                ditemukan = True
+            data.append(row)
+
+    # Jika belum ada jadwal untuk transaksi ini, tambahkan
+    if not ditemukan:
+        data.append({
+            'id_transaksi': id_transaksi,
+            'schedule': jadwal_baru
+        })
+
+    # Simpan kembali
+    with open(FILE_SCHEDULE, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=['id_transaksi', 'schedule'])
+        writer.writeheader()
+        writer.writerows(data)
+
 def tampilkan_pesanan(penjual_login):
   
     semua_transaksi = baca_data_csv()
     
     transaksi_milik_penjual = [t for t in semua_transaksi if t['penjual'] == penjual_login]
 
-    print(f"\n=== DAFTAR PESANAN MASUK (Penjual: {penjual_login}) ===")
+    print(f"\n=== DAFTAR BOOKING (Penjual: {penjual_login}) ===")
     
     if not transaksi_milik_penjual:
         print(f">> Tidak ada pesanan masuk untuk akun '{penjual_login}'.")
@@ -110,7 +152,7 @@ def update_status_pesanan(penjual_login):
     if not data_filtered:
         return
 
-    print("\n--- Update Status Pesanan ---")
+    print("\n--- Update Status Booking ---")
     id_input = input("Masukkan ID Transaksi (contoh: GES-1234) (Tekan ENTER untuk kembali): ")
     
     if not id_input:
@@ -134,43 +176,79 @@ def update_status_pesanan(penjual_login):
                 print(f"\n>> Transaksi ini sudah berstatus '{row['status']}'.")
                 print(">> Status final tidak dapat diubah kembali.")
                 return
-
-            if row['status'] in ["Pending / Menunggu"]:
-                print(f"\n>> Transaksi ini sudah berstatus '{row['status']}'.")
-                print(">> Silahkan ubah status menjadi 'Lunas / Selesai' ATAU 'Dibatalkan' untuk memproses pesanan.")
-                return
         
             print(f"\nItem Ditemukan: {row['nama_properti']}")
             print(f"Pembeli       : {row['username_pembeli']}")
             print(f"Status Saat Ini: {row['status']}")
             
             print("\nPilih Status Baru:")
-            print("1. Konfirmasi (Lunas/Selesai)")
-            print("2. Tolak / Batalkan")
-            print("3. Pending / Menunggu")
+            if row['status'] == "Perpanjang Waktu":
+                print("1. Konfirmasi (Lunas/Selesai)")
+                print("2. Tolak / Batalkan")
+                print("\n>> Mohon untuk segera menyelesaikan transaksi")
+            else:
+                print("1. Konfirmasi (Lunas/Selesai)")
+                print("2. Tolak / Batalkan")
+                print("3. Perpanjang Waktu")
             
-            pilihan = input("Pilihan (1-3): ")
+            pilihan = input("Pilihan: ")
             status_baru = row['status'] 
 
-            if pilihan == "1":
-                status_baru = "Lunas / Selesai"
-            elif pilihan == "2":
-                status_baru = "Dibatalkan"
-            elif pilihan == "3":
-                status_baru = "Pending / Menunggu"
+            if row['status'] == "Perpanjang Waktu":
+                if pilihan == "1":
+                    status_baru = "Lunas / Selesai"
+                elif pilihan == "2":
+                    status_baru = "Dibatalkan"
+                else:
+                    print(">> Pilihan tidak valid. Batal update.")
+                    return
             else:
-                print(">> Pilihan tidak valid. Batal update.")
-                return
+                if pilihan == "1":
+                    status_baru = "Lunas / Selesai"
+                elif pilihan == "2":
+                    status_baru = "Dibatalkan"
+                elif pilihan == "3":
+                    print("\n--- Perpanjang Waktu Booking ---")
+                    while True:
+                        jadwal_baru = input("Masukkan jadwal baru (YYYY-MM-DD) (ENTER untuk batal): ").strip()
 
-            row['status'] = status_baru
+                        if not jadwal_baru:
+                            return
+
+                        jadwal_lama = get_jadwal_lama(row['id_transaksi'])
+
+                        try:
+                            tanggal_baru = datetime.strptime(jadwal_baru, "%Y-%m-%d")
+                        except ValueError:
+                            print(">> Format tanggal tidak valid!\n")
+                            continue
+
+                        if jadwal_lama:
+                            tanggal_lama = datetime.strptime(jadwal_lama, "%Y-%m-%d")
+                            if tanggal_baru <= tanggal_lama:
+                                print(">> Jadwal baru harus lebih maju dari jadwal sebelumnya.\n")
+                                continue
+                        break
+
+                    update_jadwal_booking(row['id_transaksi'], jadwal_baru)
+                    status_baru = "Perpanjang Waktu"
+
+                else:
+                    print(">> Pilihan tidak valid. Batal update.")
+                    return
+
             row['status'] = status_baru
 
             if status_baru == "Lunas / Selesai":
                 simpan_ke_riwayat(row)
             
             simpan_perubahan_csv(semua_data)
-            print(f">> Berhasil! Status transaksi {id_input} diubah menjadi '{status_baru}'.")
-            break
+            if status_baru == "Lunas / Selesai":
+                print(f"\n>> Berhasil! Transaksi {id_input} telah lunas.")
+                break
+            elif status_baru == "Dibatalkan":
+                print(f"\n>> Berhasil! Transaksi {id_input} telah dibatalkan.")
+                break
     
     if not found:
         print(">> ID Transaksi tidak ditemukan di database Anda.")
@@ -222,19 +300,19 @@ def simpan_ke_riwayat(row_transaksi):
 def menu_kelola_pesanan(user_active):
    
     while True:
-        print(f"\n=== MENU KELOLA PESANAN ({user_active}) ===")
-        print("1. Lihat Pesanan Saya")
-        print("2. Update Status Pesanan") 
+        print(f"\n=== MENU KELOLA DATA BOOKING ({user_active}) ===")
+        print("1. Lihat Data Booking")
+        print("2. Update Status Booking") 
         print("0. Kembali")
         
         pil = input(">> Pilih menu: ")
         
         if pil == "1":
             tampilkan_pesanan(user_active)
-            input("\nTekan Enter untuk lanjut...")
+            input("Tekan Enter untuk lanjut...")
         elif pil == "2":
             update_status_pesanan(user_active)
-            input("\nTekan Enter untuk lanjut...")
+            input("Tekan Enter untuk lanjut...")
         elif pil == "0":
             break
         else:

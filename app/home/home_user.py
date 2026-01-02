@@ -22,6 +22,7 @@ def load_properties():
     return data
 
 def home_user(username):
+ 
     while True:
         semua_properti = load_properties()
         
@@ -67,7 +68,10 @@ def home_user(username):
         if pilihan == 'l':  # L = Lihat Semua
             pilih_properti(username)
         elif pilihan == 'p':  # P = Profil
-            profile(username)
+            P = profile(username)
+            if P == "EXIT":
+                print("\n" * 25)
+                return
         elif pilihan == 'k':  # K = Keluar
             print("\nTerima kasih telah menggunakan GeoEstate. Sampai jumpa lagi!")
             input("Tekan ENTER untuk kembali ke halaman awal...")

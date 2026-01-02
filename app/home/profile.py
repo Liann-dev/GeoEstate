@@ -4,6 +4,7 @@ import time
 from app.home.history_transaksi import history_transaksi
 from app.home.jual_properti import jual_kembali_properti
 from app.features.seller_register import seller_registration_menu
+from app.auth.lupa_password import ganti_password
 
 FILE_USERS = "data/users.csv"
 FILE_RIWAYAT = "data/properti_dimiliki.csv"
@@ -45,17 +46,16 @@ def properti_saya(username):
     print("1. 💲 Jual / Kembalikan Properti")
     print("0. 🔙 Kembali")
     
-    pilihan = input("\n>> Pilih opsi: ")
-    
-    if pilihan == '1':
-        jual_kembali_properti(username)
-    elif pilihan == '2':
-        input("Tekan ENTER untuk kembali...")
-        return
-    else:
-        print("Pilihan tidak valid!")
-        input("Tekan ENTER untuk kembali...")
-        return
+    while True:
+        pilihan = input("\n>> Pilih opsi: ")
+        
+        if pilihan == '1':
+            jual_kembali_properti(username)
+        elif pilihan == '0':
+            return
+        else:
+            print("Pilihan tidak valid!")
+            continue
 
 def informasi_pribadi(username):
 
@@ -133,9 +133,46 @@ def profile(username):
             history_transaksi(username)
             continue
         elif pilihan == "k":
-            print("Coming Soon: Keamanan dan Password")
-            time.sleep(2)
-            continue
+            print("\n===== Keamanan & Password =====")
+            print("1. Hash Password")
+            print("2. Ganti Password")
+            print("3. Aktifkan One-Time Code Login")
+            print("4. Aktifkan Two-Factor Authentication")
+            print("5. Ubah Data Terverifikasi")
+            print("0. Kembali")
+
+            while True:
+                pilih = input("\n Pilih menu: ")
+
+                if pilih == "1":
+                    print("COMING SOON : Hash Password")
+                    time.sleep(2)
+                    continue
+                elif pilih == "2":
+                    P = ganti_password()
+                    if P == "EXIT":
+                        print("Mengembalikan user ke halaman awal...")
+                        time.sleep(2)
+                        return "EXIT"
+                    else:
+                        continue
+                elif pilih == "3":
+                    print("COMING SOON : Aktifkan One-Time Code Login")
+                    time.sleep(2)
+                    continue
+                elif pilih == "4":
+                    print("COMING SOON : Aktifkan Two-Factor Authentication")
+                    time.sleep(2)
+                    continue
+                elif pilih == "5":
+                    print("Silahkan hubungi Admin untuk mengubah data yang sudah terverifikasi")
+                    input("Tekan ENTER untuk kembali...")
+                    continue
+                elif pilih == "0":
+                    break
+                else:
+                    print("Pilihan tidak valid!")
+                    continue
         elif pilihan == "p":
             properti_saya(username)
             continue

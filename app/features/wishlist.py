@@ -223,9 +223,9 @@ def menu_wishlist(username):
 === MENU WISHLIST ({username}) ===
 1. Lihat Wishlist
 2. Hapus Properti dari Wishlist
-("Tekan ENTER untuk kembali...\n")
+0. Kembali\n
 """)
-        pilihan = input("Pilih menu (1-4): ")
+        pilihan = input("Pilih menu: ")
 
         if pilihan == "1":
             lihat_wishlist(username)
@@ -254,9 +254,8 @@ def menu_wishlist(username):
             
             hapus_dari_wishlist(username, id_properti)
 
-
-        elif not pilihan:
-            break
+        elif pilihan == "0":
+            return
 
         else:
-            print("[ERROR] Pilihan tidak valid, silakan pilih antara 1-4.")
+            print("Pilihan tidak valid!")
