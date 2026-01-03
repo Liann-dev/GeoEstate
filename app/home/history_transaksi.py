@@ -2,6 +2,8 @@ import csv
 import os
 
 FILE_TRANSAKSI = "data/transaksi.csv"
+FILE_SCHEDULE = "data/booking_schedule.csv"
+
 
 def hapus_transaksi(username, id_transaksi):
     if not os.path.exists(FILE_TRANSAKSI):
@@ -9,7 +11,7 @@ def hapus_transaksi(username, id_transaksi):
         return False
 
     semua_data = []
-    ditemukan = False
+    target = None
     milik_user = False
 
     with open(FILE_TRANSAKSI, mode='r', newline='') as file:
@@ -17,34 +19,40 @@ def hapus_transaksi(username, id_transaksi):
         for row in reader:
             semua_data.append(row)
 
-            if row['id_transaksi'] == id_transaksi:
-                ditemukan = True
+            if (
+                row['id_transaksi'] == id_transaksi
+                and row.get('session') == username
+            ):
+                target = row
 
-                # 🔥 ATURAN BARU SESUAI HISTORY
                 if (
-                    row['transaksi'] == 'Beli'
+                    row['transaksi'] == 'booking'
                     and row['username_pembeli'] == username
                 ) or (
-                    row['transaksi'] == 'Jual'
+                    row['transaksi'] == 'return'
                     and row['penjual'] == username
                 ):
                     milik_user = True
-    if row['status'] == 'Menunggu Konfirmasi' or 'Pending / Menunggu':
-        print("Transaksi yang belum selesai tidak dapat dihapus")
-        return False
-    
-    if not ditemukan:
-        print("ID Transaksi tidak ditemukan.")
+
+    if not target:
+        print("ID Transaksi tidak ditemukan di riwayat Anda.")
         return False
 
     if not milik_user:
         print("❌ Anda tidak berhak menghapus transaksi ini.")
         return False
 
-    # Hapus transaksi yang cocok DAN milik user
+    if target['status'] in ('Menunggu Konfirmasi', 'Pending / Menunggu'):
+        print("❌ Transaksi yang belum selesai tidak dapat dihapus.")
+        return False
+
+    # ================= HAPUS RIWAYAT TRANSAKSI (SESSION USER) =================
     data_baru = [
         row for row in semua_data
-        if row['id_transaksi'] != id_transaksi
+        if not (
+            row['id_transaksi'] == id_transaksi
+            and row.get('session') == username
+        )
     ]
 
     with open(FILE_TRANSAKSI, mode='w', newline='') as file:
@@ -52,10 +60,34 @@ def hapus_transaksi(username, id_transaksi):
         writer.writeheader()
         writer.writerows(data_baru)
 
+    # ================= HAPUS BOOKING SCHEDULE (SESSION USER) =================
+    if os.path.exists(FILE_SCHEDULE):
+        schedule_baru = []
+
+        with open(FILE_SCHEDULE, mode='r', newline='') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                if not (
+                    row['id_transaksi'] == id_transaksi
+                    and row.get('session') == username
+                ):
+                    schedule_baru.append(row)
+
+        with open(FILE_SCHEDULE, mode='w', newline='') as file:
+            writer = csv.DictWriter(
+                file,
+                fieldnames=['id_transaksi', 'schedule', 'session']
+            )
+            writer.writeheader()
+            writer.writerows(schedule_baru)
+
     print("✅ Riwayat transaksi berhasil dihapus.")
     return True
 
 
+# ======================================================
+# RIWAYAT TRANSAKSI (SESSION-BASED)
+# ======================================================
 def history_transaksi(username):
 
     print("\n" * 50)
@@ -65,7 +97,6 @@ def history_transaksi(username):
 
     if not os.path.exists(FILE_TRANSAKSI):
         print("\n   [INFO] Belum ada data transaksi apapun di sistem.")
-        print("\n==============================================================")
         input("Tekan ENTER untuk kembali...")
         return
 
@@ -73,22 +104,13 @@ def history_transaksi(username):
     with open(FILE_TRANSAKSI, mode='r', newline='') as file:
         reader = csv.DictReader(file)
         for row in reader:
-
-            # 🔥 FILTER SESUAI DESAIN BARU
-            if (
-                row['transaksi'] in ['Beli', 'booking']
-                and row['username_pembeli'] == username
-            ) or (
-                row['transaksi'] == 'Jual'
-                and row['penjual'] == username
-            ):
+            # 🔥 FILTER UTAMA: SESSION
+            if row.get('session') == username:
                 my_history.append(row)
-
 
     if not my_history:
         print("\n   [INFO] Kamu belum pernah melakukan transaksi.")
         print("   Yuk, cari properti impianmu sekarang!")
-        print("\n==============================================================")
         input("Tekan ENTER untuk kembali...")
         return
 
@@ -99,13 +121,11 @@ def history_transaksi(username):
     for trx in my_history:
         idt = trx['id_transaksi']
 
-        # Tentukan peran user
-        if trx['transaksi'] == 'Beli':
+        # Tentukan peran berdasarkan session
+        if trx['session'] == trx['username_pembeli']:
             peran = "Pembeli"
-            lawan = trx['penjual']
         else:
             peran = "Penjual"
-            lawan = trx['username_pembeli']
 
         tgl_short = trx['tanggal'].split(' ')[0]
 
@@ -118,12 +138,12 @@ def history_transaksi(username):
         harga_display = f"Rp {int(trx['harga']):,}"
 
         raw_status = trx['status']
-        if raw_status == 'Berhasil':
-            status_icon = "✅ Berhasil"
-        elif raw_status == 'Menunggu Konfirmasi' or 'Pending / Menunggu':
+        if raw_status == 'Lunas / Selesai':
+            status_icon = "✅ Selesai"
+        elif raw_status in ('Menunggu Konfirmasi', 'Pending / Menunggu'):
             status_icon = "⏳ Menunggu"
-        elif raw_status == 'Ditolak':
-            status_icon = "❌ Ditolak"
+        elif raw_status in ('Ditolak', 'Dibatalkan'):
+            status_icon = "❌ Dibatalkan"
         else:
             status_icon = raw_status
 
