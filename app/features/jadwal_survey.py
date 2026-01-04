@@ -75,7 +75,7 @@ def survey(username, properti):
     
     tanggal_input = ""
     while True:
-        tanggal_input = input(">> Masukkan Tanggal (0 untuk kembali): ").strip()
+        tanggal_input = input(">> Masukkan Tanggal (0 untuk kembali): ")
         
         if tanggal_input == '0':
             return

@@ -58,7 +58,7 @@ def proses_input_ulasan(username, transaksi):
         else:
             print("❌ Input harus berupa angka.")
 
-    komentar = input("Tulis komentar Anda: ")
+    komentar = input("Tulis pengalaman transaksi Anda: ")
     waktu = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Simpan ke CSV
@@ -82,7 +82,7 @@ def proses_input_ulasan(username, transaksi):
 def history_transaksi(username):
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("=== [H] RIWAYAT PEMBELIAN SAYA ===")
+        print("=== [H] RIWAYAT TRANSAKSI SAYA ===")
         
         semua_transaksi = baca_csv(TRANSAKSI_FILE)
         

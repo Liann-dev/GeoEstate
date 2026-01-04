@@ -8,6 +8,9 @@ from app.features.jadwal_survey import survey
 
 FILE_USERS = "data/users.csv"
 
+def to_bool(val):
+    return str(val).strip().lower() == "true"
+
 def get_user_verified(username):
     if not os.path.exists(FILE_USERS):
         return False
@@ -22,6 +25,7 @@ def get_user_verified(username):
 
 def detail_properti(username, p):
 
+    tersedia = to_bool(p.get('tersedia', 'true'))
     harga_txt = f"Rp {int(p['harga']):,}"
 
     print("\n" * 50)
@@ -55,6 +59,11 @@ def detail_properti(username, p):
                 input("Tekan ENTER untuk kembali...")
                 return
             
+            if not tersedia:
+                print("❌ Properti sudah terjual.")
+                input("Tekan ENTER untuk kembali...")
+                continue
+
             if username == p['penjual']:
                 print("Anda tidak bisa menjadwalkan survei properti anda sendiri!")
                 input("Tekan ENTER untuk kembali...")
@@ -71,7 +80,11 @@ def detail_properti(username, p):
                 input("Tekan ENTER untuk kembali...")
                 return
 
-            
+            if not tersedia:
+                print("❌ Properti sudah terjual.")
+                input("Tekan ENTER untuk kembali...")
+                continue
+
             if username == p['penjual']:
                 print("Anda tidak bisa membeli properti anda sendiri!")
                 input("Tekan ENTER untuk kembali...")
@@ -87,7 +100,11 @@ def detail_properti(username, p):
                 input("Tekan ENTER untuk kembali...")
                 return
   
-            
+            if not tersedia:
+                print("❌ Properti sudah terjual.")
+                input("Tekan ENTER untuk kembali...")
+                continue
+
             if username == p['penjual']:
                 print("Anda tidak bisa menambahkan properti anda sendiri ke Wishlist!")
                 input("Tekan ENTER untuk kembali...")
