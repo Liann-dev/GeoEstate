@@ -266,11 +266,6 @@ def pilih_properti(username):
             input("Tekan ENTER...")
             continue
 
-        if not to_bool(item.get('tersedia', 'true')):
-            print("❌ Properti sudah terjual.")
-            input("Tekan ENTER...")
-            continue
-
         if pilihan in properti_milik_user:
             print("❌ Anda sudah memiliki properti ini.")
             input("Tekan ENTER...")

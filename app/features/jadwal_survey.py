@@ -64,7 +64,7 @@ def survey(username, properti):
     
     while True:
         tanggal_input = input(">> Masukkan Tanggal (0 untuk kembali): ")
-        if tanggal_input == 0:
+        if tanggal_input == '0':
             return
         try: 
             date_obj = datetime.strptime(tanggal_input, '%Y-%m-%d')

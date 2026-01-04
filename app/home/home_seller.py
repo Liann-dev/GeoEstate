@@ -60,7 +60,6 @@ def home_seller(username):
         print(" [U] Ulasan Saya")
         print(" [F] Feedback")
         print(" [W] Wishlist")
-        print(" [M] Menu Seller")
         print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
@@ -90,8 +89,6 @@ def home_seller(username):
             collect_feedback(username, 'seller')
         elif pilihan == 'w':  # W = Wishlist
             menu_wishlist(username)
-        elif pilihan == 'm':  # M = seller
-            seller_menu(username)
             
         else:
           
