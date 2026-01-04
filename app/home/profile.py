@@ -6,6 +6,7 @@ from app.home.jual_properti import jual_kembali_properti
 from app.features.seller_register import seller_registration_menu
 from app.features.biometric_toggle import toggle_biometrik
 from app.auth.lupa_password import ganti_password
+from app.home.seller_menu import seller_menu
 
 FILE_USERS = "data/users.csv"
 FILE_RIWAYAT = "data/properti_dimiliki.csv"
@@ -117,6 +118,8 @@ def profile(username):
         print(" [P] Properti Saya (Dimiliki)")
         if user_data['role'] == "user":
             print(" [M] Daftar Sebagai Seller")
+        if user_data['role'] == "seller":
+            print(" [M] Menu Seller")
         if user_data['user_verified'] == "false":
             print(" [V] Ajukan Verifikasi User")
         print(" [B] Kembali")
@@ -173,6 +176,8 @@ def profile(username):
                 else:
                     print("Akun anda belum terverifikasi!")
                     input("Tekan ENTER untuk kembali...")
+            elif user_data['role'] == "seller":
+                seller_menu(username)
             else:
                 print("Pilihan tidak valid!")
             continue
