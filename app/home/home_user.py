@@ -4,42 +4,44 @@ from app.home.profile import profile
 from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
-from app.home.review_user import  history_transaksi
+from app.home.review_user import history_transaksi
 from app.features.feedback import collect_feedback
 from app.features.chat import menu_chat
 from app.features.wishlist import menu_wishlist
 from app.features.jadwal_survey import lihat_jadwal_survey
 
+from app.features.notifikasi_service import get_unread_notifikasi
+from app.features.notifikasi_inbox_user import tampilkan_notifikasi_inbox
 
 FILE_PROPERTI = 'data/properti.csv'
+
 
 def load_properties():
     data = []
     if os.path.exists(FILE_PROPERTI):
         with open(FILE_PROPERTI, mode='r') as file:
             reader = csv.DictReader(file)
-            for row in reader:
-                data.append(row)
+            data.extend(reader)
     return data
 
+
 def home_user(username):
- 
     while True:
         semua_properti = load_properties()
-        
 
-        print("\n" * 50) 
+        # ===== HITUNG UNREAD NOTIFIKASI =====
+        unread = get_unread_notifikasi(username)
+        jumlah = len(unread)
+
+        print("\n" * 50)
         print(f" Halo, {username} 👋")
         print("========================================")
- 
+
         print(" 🔥 REKOMENDASI UNTUKMU:")
         if not semua_properti:
             print("    (Belum ada data properti)")
         else:
-            limit = 3
-            count = 0
-            for p in semua_properti:
-                if count >= limit: break
+            for p in semua_properti[:3]:
                 harga_txt = f"Rp {int(p['harga']):,}"
                 print(f" +--------------------------------------+")
                 print(f" | 🏠 {p['nama']:<32} |")
@@ -47,11 +49,14 @@ def home_user(username):
                 print(f" | 💰 {harga_txt:<20} {p['kategori']:>11} |")
                 print(f" | ID: {p['id']} {' '*30}|")
                 print(f" +--------------------------------------+")
-                count += 1
-        
+
         print("----------------------------------------")
-        
-  
+
+        if jumlah > 0:
+            print(f" [N] Notifikasi Inbox [Ada {jumlah} Notifikasi]")
+        else:
+            print(" [N] Notifikasi Inbox")
+
         print(" [L] Lihat Semua Properti")
         print(" [P] Profil Saya")
         print(" [I] Informasi Umum")
@@ -63,40 +68,46 @@ def home_user(username):
         print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
-        
-        pilihan = input(">> ").lower() 
 
-            
-        if pilihan == 'l':  # L = Lihat Semua
+        pilihan = input(">> ").lower()
+
+        if pilihan == 'n':
+            tampilkan_notifikasi_inbox(username)
+
+        elif pilihan == 'l':
             pilih_properti(username)
-        elif pilihan == 'p':  # P = Profil
-            P = profile(username)
-            if P == "EXIT":
-                print("\n" * 25)
+
+        elif pilihan == 'p':
+            if profile(username) == "EXIT":
                 return
-        elif pilihan == 'k':  # K = Keluar
-            print("\nTerima kasih telah menggunakan GeoEstate. Sampai jumpa lagi!")
-            input("Tekan ENTER untuk kembali ke halaman awal...")
-            print("\n" * 25)
-            return
-        elif pilihan == 'i':  # I = Informasi
+
+        elif pilihan == 'i':
             info()
-        elif pilihan == 'u':  # U = Ulasan
-            history_transaksi(username)
-        elif pilihan == 'c':  # C = Chat
+
+        elif pilihan == 'c':
             menu_chat(username)
-        elif pilihan == 'f':  # F = Feedback
-            collect_feedback(username, 'user')
-        elif pilihan == 'w':  # W = Wishlist
-            menu_wishlist(username)
-        elif pilihan == 'j': # J = Jadwal Survei
+
+        elif pilihan == 'u':
+            history_transaksi(username)
+
+        elif pilihan == 'j':
             lihat_jadwal_survey(username)
+
+        elif pilihan == 'f':
+            collect_feedback(username, 'user')
+
+        elif pilihan == 'w':
+            menu_wishlist(username)
+
+        elif pilihan == 'k':
+            print("\nTerima kasih telah menggunakan GeoEstate.")
+            input("Tekan ENTER untuk kembali...")
+            return
+
         else:
-          
-            item_pilih = next((item for item in semua_properti if item['id'] == pilihan), None)
-            
-            if item_pilih:
-              detail_properti(username,item_pilih)
+            item = next((p for p in semua_properti if p['id'] == pilihan), None)
+            if item:
+                detail_properti(username, item)
             else:
-                print(f"\n[!] Menu '{pilihan}' tidak dikenali atau ID Properti tidak ditemukan.")
-                input("Tekan ENTER untuk coba lagi...")
+                print("[!] Menu tidak dikenali.")
+                input("Tekan ENTER...")

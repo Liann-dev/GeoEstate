@@ -1,6 +1,7 @@
 import csv
 import os
 from datetime import datetime
+from app.features.notifikasi_helper import simpan_notifikasi
 
 FILE_CHAT = "data/chat.csv"
 
@@ -168,3 +169,10 @@ def kirim_pesan(sender, receiver, message):
             waktu,
             session_id
         ])
+
+    # 🔔 TRIGGER NOTIFIKASI CHAT
+    simpan_notifikasi(
+        username=receiver,
+        role="user",   # buyer & seller sama-sama user
+        pesan=f"💬 Pesan baru dari {sender}"
+    )

@@ -2,6 +2,8 @@ import csv
 import os
 import random
 from datetime import datetime
+from app.features.notifikasi_service import tambah_notifikasi
+
 
 TRANSAKSI_FILE = "data/transaksi.csv"
 
@@ -9,7 +11,11 @@ def checkout(username, p):
     print("\n=== BOOKING PROPERTI ===")
 
     harga = p.get("harga", 0)
-    penjual = p.get("penjual", "Naufal")  # sementara
+    penjual = p.get("penjual")
+    if not penjual:
+        print("❌ ERROR: Properti tidak memiliki penjual.")
+        input("Tekan ENTER...")
+        return
 
     print(f"Properti : {p['nama']}")
     print(f"Harga    : Rp {harga}")
@@ -17,12 +23,12 @@ def checkout(username, p):
     tanggal_booking = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     id_transaksi = f"GES-{random.randint(1000, 9999)}"
 
+    os.makedirs(os.path.dirname(TRANSAKSI_FILE), exist_ok=True)
     transaksi_exists = os.path.exists(TRANSAKSI_FILE)
 
     with open(TRANSAKSI_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
 
-        # HEADER (TAMBAH session)
         if not transaksi_exists:
             writer.writerow([
                 "id_transaksi",
@@ -37,10 +43,9 @@ def checkout(username, p):
                 "session"
             ])
 
-        # ================= BARIS UNTUK PEMBELI =================
         writer.writerow([
             id_transaksi,
-            username,           # pembeli
+            username,
             penjual,
             p["id"],
             p["nama"],
@@ -48,13 +53,12 @@ def checkout(username, p):
             tanggal_booking,
             "booking",
             "Menunggu Konfirmasi",
-            username             # session pembeli
+            username
         ])
 
-        # ================= BARIS UNTUK PENJUAL =================
         writer.writerow([
             id_transaksi,
-            username,           # pembeli tetap sama
+            username,
             penjual,
             p["id"],
             p["nama"],
@@ -62,9 +66,15 @@ def checkout(username, p):
             tanggal_booking,
             "booking",
             "Menunggu Konfirmasi",
-            penjual              # session penjual
+            penjual
         ])
 
-    print("\n✅ Booking berhasil!")
+        print("\n✅ Booking berhasil!")
     print("📌 Status: Menunggu Konfirmasi")
+
+    tambah_notifikasi(
+        penjual,
+        f"📌 Booking baru untuk properti '{p['nama']}' dari buyer {username}"
+    )
+
     input("Tekan ENTER untuk kembali...")

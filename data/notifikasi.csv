@@ -1,0 +1,9 @@
+id,username,role,pesan,status,timestamp
+NTF-4bcf3c9a,Naufal,seller,📌 Booking baru untuk properti 'Resort Rancawana' dari buyer Testing,read,2026-01-05 01:35:06
+NTF-46b7f01b,Testing,user,Booking properti 'Resort Rancawana' diperpanjang oleh seller,read,2026-01-05 01:36:14
+NTF-8a2be2e1,LianDev,seller,📌 Booking baru untuk properti 'Cihuy' dari buyer Testing,read,2026-01-05 01:46:49
+NTF-947f30c8,Testing,user,Properti 'Cihuy' berhasil dibeli,read,2026-01-05 01:47:44
+NTF-3b9afae9,LianDev,seller,💰 Properti 'Cihuy' berhasil terjual,read,2026-01-05 01:47:44
+NTF-df1ecf0c,Adi,user,💬 Pesan baru dari Testing,read,2026-01-05 01:48:34
+NTF-4817f160,Adi,seller,📌 Booking baru untuk properti 'Havana Resort' dari buyer Testing,read,2026-01-05 01:48:39
+NTF-e7211766,Adi,user,💬 Pesan baru dari Testing,read,2026-01-05 01:48:56
