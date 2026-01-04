@@ -30,6 +30,7 @@ def main():
         # LOGIN USER
         # =====================
         elif pilihan == '2':
+            P = 1
             user = login()
             if user:
                 if user['role'] == 'user':
@@ -46,7 +47,6 @@ def main():
         # =====================
         elif pilihan == '3':
             lupa_password()
-
         # =====================
         # EXIT
         # =====================

@@ -1,4 +1,5 @@
-id_transaksi,schedule
-GES-1332,2026-01-01
-GES-1226,2026-01-03
-GES-5098,0202-12-12
+id_transaksi,schedule,session
+GES-1332,2026-01-01,
+GES-1226,2026-01-03,
+GES-5098,2029-12-12,
+GES-1059,2002-10-10,Naufal

@@ -30,8 +30,22 @@ def simpan_transaksi_jual(username_penjual, riwayat):
             riwayat['nama'],
             riwayat['harga'],
             tanggal,
-            "Jual",
-            "Lunas / Selesai"
+            "return",
+            "Lunas / Selesai",
+            username_penjual
+        ])
+
+        writer.writerow([
+            trc_id,
+            riwayat['penjual'],   # PEMBELI BARU (pemilik setelah jual)
+            username_penjual,     # PENJUAL (pemilik sebelum jual)
+            riwayat['id'],
+            riwayat['nama'],
+            riwayat['harga'],
+            tanggal,
+            "return",
+            "Lunas / Selesai",
+            riwayat['penjual']
         ])
 
     return trc_id
@@ -92,5 +106,5 @@ def jual_kembali_properti(username):
     trc_id = simpan_transaksi_jual(username, riwayat)
 
     print("\n✅ Properti berhasil dijual kembali ke pemilik sebelumnya.")
-    print(f"ID Transaksi Jual: {trc_id}")
+    print(f"ID Transaksi: {trc_id}")
     input("Tekan ENTER untuk kembali...")

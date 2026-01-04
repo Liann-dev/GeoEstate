@@ -203,8 +203,8 @@ def seller_menu(username):
         print("1. Tambah Properti Baru")
         print("2. Lihat Properti Saya")
         print("3. Hapus Properti Saya")
-        print("4. Kelola Pesanan Masuk")  
-        print("5. Lihat Ulasan Properti Saya")
+        print("4. Kelola Data Booking")  
+        print("5. Lihat Ulasan Saya")
         print("6. Kembali")
         print("==================================")
 
@@ -231,7 +231,7 @@ def seller_menu(username):
             hapus_properti_saya(username)
 
         # =========================
-        # OPSI 4: KELOLA PESANAN 
+        # OPSI 4: KELOLA BOOKING 
         # =========================
         elif pilihan == "4":
             menu_kelola_pesanan(username) 

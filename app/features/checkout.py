@@ -1,6 +1,5 @@
 import csv
 import os
-import uuid
 import random
 from datetime import datetime
 
@@ -32,12 +31,12 @@ def checkout(username, p):
     tanggal_booking = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     id_transaksi = f"GES-{random.randint(1000, 9999)}"
 
-    # ================= SIMPAN TRANSAKSI =================
     transaksi_exists = os.path.exists(TRANSAKSI_FILE)
 
     with open(TRANSAKSI_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
 
+        # HEADER (TAMBAH session)
         if not transaksi_exists:
             writer.writerow([
                 "id_transaksi",
@@ -48,22 +47,39 @@ def checkout(username, p):
                 "harga",
                 "tanggal",
                 "transaksi",
-                "status"
+                "status",
+                "session"
             ])
 
+        # ================= BARIS UNTUK PEMBELI =================
         writer.writerow([
             id_transaksi,
-            username,
+            username,           # pembeli
             penjual,
             p["id"],
             p["nama"],
             harga,
             tanggal_booking,
             "booking",
-            "Menunggu Konfirmasi"
+            "Menunggu Konfirmasi",
+            username             # session pembeli
         ])
 
-    # ================= SIMPAN SCHEDULE =================
+        # ================= BARIS UNTUK PENJUAL =================
+        writer.writerow([
+            id_transaksi,
+            username,           # pembeli tetap sama
+            penjual,
+            p["id"],
+            p["nama"],
+            harga,
+            tanggal_booking,
+            "booking",
+            "Menunggu Konfirmasi",
+            penjual              # session penjual
+        ])
+
+    # ================= SIMPAN SCHEDULE (TETAP SATU) =================
     schedule_exists = os.path.exists(SCHEDULE_FILE)
 
     with open(SCHEDULE_FILE, "a", newline="", encoding="utf-8") as f:
@@ -75,14 +91,21 @@ def checkout(username, p):
                 "schedule"
             ])
 
+        # ================= BARIS UNTUK PEMBELI =================
         writer.writerow([
             id_transaksi,
-            schedule.strftime("%Y-%m-%d")
+            schedule.strftime("%Y-%m-%d"),
+            username
+        ])
+
+        # ================= BARIS UNTUK PENJUAL =================
+        writer.writerow([
+            id_transaksi,
+            schedule.strftime("%Y-%m-%d"),
+            penjual
         ])
 
     print("\n✅ Booking berhasil!")
     print(f"📅 Jadwal: {schedule}")
     print("📌 Status: Menunggu Konfirmasi")
-    while True:
-        input("Tekan ENTER untuk kembali...")
-        break
+    input("Tekan ENTER untuk kembali...")
