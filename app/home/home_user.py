@@ -8,6 +8,7 @@ from app.home.review_user import  history_transaksi
 from app.features.feedback import collect_feedback
 from app.features.chat import menu_chat
 from app.features.wishlist import menu_wishlist
+from app.features.jadwal_survey import lihat_jadwal_survey
 
 
 FILE_PROPERTI = 'data/properti.csv'
@@ -56,6 +57,7 @@ def home_user(username):
         print(" [I] Informasi Umum")
         print(" [C] Kirim Pesan (Chat)")
         print(" [H] Histori")
+        print(" [J] Jadwal Survei")
         print(" [F] Feedback")
         print(" [W] Wishlist")
         print(" [K] Keluar / Logout")
@@ -87,7 +89,8 @@ def home_user(username):
             collect_feedback(username, 'user')
         elif pilihan == 'w':  # W = Wishlist
             menu_wishlist(username)
-
+        elif pilihan == 'j': # J = Jadwal Survei
+            lihat_jadwal_survey(username)
         else:
           
             item_pilih = next((item for item in semua_properti if item['id'] == pilihan), None)

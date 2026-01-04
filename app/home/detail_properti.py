@@ -4,6 +4,7 @@ import time
 
 from app.features.checkout import checkout
 from app.features.wishlist import tambah_ke_wishlist
+from app.features.jadwal_survey import survey
 
 FILE_USERS = "data/users.csv"
 
@@ -48,10 +49,20 @@ def detail_properti(username, p):
         pilihan = input(">> Pilih opsi: ")
 
         if pilihan == '1':
-            print("COMING SOON: Fitur Jadwalkan Survei Properti!")
-            time.sleep(2)
-            input("Tekan ENTER untuk kembali...")
+            
+            if not get_user_verified(username):
+                print("Anda belum terverifikasi!")
+                input("Tekan ENTER untuk kembali...")
+                return
+            
+            if username == p['penjual']:
+                print("Anda tidak bisa menjadwalkan survei properti anda sendiri!")
+                input("Tekan ENTER untuk kembali...")
+                return
+            
+            survey(username, p)
             return
+
 
         elif pilihan == '2':
 
