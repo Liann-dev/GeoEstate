@@ -26,7 +26,6 @@ def seller_review(username):
         print(f"[{i}]")
         print(f"🧾 ID Transaksi  : {review['id_transaksi']}")
         print(f"👤 Nama Pembeli  : {review['username_pembeli']}")
-        print(f"💲 Nama Penjual  : {review['penjual']}")
         print(f"🏠 ID Properti   : {review['id_properti']}")
         print(f"⭐ Rating        : {review['rating']} / 5")
         print(f"💬 Ulasan        : {review['review_text']}")

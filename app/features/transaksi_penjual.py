@@ -201,6 +201,17 @@ def update_status_pesanan(penjual_login):
     for row in semua_data:
         if row['id_transaksi'] == id_input:
             row['status'] = status_baru
+            
+        if pilihan == "1":
+            if row['id_transaksi'] == id_input:
+                if row['session'] == row['username_pembeli']:
+                    row['transaksi'] = "beli"
+                if row['session'] == row['penjual']:
+                    row['transaksi'] = "jual"
+        if pilihan == "2":
+            if row['id_transaksi'] == id_input:
+                if row['session'] == row['username_pembeli']:
+                    row['transaksi'] = "batal"
 
     simpan_perubahan_csv(semua_data)
 
@@ -234,7 +245,7 @@ def simpan_ke_riwayat(row):
         "harga": properti['harga'],
         "penjual": properti['penjual'],
         "tanggal": tanggal,
-        "transaksi": "booking"
+        "transaksi": "beli"
     }
 
     file_ada = os.path.exists(FILE_RIWAYAT)

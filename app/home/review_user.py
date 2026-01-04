@@ -4,7 +4,7 @@ from datetime import datetime
 
 # Lokasi File
 TRANSAKSI_FILE = "data/transaksi.csv"
-REVIEWS_FILE = "data/reviews.csv"
+REVIEW_FILE = "data/reviews.csv"
 
 def baca_csv(path):
     if os.path.exists(path):
@@ -25,21 +25,32 @@ def tulis_csv(path, fieldnames, data):
     writer.writerows(data)
     file.close()
 
-def cek_sudah_review(transaksi_id):
-    reviews = baca_csv(REVIEWS_FILE)
-    sudah_ada = False
+def cek_sudah_review(id_transaksi, username):
+    reviews = baca_csv(REVIEW_FILE)
     for row in reviews:
-        if row['id_transaksi'] == transaksi_id:
-            sudah_ada = True
-            break
-    return sudah_ada
+        if row['id_transaksi'] == id_transaksi and row['username_pembeli'] == username:
+            return True
+    return False
 
+def cari_transaksi_valid(username, id_transaksi):
+    with open(TRANSAKSI_FILE, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if (
+                row["id_transaksi"] == id_transaksi
+                and row.get("session") == username
+                and row["status"] == "Lunas / Selesai"
+                and row["transaksi"] == "beli"
+            ):
+                return row
+    return None
+  
 # Perbaikan: Parameter diganti jadi 'username' (string)
 def proses_input_ulasan(username, transaksi):
     os.system('cls' if os.name == 'nt' else 'clear')
     print("=== TULIS ULASAN ===")
-    print("Properti : " + transaksi['nama_properti'])
-    print("Seller   : " + transaksi['penjual'])
+    print("Properti  : " + transaksi['nama_properti'])
+    print("Seller    : " + transaksi['penjual'])
     print("-" * 40)
 
     # Validasi Rating
@@ -58,7 +69,11 @@ def proses_input_ulasan(username, transaksi):
         else:
             print("❌ Input harus berupa angka.")
 
-    komentar = input("Tulis pengalaman transaksi Anda: ")
+    komentar = input("Tulis pengalaman transaksi Anda (ENTER untuk keluar): ")
+
+    if not komentar:
+        return
+    
     waktu = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Simpan ke CSV
@@ -73,45 +88,60 @@ def proses_input_ulasan(username, transaksi):
     }]
     
     header = ['id_transaksi', 'reviewer', 'seller', 'id_properti', 'rating', 'komentar', 'tanggal']
-    tulis_csv(REVIEWS_FILE, header, review_baru)
+    tulis_csv(REVIEW_FILE, header, review_baru)
     
     print("\n✅ Ulasan berhasil disimpan!")
     input("Tekan Enter untuk kembali...")
 
 # Perbaikan: Parameter diganti jadi 'username' (string)
-def history_transaksi(username):
+def user_review(username):
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("=== [H] RIWAYAT TRANSAKSI SAYA ===")
-        
-        semua_transaksi = baca_csv(TRANSAKSI_FILE)
-        
-        # 1. Filter: Ambil transaksi milik user ini saja
-        my_history = []
-        for trx in semua_transaksi:
-            # Perbaikan: Langsung bandingkan dengan string 'username'
-            if trx['username_pembeli'] == username: 
-                my_history.append(trx)
+        print("=== RIWAYAT PEMBELIAN SAYA ===")
 
-        if len(my_history) == 0:
+        semua_transaksi = baca_csv(TRANSAKSI_FILE)
+
+        # ================= FILTER DATA =================
+        my_history = [
+            trx for trx in semua_transaksi
+            if (
+                trx.get('session') == username
+            )
+        ]
+
+        if not my_history:
             print("\nAnda belum memiliki riwayat pembelian properti.")
             input("\nTekan Enter untuk kembali...")
             break
 
-        # 2. Tampilkan Tabel
+        # ================= TABEL =================
+        COL_NO = 3
+        COL_ID = 12
+        COL_TGL = 12
+        COL_NAMA = 22
+        COL_STATUS = 18
+
         print("-" * 95)
-        print(f"{'No':<3} | {'Tanggal':<11} | {'Nama Properti':<20} | {'Status':<18} | {'Keterangan'}")
-        print("-" * 95)
+        print(
+            f"{'No':<{COL_NO}} | "
+            f"{'ID Transaksi':<{COL_ID}} | "
+            f"{'Tanggal':<{COL_TGL}} | "
+            f"{'Nama Properti':<{COL_NAMA}} | "
+            f"{'Status':<{COL_STATUS}} | "
+            f"Keterangan"
+        )
+        print("-" * 97)
 
         nomor = 1
         for trx in my_history:
-            tgl_pendek = trx['tanggal'][0:10] 
+            tgl_pendek = trx['tanggal'][0:10]
+            id_transaksi = trx['id_transaksi']
             status = trx['status']
-            
+
             info_review = ""
-            
+
             if "Lunas" in status or "Selesai" in status:
-                if cek_sudah_review(trx['id_transaksi']):
+                if cek_sudah_review(trx['id_transaksi'], username):
                     info_review = "✅ Sudah Diulas"
                 else:
                     info_review = "⭐ BISA DIULAS"
@@ -120,38 +150,89 @@ def history_transaksi(username):
             else:
                 info_review = "⏳ Menunggu"
 
-            print(f"{nomor:<3} | {tgl_pendek:<11} | {trx['nama_properti']:<20} | {status:<18} | {info_review}")
-            nomor = nomor + 1
-        
-        print("-" * 95)
-        
-        print("\nOpsi:")
-        print("[0] Kembali ke Menu Utama")
-        print("[No] Masukkan Nomor Urut (1, 2, dst) untuk memberi ulasan.")
-        
-        pilihan = input(">> Pilihan Anda: ")
+            print(
+            f"{nomor:<{COL_NO}} | "
+            f"{id_transaksi:<{COL_ID}} | "
+            f"{tgl_pendek:<{COL_TGL}} | "
+            f"{trx['nama_properti']:<{COL_NAMA}} | "
+            f"{status:<{COL_STATUS}} | "
+            f"{info_review}"
+)
 
+            nomor += 1
+
+        print("-" * 97)
+
+        # ================= MENU =================
+        print("\nOpsi:")
+        print("[No] Beri Ulasan Transaksi (Ketik 1, 2, dst.)")
+        print("[L]  Lihat Ulasan Saya")
+        print("[0]  Kembali")
+
+        pilihan = input(">> Pilihan Anda: ").strip()
+
+        # ================= KELUAR =================
         if pilihan == '0':
-            break 
-        
-        if pilihan.isdigit():
-            index = int(pilihan) - 1
-            if index >= 0 and index < len(my_history):
-                transaksi_pilih = my_history[index]
-                status_trx = transaksi_pilih['status']
-                
-                if "Lunas" in status_trx or "Selesai" in status_trx:
-                    if cek_sudah_review(transaksi_pilih['id_transaksi']):
-                        print("\n❌ Transaksi ini sudah Anda ulas sebelumnya!")
-                        input("Tekan Enter...")
-                    else:
-                        proses_input_ulasan(username, transaksi_pilih)
-                else:
-                    print("\n❌ Hanya transaksi yang LUNAS/SELESAI yang boleh diulas.")
-                    input("Tekan Enter...")
-            else:
-                print("\n❌ Nomor tidak ditemukan dalam daftar.")
-                input("Tekan Enter...")
-        else:
-            print("\n❌ Masukkan angka nomor urut yang benar.")
+            break
+
+        # ================= LIHAT ULASAN =================
+        if pilihan.upper() == 'L':
+            print("\n=== ULASAN PEMBELIAN SAYA ===\n")
+
+            reviews = []
+            if os.path.exists(REVIEW_FILE):
+                with open(REVIEW_FILE, "r", encoding="utf-8", newline="") as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        if row.get("username_pembeli") == username:
+                            reviews.append(row)
+
+            if not reviews:
+                print("Belum ada ulasan.")
+                input("\nTekan ENTER untuk kembali...")
+                continue
+
+            for i, r in enumerate(reviews, start=1):
+                print(f"[{i}]")
+                print(f"🧾 ID Transaksi : {r['id_transaksi']}")
+                print(f"🏠 ID Properti  : {r['id_properti']}")
+                print(f"👤 Penjual      : {r['penjual']}")
+                print(f"⭐ Rating       : {r['rating']} / 5")
+                print(f"💬 Ulasan       : {r['review_text']}")
+                print(f"🕒 Tanggal      : {r['tanggal_review']}")
+                print("-" * 40)
+
+            input("Tekan ENTER untuk kembali...")
+            continue
+
+        # ================= INPUT ULASAN =================
+        if not pilihan.isdigit():
+            print("\n❌ Masukkan nomor yang valid.")
             input("Tekan Enter...")
+            continue
+
+        index = int(pilihan) - 1
+        if index < 0 or index >= len(my_history):
+            print("\n❌ Nomor tidak ditemukan.")
+            input("Tekan Enter...")
+            continue
+
+        trx_pilih = my_history[index]
+
+        trx_valid = cari_transaksi_valid(
+            username,
+            trx_pilih['id_transaksi']
+        )
+
+        if not trx_valid:
+            print("\n❌ Transaksi ini tidak memenuhi syarat untuk diulas.")
+            input("Tekan Enter...")
+            continue
+
+        if cek_sudah_review(trx_valid['id_transaksi'], username):
+            print("\n❌ Transaksi ini sudah Anda ulas.")
+            input("Tekan Enter...")
+            continue
+
+        # ✅ FINAL: proses ulasan
+        proses_input_ulasan(username, trx_valid)

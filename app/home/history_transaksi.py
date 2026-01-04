@@ -26,10 +26,10 @@ def hapus_transaksi(username, id_transaksi):
                 target = row
 
                 if (
-                    row['transaksi'] == 'booking'
+                    row['transaksi'] == 'beli'
                     and row['username_pembeli'] == username
                 ) or (
-                    row['transaksi'] == 'return'
+                    row['transaksi'] == 'jual'
                     and row['penjual'] == username
                 ):
                     milik_user = True
@@ -83,7 +83,9 @@ def history_transaksi(username):
         reader = csv.DictReader(file)
         for row in reader:
             # 🔥 FILTER UTAMA: SESSION
-            if row.get('session') == username:
+            if (row.get('session') == username
+            and row.get('transaksi') in ('beli, jual')
+            ):
                 my_history.append(row)
 
     if not my_history:
@@ -93,17 +95,18 @@ def history_transaksi(username):
         return
 
     # ================= TABEL RIWAYAT =================
-    print(f" {'ID':<8} |{'PERAN':<10} | {'TANGGAL':<12} | {'NAMA PROPERTI':<20} | {'HARGA':<20} | {'STATUS'}")
-    print(" " + "-" * 105)
+    print("-" * 85)
+    print(f" {'ID':<8} |{'TRANSAKSI':<10} | {'TANGGAL':<12} | {'NAMA PROPERTI':<20} | {'HARGA':<20}")
+    print("-" * 85)
 
     for trx in my_history:
         idt = trx['id_transaksi']
 
-        # Tentukan peran berdasarkan session
-        if trx['session'] == trx['username_pembeli']:
-            peran = "Pembeli"
-        else:
-            peran = "Penjual"
+        # Tentukan jenis transaksi
+        if trx['transaksi'] == 'beli':
+            transaksi = "Beli"
+        elif trx['transaksi'] == 'jual':
+            transaksi = "Jual"
 
         tgl_short = trx['tanggal'].split(' ')[0]
 
@@ -115,22 +118,12 @@ def history_transaksi(username):
 
         harga_display = f"Rp {int(trx['harga']):,}"
 
-        raw_status = trx['status']
-        if raw_status == 'Lunas / Selesai':
-            status_icon = "✅ Selesai"
-        elif raw_status in ('Menunggu Konfirmasi', 'Pending / Menunggu'):
-            status_icon = "⏳ Menunggu"
-        elif raw_status in ('Ditolak', 'Dibatalkan'):
-            status_icon = "❌ Dibatalkan"
-        else:
-            status_icon = raw_status
-
         print(
-            f" {idt:<8} | {peran:<10} | {tgl_short:<12} | "
-            f"{nama_display:<20} | {harga_display:<20} | {status_icon}"
+            f" {idt:<8} | {transaksi:<9} | {tgl_short:<12} | "
+            f"{nama_display:<20} | {harga_display:<20}"
         )
 
-    print("\n====================================================================================================")
+    print("=" * 85)
     print(f" Total Transaksi: {len(my_history)}")
 
     # ================= OPSI =================
