@@ -1,6 +1,7 @@
 import csv
 import os
 import time
+import random
 from datetime import datetime
 
 FILE_JADWAL = 'data/jadwalsurvey.csv'
@@ -62,7 +63,9 @@ def survey(username, properti):
     print("Format: YYYY-MM-DD (Contoh: 2025-12-20)")
     
     while True:
-        tanggal_input = input(">> Masukkan Tanggal: ")
+        tanggal_input = input(">> Masukkan Tanggal (0 untuk kembali): ")
+        if tanggal_input == 0:
+            return
         try: 
             date_obj = datetime.strptime(tanggal_input, '%Y-%m-%d')
             if date_obj.date() < datetime.now().date():
@@ -81,7 +84,7 @@ def survey(username, properti):
     
     waktu_pilih = ""
     while True:
-        opsi_waktu = input(">> Pilih waktu (1/2/3): ")
+        opsi_waktu = input(">> Pilih waktu (1/2/3) (0 untuk kembali): ")
         if opsi_waktu == '1':
             waktu_pilih = "09:00"
             break
@@ -91,6 +94,8 @@ def survey(username, properti):
         elif opsi_waktu == '3':
             waktu_pilih = "16:00"
             break
+        elif opsi_waktu == '0':
+            return
         else:
             print("❌ Pilihan tidak valid.")
             input("Tekan ENTER untuk coba lagi...")
@@ -104,7 +109,6 @@ def survey(username, properti):
        
         srv_id = f"SRV-{random.randint(1000, 9999)}"
         
-       
         data_baru = {
             'id': srv_id,
             'id_properti': properti['id'],
@@ -119,9 +123,7 @@ def survey(username, properti):
         
  
         simpan_jadwal_csv(data_baru)
-        
-      
-        ui_sukses_request(new_id)
+        ui_sukses_request(srv_id)
     else:
         print("Pembuatan jadwal dibatalkan.")
         time.sleep(1)

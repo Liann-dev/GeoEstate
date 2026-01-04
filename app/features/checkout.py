@@ -4,17 +4,6 @@ import random
 from datetime import datetime
 
 TRANSAKSI_FILE = "data/transaksi.csv"
-SCHEDULE_FILE = "data/booking_schedule.csv"
-
-
-def input_schedule():
-    while True:
-        schedule = input("Masukkan jadwal (YYYY-MM-DD): ").strip()
-        try:
-            return datetime.strptime(schedule, "%Y-%m-%d").date()
-        except ValueError:
-            print("❌ Format tanggal salah. Contoh: 2025-01-10")
-
 
 def checkout(username, p):
     print("\n=== BOOKING PROPERTI ===")
@@ -24,9 +13,6 @@ def checkout(username, p):
 
     print(f"Properti : {p['nama']}")
     print(f"Harga    : Rp {harga}")
-
-    # ================= INPUT SCHEDULE =================
-    schedule = input_schedule()
 
     tanggal_booking = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     id_transaksi = f"GES-{random.randint(1000, 9999)}"
@@ -79,33 +65,6 @@ def checkout(username, p):
             penjual              # session penjual
         ])
 
-    # ================= SIMPAN SCHEDULE (TETAP SATU) =================
-    schedule_exists = os.path.exists(SCHEDULE_FILE)
-
-    with open(SCHEDULE_FILE, "a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-
-        if not schedule_exists:
-            writer.writerow([
-                "id_transaksi",
-                "schedule"
-            ])
-
-        # ================= BARIS UNTUK PEMBELI =================
-        writer.writerow([
-            id_transaksi,
-            schedule.strftime("%Y-%m-%d"),
-            username
-        ])
-
-        # ================= BARIS UNTUK PENJUAL =================
-        writer.writerow([
-            id_transaksi,
-            schedule.strftime("%Y-%m-%d"),
-            penjual
-        ])
-
     print("\n✅ Booking berhasil!")
-    print(f"📅 Jadwal: {schedule}")
     print("📌 Status: Menunggu Konfirmasi")
     input("Tekan ENTER untuk kembali...")
