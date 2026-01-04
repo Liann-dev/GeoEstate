@@ -1,5 +1,6 @@
 import csv
 import os
+import pwinput  # Import library pwinput
 
 FILE_USERS = "data/users.csv"
 
@@ -18,7 +19,8 @@ def login():
         if not login_input:
             return
         
-        password = input("Masukkan Password: ").strip()
+        # MENGGUNAKAN PWINPUT UNTUK PASSWORD
+        password = pwinput.pwinput(prompt="Masukkan Password: ", mask="*").strip()
 
         # Validasi jika input kosong agar tidak langsung mengurangi kesempatan
         if login_input == "" or password == "":
@@ -74,7 +76,9 @@ def login_admin():
         print(f"\n--- Login Admin GeoEstate ---")
 
         login_input = input("Masukkan Username atau Email: ").strip()
-        password = input("Masukkan Password: ").strip()
+        
+        # MENGGUNAKAN PWINPUT UNTUK PASSWORD ADMIN
+        password = pwinput.pwinput(prompt="Masukkan Password: ", mask="*").strip()
 
         # Validasi jika input kosong agar tidak langsung mengurangi kesempatan
         if login_input == "" or password == "":
