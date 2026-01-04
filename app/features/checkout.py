@@ -2,41 +2,33 @@ import csv
 import os
 import random
 from datetime import datetime
+from app.features.notifikasi_service import tambah_notifikasi
+
 
 TRANSAKSI_FILE = "data/transaksi.csv"
-SCHEDULE_FILE = "data/booking_schedule.csv"
-
-
-def input_schedule():
-    while True:
-        schedule = input("Masukkan jadwal (YYYY-MM-DD): ").strip()
-        try:
-            return datetime.strptime(schedule, "%Y-%m-%d").date()
-        except ValueError:
-            print("❌ Format tanggal salah. Contoh: 2025-01-10")
-
 
 def checkout(username, p):
     print("\n=== BOOKING PROPERTI ===")
 
     harga = p.get("harga", 0)
-    penjual = p.get("penjual", "Naufal")  # sementara
+    penjual = p.get("penjual")
+    if not penjual:
+        print("❌ ERROR: Properti tidak memiliki penjual.")
+        input("Tekan ENTER...")
+        return
 
     print(f"Properti : {p['nama']}")
     print(f"Harga    : Rp {harga}")
 
-    # ================= INPUT SCHEDULE =================
-    schedule = input_schedule()
-
     tanggal_booking = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     id_transaksi = f"GES-{random.randint(1000, 9999)}"
 
+    os.makedirs(os.path.dirname(TRANSAKSI_FILE), exist_ok=True)
     transaksi_exists = os.path.exists(TRANSAKSI_FILE)
 
     with open(TRANSAKSI_FILE, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
 
-        # HEADER (TAMBAH session)
         if not transaksi_exists:
             writer.writerow([
                 "id_transaksi",
@@ -51,10 +43,9 @@ def checkout(username, p):
                 "session"
             ])
 
-        # ================= BARIS UNTUK PEMBELI =================
         writer.writerow([
             id_transaksi,
-            username,           # pembeli
+            username,
             penjual,
             p["id"],
             p["nama"],
@@ -62,50 +53,28 @@ def checkout(username, p):
             tanggal_booking,
             "booking",
             "Menunggu Konfirmasi",
-            username             # session pembeli
-        ])
-
-        # ================= BARIS UNTUK PENJUAL =================
-        writer.writerow([
-            id_transaksi,
-            username,           # pembeli tetap sama
-            penjual,
-            p["id"],
-            p["nama"],
-            harga,
-            tanggal_booking,
-            "booking",
-            "Menunggu Konfirmasi",
-            penjual              # session penjual
-        ])
-
-    # ================= SIMPAN SCHEDULE (TETAP SATU) =================
-    schedule_exists = os.path.exists(SCHEDULE_FILE)
-
-    with open(SCHEDULE_FILE, "a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-
-        if not schedule_exists:
-            writer.writerow([
-                "id_transaksi",
-                "schedule"
-            ])
-
-        # ================= BARIS UNTUK PEMBELI =================
-        writer.writerow([
-            id_transaksi,
-            schedule.strftime("%Y-%m-%d"),
             username
         ])
 
-        # ================= BARIS UNTUK PENJUAL =================
         writer.writerow([
             id_transaksi,
-            schedule.strftime("%Y-%m-%d"),
+            username,
+            penjual,
+            p["id"],
+            p["nama"],
+            harga,
+            tanggal_booking,
+            "booking",
+            "Menunggu Konfirmasi",
             penjual
         ])
 
-    print("\n✅ Booking berhasil!")
-    print(f"📅 Jadwal: {schedule}")
+        print("\n✅ Booking berhasil!")
     print("📌 Status: Menunggu Konfirmasi")
+
+    tambah_notifikasi(
+        penjual,
+        f"📌 Booking baru untuk properti '{p['nama']}' dari buyer {username}"
+    )
+
     input("Tekan ENTER untuk kembali...")

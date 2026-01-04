@@ -46,7 +46,7 @@ def get_properti_milik_user(username):
 # =========================
 # LOAD & FILTER
 # =========================
-def load_properti_terverifikasi():
+def load_properti():
     if not os.path.exists(FILE_PROPERTI):
         return []
 
@@ -54,8 +54,7 @@ def load_properti_terverifikasi():
     with open(FILE_PROPERTI, newline='') as file:
         reader = csv.DictReader(file)
         for p in reader:
-            if to_bool(p.get('doc_verified', 'false')):
-                data.append(p)
+            data.append(p)
 
     return data
 
@@ -108,7 +107,7 @@ def search_properti(data, keyword):
 # MAIN FLOW
 # =========================
 def pilih_properti(username):
-    semua_properti = load_properti_terverifikasi()
+    semua_properti = load_properti()
     properti_milik_user = get_properti_milik_user(username)
 
     if not semua_properti:
@@ -263,11 +262,6 @@ def pilih_properti(username):
 
         if not item:
             print("❌ ID Properti tidak ditemukan.")
-            input("Tekan ENTER...")
-            continue
-
-        if not to_bool(item.get('tersedia', 'true')):
-            print("❌ Properti sudah terjual.")
             input("Tekan ENTER...")
             continue
 

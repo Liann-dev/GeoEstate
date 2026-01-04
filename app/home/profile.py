@@ -7,6 +7,8 @@ from app.home.jual_properti import jual_kembali_properti
 from app.features.seller_register import seller_registration_menu
 from app.features.biometric_toggle import toggle_biometrik
 from app.auth.lupa_password import ganti_password
+from app.home.seller_menu import seller_menu
+from app.Utils.animation import loading_seller_transition 
 
 FILE_USERS = "data/users.csv"
 FILE_RIWAYAT = "data/properti_dimiliki.csv"
@@ -118,15 +120,13 @@ def profile(username):
         print(" [H] History Transaksi")
         print(" [P] Properti Saya")
         print(" [K] Keamanan & Password")
-
         if user_data["user_verified"] == "false":
             print(" [V] Ajukan Verifikasi Data User")
-
         if user_data["role"] == "user":
             print(" [M] Daftar Sebagai Seller")
-
+        if user_data['role'] == "seller":
+            print(" [M] Menu Seller")
         print(" [B] Kembali")
-
         pilihan = input("\nPilih menu: ").lower().strip()
 
         # =========================
@@ -171,19 +171,27 @@ def profile(username):
                     has_active_request,
                     ajukan_verifikasi_user
                 )
-
                 if has_active_request(username):
                     print("\n❌ Anda sudah mengajukan verifikasi dan sedang diproses oleh Admin.")
                     input("Tekan ENTER...")
                 else:
                     ajukan_verifikasi_user(username)
-            else:
+                    
+        elif user_data['role'] == "seller":
+                loading_seller_transition()
+                seller_menu(username)
+        else:
                 print("Pilihan tidak valid!")
 
         elif pilihan == "m":
             if user_data["role"] == "user":
                 if user_data["user_verified"] == "true":
                     seller_registration_menu(username)
+                elif user_data['role'] == "seller":
+                loading_seller_transition()
+                seller_menu(username)
+                elif:
+                 print("Pilihan tidak valid!")
                 else:
                     print("\n❌ Akun belum terverifikasi.")
                     input("Tekan ENTER...")

@@ -1,3 +1,9 @@
-id_transaksi,username,id,nama,kategori,lokasi,harga,penjual,doc_verified,tanggal,transaksi
-GES-5838,Adit,2,Villa Air,Villa,Ciwidey,1500000000,Adi,True,2025-12-22 10:42:10,booking
-GES-5189,Testing,7,Cibiru Kost,Villa,Cibiru Indah 3,200000000,LianDev,True,2025-12-31 15:51:49,booking
+id_transaksi,username,id,nama,kategori,lokasi,harga,penjual,tanggal,transaksi
+GES-5838,Adit,2,Villa Air,Villa,Ciwidey,1500000000,Adi,2025-12-22 10:42:10,Beli
+GES-5738,Adit,2,Villa Air,Villa,Ciwidey,1500000000,Adi,2025-12-27 14:50:28,Beli
+GES-5189,Testing,7,Cibiru Kost,Villa,Cibiru Indah 3,200000000,LianDev,2025-12-31 15:51:49,Beli
+GES-5098,Adi,5,Resort Rancawana,Resort,Rancabuaya,120000000,Naufal,2026-01-02 17:22:56,Beli
+GES-4609,Testing,1,Rumah Panjang,Rumah,Bandung,1000000000,Naufal,2026-01-05 00:12:41,booking
+GES-4609,Testing,1,Rumah Panjang,Rumah,Bandung,1000000000,Naufal,2026-01-05 00:12:41,booking
+GES-3518,Testing,6,Cihuy,Rumah,Gedebage,1200000000,LianDev,2026-01-05 01:47:44,booking
+GES-3518,Testing,6,Cihuy,Rumah,Gedebage,1200000000,LianDev,2026-01-05 01:47:44,booking
