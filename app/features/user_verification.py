@@ -1,130 +1,139 @@
 import csv
+import os
 
 FILE_USERS = "data/users.csv"
+FILE_REQUEST = "data/user_verification_requests.csv"
 
-def tampilkan_user():
-    with open(FILE_USERS, mode='r', newline='') as file:
-        reader = csv.DictReader(file)
-        data = list(reader)
+
+# =========================
+# UTIL
+# =========================
+def load_users():
+    with open(FILE_USERS, mode="r", newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def save_users(data):
+    with open(FILE_USERS, mode="w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=data[0].keys())
+        writer.writeheader()
+        writer.writerows(data)
+
+
+def load_requests():
+    if not os.path.exists(FILE_REQUEST):
+        return []
+    with open(FILE_REQUEST, mode="r", newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def save_requests(data):
+    with open(FILE_REQUEST, mode="w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=["request_id", "username", "status", "timestamp", "admin_note"]
+        )
+        writer.writeheader()
+        writer.writerows(data)
+
+
+# =========================
+# VIEW
+# =========================
+def tampilkan_request():
+    data = load_requests()
 
     if not data:
-        print("Belum ada data user.\n")
+        print("\nBelum ada request verifikasi.\n")
+        input("Tekan ENTER...")
         return
 
-    print("\n=== Daftar User ===")
-    print("-" * 85)
-    print(f"{'USERNAME':<15}{'EMAIL':<30}{'ROLE':<15}{'VERIFIED':<10}")
-    print("-" * 85)
+    print("\n=== DAFTAR REQUEST VERIFIKASI USER ===")
+    print("-" * 80)
+    print(f"{'USERNAME':<15}{'STATUS':<15}{'TIMESTAMP':<25}{'CATATAN'}")
+    print("-" * 80)
 
-    for user in data:
-        status = "Ya" if user['user_verified'] == "true" else "Tidak"
-        print(f"{user['username']:<15}{user['email']:<30}{user['role']:<15}{status:<10}")
+    for r in data:
+        note = r["admin_note"] if r["admin_note"] else "-"
+        print(f"{r['username']:<15}{r['status']:<15}{r['timestamp']:<25}{note}")
 
-    print("-" * 85)
+    print("-" * 80)
 
-def verifikasi_user(cari):
-    users = []
-    ditemukan = False
 
-    with open(FILE_USERS, mode='r', newline='') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            if row['username'] == cari:
-                ditemukan = True
-                if row['user_verified'] == "true":
-                    print("User sudah terverifikasi.\n")
-                    input("Tekan ENTER untuk kembali...")
-                    return
-                else:
-                    row['user_verified'] = "true"
-            users.append(row)
+# =========================
+# ACTION
+# =========================
+def set_user_verified(username, value):
+    users = load_users()
+    found = False
 
-    if not ditemukan:
-        print("User tidak ditemukan.\n")
-        input("Tekan ENTER untuk kembali...")
+    for u in users:
+        if u["username"] == username:
+            u["user_verified"] = "true" if value else "false"
+            found = True
+            break
+
+    if found:
+        save_users(users)
+
+
+def proses_request(status_target):
+    requests = load_requests()
+    pending = [r for r in requests if r["status"] == "pending"]
+
+    if not pending:
+        print("\nTidak ada request pending.\n")
+        input("Tekan ENTER...")
         return
 
-    with open(FILE_USERS, mode='w', newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=users[0].keys())
-        writer.writeheader()
-        writer.writerows(users)
-
-    print("User berhasil diverifikasi.\n")
-    input("Tekan ENTER untuk kembali...")
-
-def hapus_verifikasi_user(cari):
-    users = []
-    ditemukan = False
-
-    with open(FILE_USERS, mode='r', newline='') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            if row['username'] == cari:
-                ditemukan = True
-                if row['user_verified'] == "false":
-                    print("User memang belum terverifikasi.\n")
-                    input("Tekan ENTER untuk kembali...")
-                    return
-                else:
-                    row['user_verified'] = "false"
-            users.append(row)
-
-    if not ditemukan:
-        print("User tidak ditemukan.\n")
-        input("Tekan ENTER untuk kembali...")
+    tampilkan_request()
+    username = input("\nMasukkan username (ENTER untuk batal): ").strip()
+    if not username:
         return
 
-    with open(FILE_USERS, mode='w', newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=users[0].keys())
-        writer.writeheader()
-        writer.writerows(users)
+    for r in requests:
+        if r["username"] == username and r["status"] == "pending":
+            print(f"\nMemproses request user: {username}")
+            note = input("Catatan admin (opsional): ").strip()
 
-    print("Verifikasi user berhasil dihapus.\n")
-    input("Tekan ENTER untuk kembali...")
+            r["status"] = status_target
+            r["admin_note"] = note
 
+            if status_target == "approved":
+                set_user_verified(username, True)
+
+            save_requests(requests)
+
+            print(f"\n✅ Request berhasil di-{status_target}.")
+            input("Tekan ENTER...")
+            return
+
+    print("\n❌ Request pending tidak ditemukan.")
+    input("Tekan ENTER...")
+
+
+# =========================
+# MENU
+# =========================
 def menu_verifikasi_user():
     while True:
         print("""
-=== Menu Verifikasi User ===
-1. Apa itu verifikasi user?
-2. Verifikasi User
-3. Hapus Verifikasi User
-4. Kembali
+=== MENU VERIFIKASI USER (ADMIN) ===
+1. Lihat Request Verifikasi
+2. Setujui Verifikasi User
+3. Tolak Verifikasi User
+0. Kembali
 """)
-        pilihan = input("Pilih menu (1-4): ")
+        pilih = input("Pilih menu: ").strip()
 
-        if pilihan == "1":
-            print("""
-Verifikasi user adalah proses validasi akun oleh admin
-yang bertujuan untuk memberikan validasi bahwa user 
-dapat dipercaya dalam proses jual/beli. User yang sudah
-diverifikasi biasanya memiliki tanda unik di halaman
-profilnya.
-""")
-            input("Tekan ENTER untuk kembali...")
-
-        elif pilihan == "2":
-            tampilkan_user()
-            
-            cari = input("Masukkan username (ENTER untuk batal): ")
-            if not cari:
-                continue
-            else:
-                verifikasi_user(cari)
-                continue
-
-        elif pilihan == "3":
-            tampilkan_user()
-            
-            cari = input("Masukkan username (ENTER untuk batal): ")
-            if not cari:
-                continue
-            else:
-                hapus_verifikasi_user(cari)
-                continue
-
-        elif pilihan == "4":
+        if pilih == "1":
+            tampilkan_request()
+            input("Tekan ENTER...")
+        elif pilih == "2":
+            proses_request("approved")
+        elif pilih == "3":
+            proses_request("rejected")
+        elif pilih == "0":
             break
-
         else:
             print("Pilihan tidak valid.\n")
