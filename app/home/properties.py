@@ -5,7 +5,7 @@ from app.home.detail_properti import detail_properti
 from app.features.transaksi_penjual import sedang_dalam_transaksi
 
 FILE_PROPERTI = "data/properti.csv"
-FILE_RIWAYAT = "data/properti_dimiliki.csv"
+FILE_RIWAYAT = "data/properti_dibeli.csv"
 
 
 # =========================

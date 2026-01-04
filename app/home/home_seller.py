@@ -4,10 +4,11 @@ from app.home.profile import profile
 from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
-from app.home.review_user import history_transaksi
+from app.home.review_user import user_review
 from app.features.chat import menu_chat
 from app.features.wishlist import menu_wishlist
 from app.features.feedback import collect_feedback
+from app.features.jadwal_survey import lihat_jadwal_survey
 from app.features.notifikasi_service import get_unread_notifikasi
 from app.features.notifikasi_inbox_user import tampilkan_notifikasi_inbox
 
@@ -57,7 +58,8 @@ def home_seller(username):
         print(" [P] Profil Saya")
         print(" [I] Informasi Umum")
         print(" [C] Kirim Pesan (Chat)")
-        print(" [U] Ulasan Seller")
+        print(" [U] Ulasan Pembelian")
+        print(" [J] Jadwal Survei")
         print(" [F] Feedback")
         print(" [W] Wishlist")
         print(" [K] Keluar / Logout")
@@ -79,17 +81,23 @@ def home_seller(username):
         elif pilihan == "i":
             info()
 
+        elif pilihan == 'u':  # U = Ulasan
+            user_review(username)
+
         elif pilihan == "c":
             menu_chat(username)
 
         elif pilihan == "u":
-            history_transaksi(username)
+            user_review(username)
 
         elif pilihan == "f":
             collect_feedback(username, "seller")
 
         elif pilihan == "w":
             menu_wishlist(username)
+            
+        elif pilihan == 'j': # J = Jadwal Survei
+            lihat_jadwal_survey(username)
 
         elif pilihan == "k":
             print("\nTerima kasih telah menggunakan GeoEstate.")
