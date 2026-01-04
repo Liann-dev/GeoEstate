@@ -45,12 +45,14 @@ def proses_input_ulasan(username, transaksi):
     # Validasi Rating
     rating = 0
     while True:
-        input_angka = input("Beri Bintang (1-5): ")
+        input_angka = input("Beri Bintang (1-5) dan (0 untuk keluar): ")
         if input_angka.isdigit():
             angka = int(input_angka)
             if angka >= 1 and angka <= 5:
                 rating = angka
                 break
+            elif input_angka == '0':
+                return
             else:
                 print("❌ Harap masukkan angka 1 sampai 5.")
         else:
@@ -143,7 +145,6 @@ def history_transaksi(username):
                         print("\n❌ Transaksi ini sudah Anda ulas sebelumnya!")
                         input("Tekan Enter...")
                     else:
-                        # Perbaikan: Kirim 'username' (string)
                         proses_input_ulasan(username, transaksi_pilih)
                 else:
                     print("\n❌ Hanya transaksi yang LUNAS/SELESAI yang boleh diulas.")

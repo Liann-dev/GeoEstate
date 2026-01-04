@@ -1,6 +1,7 @@
 import csv
 import os
 import time
+import random
 from datetime import datetime
 
 FILE_JADWAL = 'data/jadwalsurvey.csv'
@@ -61,17 +62,61 @@ def survey(username, properti):
     print("\n[ Pilih Tanggal ]")
     print("Format: YYYY-MM-DD (Contoh: 2025-12-20)")
     
+    print("\n" * 50)
+    print("========================================")
+    print("         JADWALKAN SURVEI              ")
+    print("========================================")
+    print(f" 🏠 {properti['nama']}")
+    print(f" 📍 {properti['lokasi']}")
+    print("----------------------------------------")
+    
+    print("\n[ Pilih Tanggal ]")
+    print("Format: YYYY-MM-DD (Contoh: 2025-12-20)")
+    
+    tanggal_input = ""
     while True:
-        tanggal_input = input(">> Masukkan Tanggal: ")
-        try: 
-            date_obj = datetime.strptime(tanggal_input, '%Y-%m-%d')
-            if date_obj.date() < datetime.now().date():
-                print("❌ Tanggal tidak boleh di masa lalu!")
-                continue
-            break
-        except ValueError:
-            print("❌ Format salah! Gunakan Tahun-Bulan-Tanggal.")
+        tanggal_input = input(">> Masukkan Tanggal (0 untuk kembali): ").strip()
+        
+        if tanggal_input == '0':
+            return
 
+        parts = tanggal_input.split('-')
+        if len(parts) != 3:
+            print("❌ Format salah! Gunakan Tahun-Bulan-Tanggal (YYYY-MM-DD).")
+            continue
+        
+        tahun_str, bulan_str, hari_str = parts
+
+        if not (tahun_str.isdigit() and bulan_str.isdigit() and hari_str.isdigit()):
+            print("❌ Input harus berupa angka dengan pemisah strip (-).")
+            continue
+
+        tahun = int(tahun_str)
+        bulan = int(bulan_str)
+        hari = int(hari_str)
+
+        if bulan < 1 or bulan > 12:
+            print("❌ Bulan tidak valid (Harus 1-12).")
+            continue
+
+        hari_per_bulan = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        
+        if bulan == 2:
+            if (tahun % 4 == 0 and tahun % 100 != 0) or (tahun % 400 == 0):
+                hari_per_bulan[2] = 29
+        
+        if hari < 1 or hari > hari_per_bulan[bulan]:
+            print(f"❌ Tanggal tidak valid! Bulan {bulan} hanya memiliki {hari_per_bulan[bulan]} hari.")
+            continue
+
+        tanggal_obj = datetime(tahun, bulan, hari).date()
+        tanggal_sekarang = datetime.now().date()
+
+        if tanggal_obj < tanggal_sekarang:
+            print("❌ Tanggal tidak boleh di masa lalu!")
+            continue
+
+        break
 
     print("\n[ Pilih Waktu ]")
     print("Waktu yang tersedia agent:")
@@ -81,7 +126,7 @@ def survey(username, properti):
     
     waktu_pilih = ""
     while True:
-        opsi_waktu = input(">> Pilih waktu (1/2/3): ")
+        opsi_waktu = input(">> Pilih waktu (1/2/3) (0 untuk kembali): ")
         if opsi_waktu == '1':
             waktu_pilih = "09:00"
             break
@@ -91,6 +136,8 @@ def survey(username, properti):
         elif opsi_waktu == '3':
             waktu_pilih = "16:00"
             break
+        elif opsi_waktu == '0':
+            return
         else:
             print("❌ Pilihan tidak valid.")
             input("Tekan ENTER untuk coba lagi...")
@@ -104,7 +151,6 @@ def survey(username, properti):
        
         srv_id = f"SRV-{random.randint(1000, 9999)}"
         
-       
         data_baru = {
             'id': srv_id,
             'id_properti': properti['id'],
@@ -119,9 +165,7 @@ def survey(username, properti):
         
  
         simpan_jadwal_csv(data_baru)
-        
-      
-        ui_sukses_request(new_id)
+        ui_sukses_request(srv_id)
     else:
         print("Pembuatan jadwal dibatalkan.")
         time.sleep(1)

@@ -56,7 +56,7 @@ def home_user(username):
         print(" [P] Profil Saya")
         print(" [I] Informasi Umum")
         print(" [C] Kirim Pesan (Chat)")
-        print(" [H] Histori")
+        print(" [U] Ulasan Seller")
         print(" [J] Jadwal Survei")
         print(" [F] Feedback")
         print(" [W] Wishlist")
@@ -81,7 +81,7 @@ def home_user(username):
             return
         elif pilihan == 'i':  # I = Informasi
             info()
-        elif pilihan == 'h':  # U = Ulasan
+        elif pilihan == 'u':  # U = Ulasan
             history_transaksi(username)
         elif pilihan == 'c':  # C = Chat
             menu_chat(username)

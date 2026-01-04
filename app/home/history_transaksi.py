@@ -60,30 +60,8 @@ def hapus_transaksi(username, id_transaksi):
         writer.writeheader()
         writer.writerows(data_baru)
 
-    # ================= HAPUS BOOKING SCHEDULE (SESSION USER) =================
-    if os.path.exists(FILE_SCHEDULE):
-        schedule_baru = []
-
-        with open(FILE_SCHEDULE, mode='r', newline='') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                if not (
-                    row['id_transaksi'] == id_transaksi
-                    and row.get('session') == username
-                ):
-                    schedule_baru.append(row)
-
-        with open(FILE_SCHEDULE, mode='w', newline='') as file:
-            writer = csv.DictWriter(
-                file,
-                fieldnames=['id_transaksi', 'schedule', 'session']
-            )
-            writer.writeheader()
-            writer.writerows(schedule_baru)
-
     print("✅ Riwayat transaksi berhasil dihapus.")
     return True
-
 
 # ======================================================
 # RIWAYAT TRANSAKSI (SESSION-BASED)
