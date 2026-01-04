@@ -176,25 +176,18 @@ def profile(username):
                     input("Tekan ENTER...")
                 else:
                     ajukan_verifikasi_user(username)
-                    
-        elif user_data['role'] == "seller":
-                loading_seller_transition()
-                seller_menu(username)
-        else:
-                print("Pilihan tidak valid!")
 
         elif pilihan == "m":
-            if user_data["role"] == "user":
-                if user_data["user_verified"] == "true":
-                    seller_registration_menu(username)
-                elif user_data['role'] == "seller":
+            if user_data["role"] == "user" and user_data["user_verified"] == "false" :
+                print("\n❌ Akun belum terverifikasi.")
+                print("Silakan lakukan verifikasi data terlebih dahulu")
+                input("Tekan ENTER...")
+                continue
+            elif user_data['role'] == "user" and user_data["user_verified"] == "true":
+                seller_registration_menu(username)
+            elif user_data['role'] == "seller":
                 loading_seller_transition()
                 seller_menu(username)
-                elif:
-                 print("Pilihan tidak valid!")
-                else:
-                    print("\n❌ Akun belum terverifikasi.")
-                    input("Tekan ENTER...")
             else:
                 print("Pilihan tidak valid!")
 
