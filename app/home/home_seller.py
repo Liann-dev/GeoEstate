@@ -4,7 +4,6 @@ from app.home.profile import profile
 from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
-from app.home.seller_menu import seller_menu
 from app.home.review_seller import seller_review
 from app.features.chat import menu_chat
 from app.features.wishlist import menu_wishlist
@@ -60,7 +59,6 @@ def home_seller(username):
         print(" [U] Ulasan Saya")
         print(" [F] Feedback")
         print(" [W] Wishlist")
-        print(" [M] Menu Seller")
         print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
@@ -90,8 +88,6 @@ def home_seller(username):
             collect_feedback(username, 'seller')
         elif pilihan == 'w':  # W = Wishlist
             menu_wishlist(username)
-        elif pilihan == 'm':  # M = seller
-            seller_menu(username)
             
         else:
           

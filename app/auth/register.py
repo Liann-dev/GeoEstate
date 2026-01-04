@@ -1,6 +1,7 @@
 import csv
 import os
 import re
+import random
 
 FILE_USERS = "data/users.csv"
 
@@ -92,13 +93,54 @@ def register():
 
         print(f"Password tidak sama! Kesempatan tersisa: {sisa}\n")
 
-    role = "user"
+    otp_code = str(random.randint(1000,9999))
 
-    # Simpan ke CSV
-    with open(FILE_USERS, mode='a', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow([username, email, password, role, "false"])
+    print("\n"+ "="*40)
+    print("Verifikasi Kode OTP")
+    print(f"\n Kode OTP telah dikirim ke email {email}")
+    print(f" Kode OTP Anda adalah: {otp_code}")
+    print("="*40+"\n")
 
-    print(f"\nRegister berhasil!")
-    input("Tekan ENTER untuk kembali ke halaman awal...")
-    return True
+    sisa_percobaan_otp = 3
+
+    while sisa_percobaan_otp > 0:
+        input_otp = input("Masukka 4 digit Kode OTP: ").strip()
+
+        if input_otp == "":
+            print("Input tidak boleh kosong! Silahkan masukkan Kode OTP.\n")
+            continue
+
+        if len(input_otp) != 4 or not input_otp.isdigit():
+            print("Kode OTP harus terdiri dari 4 digit angka!\n")
+            continue
+
+        if input_otp == otp_code:
+            role = "user"
+            with open(FILE_USERS, mode='a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([username, email, password, role, "false"])
+                
+                print(f"\nRegister berhasil!")
+                input("Tekan ENTER untuk kembali ke halaman awal...")
+                return True
+        else:
+            sisa_percobaan_otp -= 1
+            if sisa_percobaan_otp > 0:
+                print(f"Kode OTP salah! Kesempatan tersisa: {sisa_percobaan_otp}\n")
+            else:
+                print("\nVerifikasi OTP gagal. Registrasi dibatalkan.")
+                input("Tekan ENTER untuk kembali ke halaman awal...")
+                return False
+
+
+
+    # role = "user"
+
+    # # Simpan ke CSV
+    # with open(FILE_USERS, mode='a', newline='') as file:
+    #     writer = csv.writer(file)
+    #     writer.writerow([username, email, password, role, "false"])
+
+    # print(f"\nRegister berhasil!")
+    # input("Tekan ENTER untuk kembali ke halaman awal...")
+    # return True

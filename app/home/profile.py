@@ -117,6 +117,7 @@ def profile(username):
         print(" [P] Properti Saya (Dimiliki)")
         if user_data['role'] == "user":
             print(" [M] Daftar Sebagai Seller")
+        if user_data['role']
         if user_data['user_verified'] == "false":
             print(" [V] Ajukan Verifikasi User")
         print(" [B] Kembali")

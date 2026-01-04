@@ -1,6 +1,5 @@
 username,email,password,role,user_verified
 azzurisulthan,azzuri@gmail.com,Azzuri123,user,false
-Naufal,naufal@gmail.com,Naufal123,seller,false
 Adi,adisn@gmail.com,adi1234#,seller,true
 Testing,test@gmail.com,testing1,user,true
 LianDev,lian@gmail.com,Lian123,seller,false
@@ -8,3 +7,5 @@ Adit,adit@yahoo.com,adit12345,user,false
 Admin,admin@gmail.com,admin1234,admin,true
 Lian123,Lian@gmail.com,Lian12345,seller,false
 LianDevelop,Liian@gmail.com,Lian12345,admin,false
+Naufal,naufal@gmail.com,naufal123,user,false
+jaki,jaki@gmail.com,jaki1234,seller,true
