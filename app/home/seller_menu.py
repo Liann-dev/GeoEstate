@@ -2,6 +2,7 @@ import csv
 import os
 
 
+from app.Utils.animation import loading_exit_seller
 from app.features.transaksi_penjual import menu_kelola_pesanan
 from app.home.review_seller import seller_review
 
@@ -239,6 +240,7 @@ def seller_menu(username):
         # OPSI 6: KEMBALI
         # =========================
         elif pilihan == "6":
+            loading_exit_seller()
             print("Kembali ke menu utama...\n")
             break
 

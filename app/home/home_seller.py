@@ -8,13 +8,10 @@ from app.home.review_user import history_transaksi
 from app.features.chat import menu_chat
 from app.features.wishlist import menu_wishlist
 from app.features.feedback import collect_feedback
-
 from app.features.notifikasi_service import get_unread_notifikasi
 from app.features.notifikasi_inbox_user import tampilkan_notifikasi_inbox
 
 FILE_PROPERTI = "data/properti.csv"
-
-
 def load_properties():
     data = []
     if os.path.exists(FILE_PROPERTI):
