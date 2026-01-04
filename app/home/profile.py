@@ -4,6 +4,8 @@ import time
 from app.home.history_transaksi import history_transaksi
 from app.home.jual_properti import jual_kembali_properti
 from app.features.seller_register import seller_registration_menu
+from app.features.biometric_toggle import toggle_biometrik
+from app.auth.lupa_password import ganti_password
 
 FILE_USERS = "data/users.csv"
 FILE_RIWAYAT = "data/properti_dimiliki.csv"
@@ -42,20 +44,20 @@ def properti_saya(username):
 
     print("-" * 50)
     print("\n[ OPSI ]")
-    print("1. 💲 Jual / Kembalikan Properti")
+    print("1. 💲 Jual Kembali Properti")
     print("0. 🔙 Kembali")
     
-    pilihan = input("\n>> Pilih opsi: ")
-    
-    if pilihan == '1':
-        jual_kembali_properti(username)
-    elif pilihan == '2':
-        input("Tekan ENTER untuk kembali...")
-        return
-    else:
-        print("Pilihan tidak valid!")
-        input("Tekan ENTER untuk kembali...")
-        return
+    while True:
+        pilihan = input("\n>> Pilih opsi: ")
+        
+        if pilihan == '1':
+            jual_kembali_properti(username)
+            return
+        elif pilihan == '0':
+            return
+        else:
+            print("Pilihan tidak valid!")
+            continue
 
 def informasi_pribadi(username):
 
@@ -133,9 +135,34 @@ def profile(username):
             history_transaksi(username)
             continue
         elif pilihan == "k":
-            print("Coming Soon: Keamanan dan Password")
-            time.sleep(2)
-            continue
+            while True:
+                print("\n===== Keamanan & Password =====")
+                print("1. Ganti Password")
+                print("2. Login Biometrik")
+                print("0. Kembali")
+
+                while True:
+                    pilih = input("\nPilih menu: ")
+
+                    if pilih == "1":
+                        P = ganti_password()
+                        if P == "EXIT":
+                            print("Mengembalikan user ke halaman awal...")
+                            time.sleep(2)
+                            return "EXIT"
+                        else:
+                            break
+                    elif pilih == "2":
+                        toggle_biometrik(username)
+                        time.sleep(2)
+                        break
+                    elif pilih == "0":
+                        break
+                    else:
+                        print("Pilihan tidak valid!")
+                        continue
+                if pilih == "0":
+                    break
         elif pilihan == "p":
             properti_saya(username)
             continue
@@ -151,7 +178,7 @@ def profile(username):
             continue
         elif pilihan == "v":
             if user_data['user_verified'] == "false":
-                print("Coming Soon: Ajukan Verifikasi User")
+                print("Coming Soon: Fitur Ajukan Verifikasi User")
                 time.sleep(2)
             else:
                 print("Pilihan tidak valid!")

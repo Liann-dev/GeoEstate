@@ -5,7 +5,7 @@ REVIEW_FILE = "data/reviews.csv"
 
 def seller_review(username):
     print("\n========================================")
-    print("        REVIEW PROPERTI ANDA             ")
+    print("        ULASAN MENGENAI ANDA             ")
     print("========================================\n")
 
     if not os.path.exists(REVIEW_FILE):
@@ -29,7 +29,7 @@ def seller_review(username):
         print(f"🏠 ID Properti   : {review['id_properti']}")
         print(f"⭐ Rating        : {review['rating']} / 5")
         print(f"💬 Ulasan        : {review['review_text']}")
-        print(f"🕒 Tanggal      : {review['tanggal_review']}")
+        print(f"🕒 Tanggal       : {review['tanggal_review']}")
         print("\n----------------------------------------\n")
 
     input("Tekan ENTER untuk kembali...")
