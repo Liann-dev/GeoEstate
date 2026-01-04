@@ -4,25 +4,15 @@ from app.home.profile import profile
 from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
-<<<<<<< HEAD
 from app.home.review_user import user_review
 from app.features.chat import menu_chat
 from app.features.wishlist import menu_wishlist
 from app.features.feedback import collect_feedback
 from app.features.jadwal_survey import lihat_jadwal_survey
-
-FILE_PROPERTI = 'data/properti.csv'
-
-=======
-from app.home.review_user import history_transaksi
-from app.features.chat import menu_chat
-from app.features.wishlist import menu_wishlist
-from app.features.feedback import collect_feedback
 from app.features.notifikasi_service import get_unread_notifikasi
 from app.features.notifikasi_inbox_user import tampilkan_notifikasi_inbox
 
 FILE_PROPERTI = "data/properti.csv"
->>>>>>> 593d3b75b4db0a525cf73050b6927cd6aae4ca89
 def load_properties():
     data = []
     if os.path.exists(FILE_PROPERTI):
@@ -35,10 +25,6 @@ def load_properties():
 def home_seller(username):
     while True:
         semua_properti = load_properties()
-<<<<<<< HEAD
-
-=======
->>>>>>> 593d3b75b4db0a525cf73050b6927cd6aae4ca89
 
         # ===== HITUNG UNREAD NOTIFIKASI =====
         unread = get_unread_notifikasi(username)
@@ -94,34 +80,29 @@ def home_seller(username):
 
         elif pilihan == "i":
             info()
-<<<<<<< HEAD
+
         elif pilihan == 'u':  # U = Ulasan
             user_review(username)
-        elif pilihan == 'c':  # C = Chat
-=======
 
         elif pilihan == "c":
->>>>>>> 593d3b75b4db0a525cf73050b6927cd6aae4ca89
             menu_chat(username)
 
         elif pilihan == "u":
-            history_transaksi(username)
+            user_review(username)
 
         elif pilihan == "f":
             collect_feedback(username, "seller")
 
         elif pilihan == "w":
             menu_wishlist(username)
-<<<<<<< HEAD
+            
         elif pilihan == 'j': # J = Jadwal Survei
             lihat_jadwal_survey(username)
-=======
 
         elif pilihan == "k":
             print("\nTerima kasih telah menggunakan GeoEstate.")
             input("Tekan ENTER untuk kembali...")
             return
->>>>>>> 593d3b75b4db0a525cf73050b6927cd6aae4ca89
 
         else:
             item = next((p for p in semua_properti if p["id"] == pilihan), None)

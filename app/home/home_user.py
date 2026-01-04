@@ -4,16 +4,11 @@ from app.home.profile import profile
 from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
-<<<<<<< HEAD
 from app.home.review_user import user_review
-=======
-from app.home.review_user import history_transaksi
->>>>>>> 593d3b75b4db0a525cf73050b6927cd6aae4ca89
 from app.features.feedback import collect_feedback
 from app.features.chat import menu_chat
 from app.features.wishlist import menu_wishlist
 from app.features.jadwal_survey import lihat_jadwal_survey
-
 from app.features.notifikasi_service import get_unread_notifikasi
 from app.features.notifikasi_inbox_user import tampilkan_notifikasi_inbox
 
@@ -87,18 +82,15 @@ def home_user(username):
 
         elif pilihan == 'i':
             info()
-<<<<<<< HEAD
+
         elif pilihan == 'u':  # U = Ulasan
             user_review(username)
-        elif pilihan == 'c':  # C = Chat
-=======
 
         elif pilihan == 'c':
->>>>>>> 593d3b75b4db0a525cf73050b6927cd6aae4ca89
             menu_chat(username)
 
         elif pilihan == 'u':
-            history_transaksi(username)
+            user_review(username)
 
         elif pilihan == 'j':
             lihat_jadwal_survey(username)
