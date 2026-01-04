@@ -7,6 +7,7 @@ from app.features.seller_register import seller_registration_menu
 from app.features.biometric_toggle import toggle_biometrik
 from app.auth.lupa_password import ganti_password
 from app.home.seller_menu import seller_menu
+from app.Utils.animation import loading_seller_transition 
 
 FILE_USERS = "data/users.csv"
 FILE_RIWAYAT = "data/properti_dimiliki.csv"
@@ -177,6 +178,7 @@ def profile(username):
                     print("Akun anda belum terverifikasi!")
                     input("Tekan ENTER untuk kembali...")
             elif user_data['role'] == "seller":
+                loading_seller_transition()
                 seller_menu(username)
             else:
                 print("Pilihan tidak valid!")
