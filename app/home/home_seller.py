@@ -4,7 +4,7 @@ from app.home.profile import profile
 from app.home.properties import pilih_properti
 from app.home.information import info
 from app.home.detail_properti import detail_properti
-from app.home.review_user import  history_transaksi
+from app.home.review_seller import seller_review
 from app.features.chat import menu_chat
 from app.features.wishlist import menu_wishlist
 from app.features.feedback import collect_feedback
