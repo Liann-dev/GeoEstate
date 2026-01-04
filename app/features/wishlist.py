@@ -79,13 +79,6 @@ def lihat_properti_alt(username):
     print("\n=== Properti Tersedia ===")
     properti_valid = []
 
-    for p in semua_properti:
-        if (
-            p['doc_verified'].strip().lower() == "true"
-            and p.get('tersedia', 'true').strip().lower() == "true"
-        ):
-            print_card_alt(p)
-            properti_valid.append(p)
 
     if not properti_valid:
         print("Belum ada properti yang tersedia saat ini.")
@@ -105,8 +98,7 @@ def tambah_ke_wishlist(username, id_properti):
             for p in reader:
                 if (
                     p['id'] == id_properti_str
-                    and p['doc_verified'].strip().lower() == "true"
-                    and p.get('tersedia', 'true').strip().lower() == "true"
+                    and p.get('tersedia').strip().lower() == "true"
                 ):
                     properti_valid = p
                     break

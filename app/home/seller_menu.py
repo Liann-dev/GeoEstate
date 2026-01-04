@@ -77,14 +77,13 @@ def tambah_properti(username):
         "lokasi": lokasi,
         "harga": harga,
         "penjual": username,
-        "doc_verified": "False",
         "tersedia" : "True"
     }
 
     with open(FILE_PROPERTI, mode='a', newline='') as file:
         writer = csv.DictWriter(
             file,
-            fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "doc_verified", "tersedia"]
+            fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "tersedia"]
         )
         if file.tell() == 0:
             writer.writeheader()
@@ -103,11 +102,6 @@ def lihat_properti_saya(username):
         for p in reader:
             if p['penjual'].strip().lower() == username.strip().lower():
 
-                if p['doc_verified'] == "True":
-                    status_text = "✅ Terverifikasi"
-                else:
-                    status_text = "❌ Belum Terverifikasi"
-
                 if p['tersedia'] == "True":
                     ketersediaan = "✅ Tersedia"
                 else:
@@ -116,7 +110,6 @@ def lihat_properti_saya(username):
                 print(f"Nama: {p['nama']} ({p['kategori']})")
                 print(f"Lokasi: {p['lokasi']}")
                 print(f"Harga: Rp {p['harga']}")
-                print(f"Status: {status_text}")
                 print(f"Ketersediaan : {ketersediaan}")
                 print("-" * 30)
 
@@ -194,7 +187,7 @@ def seller_menu(username):
         with open(FILE_PROPERTI, mode='w', newline='') as file:
             writer = csv.DictWriter(
                 file,
-                fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "doc_verified"]
+                fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual"]
             )
             writer.writeheader()
 

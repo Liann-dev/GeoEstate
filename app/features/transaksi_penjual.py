@@ -233,7 +233,6 @@ def simpan_ke_riwayat(row):
         "lokasi": properti['lokasi'],
         "harga": properti['harga'],
         "penjual": properti['penjual'],
-        "doc_verified": properti['doc_verified'],
         "tanggal": tanggal,
         "transaksi": "booking"
     }
