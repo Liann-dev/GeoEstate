@@ -1,1 +1,2 @@
-request_id,username,email,reason,status,timestamp
+request_id,username,status,timestamp,admin_note
+8d7872c1,azzurisulthan,approved,2026-01-05 00:27:06,

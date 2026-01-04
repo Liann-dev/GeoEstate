@@ -1,2 +1,2 @@
-username,nik,nama_lengkap,jenis_kelamin,alamat,agama,status_kawin,pekerjaan,kewarganegaraan,email,no_telepon,role,user_verified
-dummyuser,1234567890123456,Dummy User,Laki-laki,"Jl. Contoh No. 1, Jakarta",Islam,Belum Kawin,Programmer,Indonesia,dummyuser@example.com,081234567890,user,false
+username,provinsi,kota,nik,nama_lengkap,tempat_lahir,tgl_lahir,jenis_kelamin,alamat,rt,rw,kelurahan,kecamatan,agama,status_kawin,pekerjaan,kewarganegaraan,masa_berlaku,tgl_ktp_dibuat
+azzurisulthan,Jawa Barat,Kota Bandung,3273242111060001,Muhammad Azzuri Sulthan Aulia Wahab,Bandung,21-11-2006,Laki-laki,Jl. Golf Selatan VII/14,002,010,Cisaranten Bina Harapan,Arcamanik,Islam,Belum Kawin,Pelajar/Mahasiswa,WNI,Seumur Hidup,26-01-2024
