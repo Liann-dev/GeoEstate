@@ -1,6 +1,8 @@
 import csv
 import os
 from datetime import datetime
+from app.features.notifikasi_helper import simpan_notifikasi
+
 
 FILE_TRANSAKSI = "data/transaksi.csv"
 FILE_PROPERTI = "data/properti.csv"
@@ -153,10 +155,7 @@ def update_status_pesanan(penjual_login):
 
     trx_penjual = None
     for row in semua_data:
-        if (
-            row['id_transaksi'] == id_input
-            and row['session'] == penjual_login
-        ):
+        if row['id_transaksi'] == id_input and row['session'] == penjual_login:
             trx_penjual = row
             break
 
@@ -168,17 +167,20 @@ def update_status_pesanan(penjual_login):
         print(">> Status final, tidak bisa diubah.")
         return
 
-    print("\n1. Konfirmasi (Lunas/Selesai)")
+    print("\n1. Konfirmasi (Lunas / Selesai)")
     print("2. Batalkan")
     print("3. Perpanjang Waktu")
     pilihan = input("Pilihan: ")
 
-    status_baru = trx_penjual['status']
+    status_lama = trx_penjual['status']
+    status_baru = status_lama
 
     if pilihan == "1":
         status_baru = "Lunas / Selesai"
+
     elif pilihan == "2":
         status_baru = "Dibatalkan"
+
     elif pilihan == "3":
         while True:
             jadwal_baru = input("Jadwal baru (YYYY-MM-DD): ").strip()
@@ -196,6 +198,38 @@ def update_status_pesanan(penjual_login):
     else:
         print(">> Batal.")
         return
+
+    # ================= TRIGGER NOTIFIKASI =================
+    pembeli = trx_penjual["username_pembeli"]
+    properti = trx_penjual["nama_properti"]
+
+    if status_baru == "Lunas / Selesai":
+        simpan_notifikasi(
+            username=pembeli,
+            role="user",
+            pesan=f"Properti '{properti}' berhasil dibeli"
+        )
+        simpan_notifikasi(
+        username=penjual_login,
+        role="seller",
+        pesan=f"💰 Properti '{properti}' berhasil terjual"
+    )
+        simpan_ke_riwayat(trx_penjual)
+
+    elif status_baru == "Dibatalkan":
+        simpan_notifikasi(
+            username=pembeli,
+            role="user",
+            pesan=f"Booking properti '{properti}' dibatalkan oleh seller"
+        )
+
+    elif status_baru == "Perpanjang Waktu":
+        simpan_notifikasi(
+            username=pembeli,
+            role="user",
+            pesan=f"Booking properti '{properti}' diperpanjang oleh seller"
+        )
+
 
     # ================= SYNC KE SEMUA SESSION =================
     for row in semua_data:

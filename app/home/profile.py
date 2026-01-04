@@ -1,16 +1,22 @@
 import csv
 import os
 import time
+
 from app.home.history_transaksi import history_transaksi
 from app.features.seller_register import seller_registration_menu
 from app.features.biometric_toggle import toggle_biometrik
 from app.auth.lupa_password import ganti_password
 from app.home.seller_menu import seller_menu
+from app.Utils.animation import loading_seller_transition 
 
 FILE_USERS = "data/users.csv"
 FILE_RIWAYAT = "data/properti_dibeli.csv"
 FILE_BIODATA = "data/biodata.csv"
 
+
+# =========================
+# PROPERTI DIMILIKI
+# =========================
 def properti_saya(username):
     if not os.path.exists(FILE_RIWAYAT):
         print("\nBelum ada riwayat pembelian.")
@@ -18,11 +24,10 @@ def properti_saya(username):
         return
 
     hasil = []
-
-    with open(FILE_RIWAYAT, mode='r', newline='') as file:
+    with open(FILE_RIWAYAT, newline="", encoding="utf-8") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            if row['username'] == username:
+            if row["username"] == username:
                 hasil.append(row)
 
     if not hasil:
@@ -30,9 +35,8 @@ def properti_saya(username):
         input("Tekan ENTER untuk kembali...")
         return
 
-    print(f"\n=== PROPERTI YANG SUDAH ANDA BELI ===")
-
-    for i, p in enumerate(hasil, start=1):
+    print("\n=== PROPERTI YANG TELAH ANDA BELI ===")
+    for i, p in enumerate(hasil, 1):
         print("-" * 50)
         print(f"{i}. {p['nama']} ({p['kategori']})")
         print(f"   ID Properti  : {p['id']}")
@@ -43,85 +47,108 @@ def properti_saya(username):
         print(f"   Tanggal Beli : {p['tanggal']}")
 
     print("-" * 50)
+<<<<<<< HEAD
     input("\nTekan ENTER untuk kembali...")
+=======
+    print("\n[ OPSI ]")
+    print("1. 💲 Jual Kembali Properti")
+    print("0. 🔙 Kembali")
 
+    while True:
+        pilihan = input("\n>> Pilih opsi: ").strip()
+        if pilihan == "1":
+            jual_kembali_properti(username)
+            return
+        elif pilihan == "0":
+            return
+        else:
+            print("Pilihan tidak valid!")
+>>>>>>> 593d3b75b4db0a525cf73050b6927cd6aae4ca89
+
+
+# =========================
+# INFORMASI PRIBADI
+# =========================
 def informasi_pribadi(username):
+    if not os.path.exists(FILE_BIODATA):
+        print("\n❌ Data biodata belum tersedia.")
+        input("Tekan ENTER untuk kembali...")
+        return
 
     with open(FILE_BIODATA, newline="", encoding="utf-8") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            print()
-            print("=" * 40)
-            print("        INFORMASI PRIBADI USER")
-            print("=" * 40)
-            print(f"NIK               : {row['nik']}")
-            print(f"Nama              : {row['nama_lengkap']}")
-            print(f"Jenis Kelamin     : {row['jenis_kelamin']}")
-            print(f"Alamat            : {row['alamat']}")
-            print(f"Agama             : {row['agama']}")
-            print(f"Status Perkawinan : {row['status_kawin']}")
-            print(f"Pekerjaan         : {row['pekerjaan']}")
-            print(f"Kewarganegaraan   : {row['kewarganegaraan']}")
-            print("-" * 40)
-            print(f"Username          : {row['username']}")
-            print(f"Email             : {row['email']}")
-            print(f"No. Telepon       : {row['no_telepon']}")
-            print(f"Role              : {row['role']}")
-            print(f"User Verified     : {row['user_verified']}")
-            print("=" * 40)
-            print()
-            input("Tekan ENTER untuk kembali...")
+            if row["username"] == username:
+                print("\n=== INFORMASI PRIBADI ===")
+                for k, v in row.items():
+                    print(f"{k.replace('_',' ').title():<22}: {v}")
+                input("\nTekan ENTER untuk kembali...")
+                return
 
+    print("\n❌ Data biodata belum ditemukan.")
+    print("Silakan ajukan verifikasi data terlebih dahulu.")
+    input("Tekan ENTER untuk kembali...")
+
+
+# =========================
+# PROFILE MENU
+# =========================
 def profile(username):
-    
     while True:
         user_data = None
+
         if os.path.exists(FILE_USERS):
-            with open(FILE_USERS, mode='r') as file:
+            with open(FILE_USERS, newline="", encoding="utf-8") as file:
                 reader = csv.DictReader(file)
                 for user in reader:
-                    if user['username'] == username:
+                    if user["username"] == username:
                         user_data = user
                         break
-        
+
         if not user_data:
-            print("Data pengguna error.")
+            print("❌ Data pengguna tidak ditemukan.")
             return
 
         print("\n========================================")
         print("              PROFIL SAYA               ")
         print("========================================")
-        print(f"👤 Nama    : {user_data['username']}")
+        print(f"👤 Username : {user_data['username']}")
+        print(f"🛡️  Role     : {user_data['role'].capitalize()}")
 
-        print(f"🛡️  Role    : {user_data['role'].capitalize()}")
-        status_verif = "✅  Terverifikasi" if user_data.get('user_verified') == 'true' else "⚠️  Belum Verifikasi"
-        print(f"Status     : {status_verif}")
+        status = "✅ Terverifikasi" if user_data["user_verified"] == "true" else "Belum Terverifikasi ⚠️"
+        print(f"📌 Status   : {status}")
         print("----------------------------------------")
+
         print(" [I] Informasi Pribadi")
         print(" [H] History Transaksi")
-        print(" [K] Keamanan dan Password")
-        print(" [P] Properti Saya (Dimiliki)")
-        if user_data['role'] == "user":
+        print(" [P] Properti Saya")
+        print(" [K] Keamanan & Password")
+        if user_data["user_verified"] == "false":
+            print(" [V] Ajukan Verifikasi Data User")
+        if user_data["role"] == "user":
             print(" [M] Daftar Sebagai Seller")
         if user_data['role'] == "seller":
             print(" [M] Menu Seller")
-        if user_data['user_verified'] == "false":
-            print(" [V] Ajukan Verifikasi User")
         print(" [B] Kembali")
+        pilihan = input("\nPilih menu: ").lower().strip()
 
-        if user_data['role'] == "user" and user_data['user_verified'] == "false":
-            pilihan = input("Pilih menu (I/H/K/P/M/V/B): ").lower()
-        elif user_data['role'] == "user":
-            pilihan = input("Pilih menu (I/H/K/P/M/B): ").lower()
-        else:
-            pilihan = input("Pilih menu (I/H/K/P/B): ").lower()
-
-        if pilihan  == "i":
+        # =========================
+        # INFORMASI PRIBADI (FIX UX)
+        # =========================
+        if pilihan == "i":
+            if user_data["user_verified"] == "false":
+                print("\n⚠️  Data Anda belum terverifikasi.")
+                print("Silakan ajukan verifikasi terlebih dahulu.")
+                input("Tekan ENTER untuk kembali ke menu Profil...")
+                continue  # ✅ KEMBALI KE PROFILE, BUKAN HOME
             informasi_pribadi(username)
-            continue
+
         elif pilihan == "h":
             history_transaksi(username)
-            continue
+
+        elif pilihan == "p":
+            properti_saya(username)
+
         elif pilihan == "k":
             while True:
                 print("\n===== Keamanan & Password =====")
@@ -129,51 +156,53 @@ def profile(username):
                 print("2. Login Biometrik")
                 print("0. Kembali")
 
-                while True:
-                    pilih = input("\nPilih menu: ")
-
-                    if pilih == "1":
-                        P = ganti_password()
-                        if P == "EXIT":
-                            print("Mengembalikan user ke halaman awal...")
-                            time.sleep(2)
-                            return "EXIT"
-                        else:
-                            break
-                    elif pilih == "2":
-                        toggle_biometrik(username)
-                        time.sleep(2)
-                        break
-                    elif pilih == "0":
-                        break
-                    else:
-                        print("Pilihan tidak valid!")
-                        continue
-                if pilih == "0":
+                pilih = input("Pilih menu: ").strip()
+                if pilih == "1":
+                    result = ganti_password()
+                    if result == "EXIT":
+                        return "EXIT"
+                elif pilih == "2":
+                    toggle_biometrik(username)
+                elif pilih == "0":
                     break
-        elif pilihan == "p":
-            properti_saya(username)
-            continue
-        elif pilihan == 'm':
-            if user_data['role'] == "user":
-                if user_data['user_verified'] == "true":
-                    seller_registration_menu(username)
                 else:
-                    print("Akun anda belum terverifikasi!")
-                    input("Tekan ENTER untuk kembali...")
-            elif user_data['role'] == "seller":
-                seller_menu(username)
-            else:
-                print("Pilihan tidak valid!")
-            continue
+                    print("Pilihan tidak valid!")
+
         elif pilihan == "v":
-            if user_data['user_verified'] == "false":
-                print("Coming Soon: Fitur Ajukan Verifikasi User")
-                time.sleep(2)
+            if user_data["user_verified"] == "false":
+                from app.features.user_verification_request import (
+                    has_active_request,
+                    ajukan_verifikasi_user
+                )
+                if has_active_request(username):
+                    print("\n❌ Anda sudah mengajukan verifikasi dan sedang diproses oleh Admin.")
+                    input("Tekan ENTER...")
+                else:
+                    ajukan_verifikasi_user(username)
+                    
+        elif user_data['role'] == "seller":
+                loading_seller_transition()
+                seller_menu(username)
+        else:
+                print("Pilihan tidak valid!")
+
+        elif pilihan == "m":
+            if user_data["role"] == "user":
+                if user_data["user_verified"] == "true":
+                    seller_registration_menu(username)
+                elif user_data['role'] == "seller":
+                loading_seller_transition()
+                seller_menu(username)
+                elif:
+                 print("Pilihan tidak valid!")
+                else:
+                    print("\n❌ Akun belum terverifikasi.")
+                    input("Tekan ENTER...")
             else:
                 print("Pilihan tidak valid!")
-            continue
+
         elif pilihan == "b":
             break
+
         else:
             print("Pilihan tidak valid!")

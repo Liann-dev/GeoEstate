@@ -3,7 +3,7 @@ from app.auth.login import login
 from app.auth.lupa_password import lupa_password
 from app.home.home_user import home_user
 from app.home.home_seller import home_seller
-from app.Utils.OnboardingScreen import show_splash, show_onboarding
+from app.Utils.animation import show_splash, show_onboarding
 from app.Utils.padding import pad_center as centerpadding
 
 

@@ -1,4 +1,5 @@
 id_transaksi,username_pembeli,penjual,id_properti,nama_properti,harga,tanggal,transaksi,status,session
+<<<<<<< HEAD
 GES-6274,Testing,Naufal,1,Rumah Panjang,1000000000,2025-12-18 13:21:40,beli,Lunas / Selesai,
 GES-8391,Testing,Adi,3,Havana Resort,780000000,2025-12-18 13:32:30,batal,Dibatalkan,
 GES-4214,Testing,Adi,3,Havana Resort,780000000,2025-12-18 16:10:27,beli,Lunas / Selesai,
@@ -12,3 +13,7 @@ GES-4812,LianDev,Naufal,1,Rumah Panjang,1000000000,2026-01-04 16:19:17,booking,M
 GES-4812,LianDev,Naufal,1,Rumah Panjang,1000000000,2026-01-04 16:19:17,booking,Menunggu Konfirmasi,Naufal
 GES-8533,Adi,LianDev,7,Cibiru Kost,200000000,2026-01-05 01:40:23,beli,Lunas / Selesai,Adi
 GES-8533,Adi,LianDev,7,Cibiru Kost,200000000,2026-01-05 01:40:23,jual,Lunas / Selesai,LianDev
+=======
+GES-5033,Testing,Adi,3,Havana Resort,780000000,2026-01-05 01:48:39,booking,Menunggu Konfirmasi,Testing
+GES-5033,Testing,Adi,3,Havana Resort,780000000,2026-01-05 01:48:39,booking,Menunggu Konfirmasi,Adi
+>>>>>>> 593d3b75b4db0a525cf73050b6927cd6aae4ca89
