@@ -1,17 +1,8 @@
 id_transaksi,username,id,nama,kategori,lokasi,harga,penjual,tanggal,transaksi
-<<<<<<< HEAD:data/properti_dibeli.csv
 GES-5838,Adit,2,Villa Air,Villa,Ciwidey,1500000000,Adi,2025-12-22 10:42:10,beli
 GES-5738,Adit,2,Villa Air,Villa,Ciwidey,1500000000,Adi,2025-12-27 14:50:28,beli
 GES-5189,Testing,7,Cibiru Kost,Villa,Cibiru Indah 3,200000000,LianDev,2025-12-31 15:51:49,beli
 GES-5098,Adi,5,Resort Rancawana,Resort,Rancabuaya,120000000,Naufal,2026-01-02 17:22:56,beli
 GES-8533,Adi,7,Cibiru Kost,Villa,Cibiru Indah 3,200000000,LianDev,2026-01-05 02:04:45,beli
-=======
-GES-5838,Adit,2,Villa Air,Villa,Ciwidey,1500000000,Adi,2025-12-22 10:42:10,Beli
-GES-5738,Adit,2,Villa Air,Villa,Ciwidey,1500000000,Adi,2025-12-27 14:50:28,Beli
-GES-5189,Testing,7,Cibiru Kost,Villa,Cibiru Indah 3,200000000,LianDev,2025-12-31 15:51:49,Beli
-GES-5098,Adi,5,Resort Rancawana,Resort,Rancabuaya,120000000,Naufal,2026-01-02 17:22:56,Beli
-GES-4609,Testing,1,Rumah Panjang,Rumah,Bandung,1000000000,Naufal,2026-01-05 00:12:41,booking
-GES-4609,Testing,1,Rumah Panjang,Rumah,Bandung,1000000000,Naufal,2026-01-05 00:12:41,booking
-GES-3518,Testing,6,Cihuy,Rumah,Gedebage,1200000000,LianDev,2026-01-05 01:47:44,booking
-GES-3518,Testing,6,Cihuy,Rumah,Gedebage,1200000000,LianDev,2026-01-05 01:47:44,booking
->>>>>>> 593d3b75b4db0a525cf73050b6927cd6aae4ca89:data/properti_dimiliki.csv
+GES-4812,LianDev,1,Rumah Panjang,Rumah,Bandung,1000000000,Naufal,2026-01-05 16:53:23,beli
+GES-9112,Adi,8,Villa Air,Villa,Ciwidey,1500000000,Naufal,2026-01-05 19:43:31,beli
