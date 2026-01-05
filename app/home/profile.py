@@ -162,7 +162,7 @@ def profile(username):
                     input("Tekan ENTER...")
                 else:
                     ajukan_verifikasi_user(username)
-                    
+
         elif pilihan == "m":
             if user_data["role"] == "user" and user_data["user_verified"] == "false" :
                 print("\n❌ Akun belum terverifikasi.")
