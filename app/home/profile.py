@@ -172,7 +172,9 @@ def profile(username):
             elif user_data['role'] == "user" and user_data["user_verified"] == "true":
                 seller_registration_menu(username)
             elif user_data['role'] == "seller":
+                print("\n" * 25)
                 loading_seller_transition()
+                print("\n" * 25)
                 seller_menu(username)
             else:
                 print("Pilihan tidak valid!")

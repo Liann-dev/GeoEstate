@@ -4,6 +4,33 @@ import os
 FILE_TRANSAKSI = "data/transaksi.csv"
 FILE_SCHEDULE = "data/booking_schedule.csv"
 
+def hapus_jadwal(username, id_transaksi):
+    if not os.path.exists(FILE_SCHEDULE):
+        return
+
+    data_baru = []
+    terhapus = False
+
+    with open(FILE_SCHEDULE, mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        fieldnames = reader.fieldnames
+
+        for row in reader:
+            if (
+                row['id_transaksi'] == id_transaksi
+                and row.get('session') == username
+            ):
+                terhapus = True
+                continue  # skip baris ini
+            data_baru.append(row)
+
+    if not terhapus:
+        return
+
+    with open(FILE_SCHEDULE, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(data_baru)
 
 def hapus_transaksi(username, id_transaksi):
     if not os.path.exists(FILE_TRANSAKSI):
@@ -60,6 +87,8 @@ def hapus_transaksi(username, id_transaksi):
         writer.writeheader()
         writer.writerows(data_baru)
 
+    hapus_jadwal(username, id_transaksi)
+    
     print("✅ Riwayat transaksi berhasil dihapus.")
     return True
 

@@ -1,7 +1,7 @@
 import csv
 import os
 
-from app.features.checkout import checkout
+from app.features.booking import checkout
 from app.features.wishlist import tambah_ke_wishlist
 from app.features.jadwal_survey import survey
 from app.features.chat import buka_chat, normalize_session

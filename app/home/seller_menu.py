@@ -4,6 +4,7 @@ import os
 
 from app.Utils.animation import loading_exit_seller
 from app.features.transaksi_penjual import menu_kelola_pesanan
+from app.features.kelola_survey import menu_kelola_survei
 from app.home.review_seller import seller_review
 
 FILE_PROPERTI = "data/properti.csv"
@@ -198,11 +199,12 @@ def seller_menu(username):
         print("2. Lihat Properti Saya")
         print("3. Hapus Properti Saya")
         print("4. Kelola Data Booking")  
-        print("5. Lihat Ulasan Saya")
-        print("6. Kembali")
+        print("5. Kelola Data Survei")
+        print("6. Lihat Ulasan Saya")
+        print("7. Kembali")
         print("==================================")
 
-        pilihan = input("Pilih menu (1-6): ")
+        pilihan = input("Pilih menu (1-7): ")
 
         # =========================
         # OPSI 1: TAMBAH PROPERTI
@@ -231,17 +233,24 @@ def seller_menu(username):
             menu_kelola_pesanan(username) 
         
         # =========================
-        # OPSI 5: LIHAT ULASAN
+        # OPSI 5: KELOLA SURVEI
         # =========================
         elif pilihan == "5":
+            menu_kelola_survei(username)
+
+        # =========================
+        # OPSI 6: LIHAT ULASAN
+        # =========================
+        elif pilihan == "6":
             seller_review(username)
 
         # =========================
-        # OPSI 6: KEMBALI
+        # OPSI 7: KEMBALI
         # =========================
-        elif pilihan == "6":
+        elif pilihan == "7":
+            print("\n" * 25)
             loading_exit_seller()
-            print("Kembali ke menu utama...\n")
+            print("\n" * 25)
             break
 
         else:

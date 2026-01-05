@@ -1,0 +1,8 @@
+id,id_properti,nama_properti,lokasi,tanggal,waktu,pembeli,penjual,status
+SRV-6753,5,Resort Rancawana,Rancabuaya,2026-01-04,09:00,Adi,Naufal,Selesai
+SRV-1767,1,Rumah Panjang,Bandung,2026-01-20,13:00,Testing,Naufal,Pending
+SRV-1767,1,Rumah Panjang,Bandung,2026-01-27,13:00,Testing,Naufal,Pending
+SRV-1767,1,Rumah Panjang,Bandung,2026-01-28,16:00,Testing,Naufal,Pending
+SRV-1767,1,Rumah Panjang,Bandung,2026-02-02,16:00,Testing,Naufal,Pending
+SRV-1767,1,Rumah Panjang,Bandung,2026-02-02,16:00,Testing,Naufal,Berlangsung
+SRV-1767,1,Rumah Panjang,Bandung,2026-02-02,16:00,Testing,Naufal,Selesai

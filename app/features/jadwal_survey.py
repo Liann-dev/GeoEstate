@@ -4,7 +4,7 @@ import time
 import random
 from datetime import datetime
 
-FILE_JADWAL = 'data/jadwalsurvey.csv'
+FILE_JADWAL = 'data/jadwal_survey.csv'
 
 def init_csv():
     if not os.path.exists('data'):
@@ -160,7 +160,8 @@ def survey(username, properti):
             'waktu': waktu_pilih,
             'pembeli': username,
             'penjual': properti['penjual'],
-            'status': 'Pending'
+            'status': 'Pending',
+            'extend_count': 0
         }
         
  
