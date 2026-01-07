@@ -43,7 +43,7 @@ def tambah_ke_wishlist(username, id_properti):
 
     for item in wishlist:
         if item["username"] == username and item["id_properti"] == id_str:
-            print("\n❤️ Properti ini sudah ada di wishlist.")
+            print("\n❤️  Properti ini sudah ada di wishlist.")
             input("Tekan ENTER...")
             return
 
@@ -81,8 +81,9 @@ def hapus_dari_wishlist(username, id_properti):
     ]
 
     simpan_wishlist(wishlist)
-    print("\n🗑️ Properti berhasil dihapus dari wishlist.")
+    print("\n🗑️  Properti berhasil dihapus dari wishlist.")
     input("Tekan ENTER...")
+    return
 
 
 # =========================
@@ -125,7 +126,10 @@ def menu_wishlist(username):
 
         # 🗑️ Hapus
         if pilih.lower() == "h":
-            idp = input("Masukkan ID properti yang ingin dihapus: ").strip()
+            idp = input("Masukkan ID properti yang ingin dihapus (Tekan ENTER untuk kembali): ").strip()
+            if not idp:
+                continue
+            
             if idp:
                 hapus_dari_wishlist(username, idp)
             continue
