@@ -53,10 +53,10 @@ def hapus_transaksi(username, id_transaksi):
                 target = row
 
                 if (
-                    row['transaksi'] == 'beli'
+                    row['transaksi'] in ('booking, beli')
                     and row['username_pembeli'] == username
                 ) or (
-                    row['transaksi'] == 'jual'
+                    row['transaksi'] in ('booking, jual')
                     and row['penjual'] == username
                 ):
                     milik_user = True
@@ -69,7 +69,7 @@ def hapus_transaksi(username, id_transaksi):
         print("❌ Anda tidak berhak menghapus transaksi ini.")
         return False
 
-    if target['status'] in ('Menunggu Konfirmasi', 'Pending / Menunggu'):
+    if target['status'] in ('Menunggu Konfirmasi', 'Perpanjang Waktu'):
         print("❌ Transaksi yang belum selesai tidak dapat dihapus.")
         return False
 
@@ -113,7 +113,7 @@ def history_transaksi(username):
         for row in reader:
             # 🔥 FILTER UTAMA: SESSION
             if (row.get('session') == username
-            and row.get('transaksi') in ('beli, jual')
+            and row.get('transaksi') in ('beli, jual, booking')
             ):
                 my_history.append(row)
 
@@ -124,9 +124,9 @@ def history_transaksi(username):
         return
 
     # ================= TABEL RIWAYAT =================
-    print("-" * 85)
-    print(f" {'ID':<8} |{'TRANSAKSI':<10} | {'TANGGAL':<12} | {'NAMA PROPERTI':<20} | {'HARGA':<20}")
-    print("-" * 85)
+    print("-" * 100)
+    print(f" {'ID':<8} |{'TRANSAKSI':<10} | {'TANGGAL':<12} | {'NAMA PROPERTI':<20} | {'HARGA':<20} | {'STATUS':<15}")
+    print("-" * 100)
 
     for trx in my_history:
         idt = trx['id_transaksi']
@@ -135,6 +135,10 @@ def history_transaksi(username):
         if trx['transaksi'] == 'beli':
             transaksi = "Beli"
         elif trx['transaksi'] == 'jual':
+            transaksi = "Jual"
+        elif trx['transaksi'] == 'booking' and trx['username_pembeli'] == username:
+            transaksi = "Beli"
+        elif trx['transaksi'] == 'booking' and trx['penjual'] == username:
             transaksi = "Jual"
 
         tgl_short = trx['tanggal'].split(' ')[0]
@@ -145,14 +149,21 @@ def history_transaksi(username):
             else trx['nama_properti']
         )
 
+
         harga_display = f"Rp {int(trx['harga']):,}"
+        status_icon = {
+            "Menunggu Konfirmasi": "⏳ Menunggu",
+            "Perpanjang Waktu": "⏰ Diperpanjang",
+            "Lunas / Selesai": "✅ Selesai",
+            "Dibatalkan": "❌ Dibatalkan"
+        }.get(trx['status'], trx['status'])
 
         print(
             f" {idt:<8} | {transaksi:<9} | {tgl_short:<12} | "
-            f"{nama_display:<20} | {harga_display:<20}"
+            f"{nama_display:<20} | {harga_display:<20} | {status_icon}"
         )
 
-    print("=" * 85)
+    print("=" * 100)
     print(f" Total Transaksi: {len(my_history)}")
 
     # ================= OPSI =================

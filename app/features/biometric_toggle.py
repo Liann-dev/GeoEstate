@@ -44,7 +44,7 @@ def toggle_biometrik(username):
             konfirmasi = input("Nyalakan login biometrik? (y/n): ").lower()
             if konfirmasi == "y":
                 simpan_toggle_biometrik(username, "ON")
-                print("Biometrik berhasil dihidupkan!")
+                print("Biometrik berhasil dinyalakan!")
                 break
             elif konfirmasi == "n":
                 print("Biometrik tetap dimatikan.")

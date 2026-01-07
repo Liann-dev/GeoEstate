@@ -41,7 +41,7 @@ def lupa_password():
 
         user = validate_user(username, email)
         if not user:
-            print("Username dan email tidak cocok!\n")
+            print("Username atau email tidak cocok!\n")
             continue
         break
 
@@ -114,11 +114,10 @@ def lupa_password():
                 print("Password baru harus berbeda dari password lama\n")
                 continue
 
-            confirm = input("Konfirmasi password: ").strip()
+            confirm = input("Konfirmasi password (ENTER untuk batal): ").strip()
 
             if not confirm:
-                print("Konfirmasi password tidak boleh kosong!\n")
-                continue
+                return
 
             if new_pass != confirm:
                 print("Password tidak cocok!\n")
@@ -166,7 +165,7 @@ def ganti_password():
 
         user = validate_user(username, email)
         if not user:
-            print("Username dan email tidak cocok!\n")
+            print("Username atau email tidak cocok!\n")
             continue
         break
 
@@ -247,11 +246,10 @@ def ganti_password():
                 print("Password baru harus berbeda dari password lama\n")
                 continue
 
-            confirm = input("Konfirmasi password: ").strip()
+            confirm = input("Konfirmasi password (ENTER untuk batal): ").strip()
 
             if not confirm:
-                print("Konfirmasi password tidak boleh kosong!\n")
-                continue
+                return
 
             if new_pass != confirm:
                 print("Password tidak cocok!\n")
