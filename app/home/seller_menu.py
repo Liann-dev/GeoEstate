@@ -209,47 +209,47 @@ def seller_menu(username):
         pilihan = input("Pilih menu: ")
 
         # =========================
-        # OPSI 1: TAMBAH PROPERTI
+        # OPSI T: TAMBAH PROPERTI
         # =========================
-        if pilihan == "1":
+        if pilihan == "T":
             tambah_properti(username)
 
         # =========================
-        # OPSI 2: LIHAT PROPERTI SAYA
+        # OPSI L: LIHAT PROPERTI SAYA
         # =========================
-        elif pilihan == "2":
+        elif pilihan == "L":
             lihat_properti_saya(username)
             input("\nTekan ENTER untuk kembali...")
 
         # =========================
-        # OPSI 3: HAPUS PROPERTI SAYA
+        # OPSI H: HAPUS PROPERTI SAYA
         # =========================
-        elif pilihan == "3":
+        elif pilihan == "H":
             lihat_properti_saya(username)
             hapus_properti_saya(username)
 
         # =========================
-        # OPSI 4: KELOLA BOOKING 
+        # OPSI B: KELOLA BOOKING 
         # =========================
-        elif pilihan == "4":
+        elif pilihan == "B":
             menu_kelola_pesanan(username) 
         
         # =========================
-        # OPSI 5: KELOLA SURVEI
+        # OPSI S: KELOLA SURVEI
         # =========================
-        elif pilihan == "5":
+        elif pilihan == "S":
             menu_kelola_survei(username)
 
         # =========================
-        # OPSI 6: LIHAT ULASAN
+        # OPSI U: LIHAT ULASAN
         # =========================
-        elif pilihan == "6":
+        elif pilihan == "U":
             seller_review(username)
 
         # =========================
-        # OPSI 0: KEMBALI
+        # OPSI K: KEMBALI
         # =========================
-        elif pilihan == "0":
+        elif pilihan == "K":
             print("\n" * 25)
             loading_exit_seller()
             print("\n" * 25)
