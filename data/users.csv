@@ -1,7 +1,7 @@
 username,email,password,role,user_verified
 azzurisulthan,azzuri@gmail.com,Azzuri123,user,true
 Naufal,naufal@gmail.com,Naufal123,seller,true
-Adi,adisn@gmail.com,adi1234#,seller,true
+Adi,adisn@gmail.com,adi12345,seller,true
 Testing,test@gmail.com,testing1,user,true
 LianDev,lian@gmail.com,Lian1234,seller,true
 Adit,adit@yahoo.com,adit12345,user,false

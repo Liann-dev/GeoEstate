@@ -12,7 +12,7 @@ reset_sessions = {}
 #   }
 # }
 
-def generate_pin():
+def generate_otp():
     return ''.join(random.choices("0123456789", k=6))
 
 def validate_user(username, email):
@@ -24,7 +24,7 @@ def validate_user(username, email):
     return None
 
 def lupa_password():
-    print("\n===== RESET PASSWORD =====\n")
+    print("\n===== RESET PASSWORD =====")
 
     # tahap 1: identitas
     while True:
@@ -45,26 +45,26 @@ def lupa_password():
             continue
         break
 
-    # tahap 2: buat PIN session
-    pin = generate_pin()
+    # tahap 2: buat Kode OTP session
+    otp = generate_otp()
     duration = 180  # 3 menit
     reset_sessions[username] = {
-        "pin": pin,
+        "otp": otp,
         "expires_at": time.time() + duration
     }
 
-    print("\nPIN reset password kamu:", pin)
-    print(f"PIN berlaku selama {duration} detik")
-    print("Ketika program dihentikan, PIN akan otomatis dihapus.\n")
+    print("\nKode OTP reset password kamu:", otp)
+    print(f"Kode OTP berlaku selama {duration} detik")
+    print("Ketika program dihentikan, Kode OTP akan otomatis dihapus.\n")
 
-    # tahap 3: verifikasi PIN
+    # tahap 3: verifikasi Kode OTP
     kesempatan = 3
 
     while True:
         remaining = int(reset_sessions[username]["expires_at"] - time.time())
 
         if remaining <= 0:
-            print("\nWaktu PIN telah habis.")
+            print("\nWaktu Kode OTP telah habis.")
             print("Silakan ulangi proses lupa password.")
             reset_sessions.pop(username, None)
             input("Tekan ENTER untuk kembali...")
@@ -77,9 +77,9 @@ def lupa_password():
             input("Tekan ENTER untuk kembali...")
             return
         
-        input_pin = input(f"Masukkan PIN (sisa {remaining} detik, ENTER untuk batal): ").strip()
+        input_otp = input(f"Masukkan Kode OTP (sisa {remaining} detik, ENTER untuk batal): ").strip()
 
-        if not input_pin:
+        if not input_otp:
             print("Proses dibatalkan.")
             reset_sessions.pop(username, None)
             input("Tekan ENTER untuk kembali...")
@@ -87,21 +87,21 @@ def lupa_password():
 
         session = reset_sessions.get(username)
         if not session or time.time() > session['expires_at']:
-            print("PIN sudah tidak berlaku.")
+            print("Kode OTP sudah tidak berlaku.")
             reset_sessions.pop(username, None)
             input("Tekan ENTER untuk kembali...")
             return
         
-        if input_pin != session['pin']:
+        if input_otp != session['otp']:
             kesempatan -= 1
-            print("PIN salah!")
+            print("Kode OTP salah!")
             print(f"Sisa waktu: {remaining} detik")
             print(f"Kesempatam tersisa: {kesempatan}\n")
             continue
 
         # tahap 4: password baru
         old_password = user['password']
-        print("\n===== BUAT PASSWORD BARU =====\n")
+        print("\n===== BUAT PASSWORD BARU =====")
         while True:
             new_pass = input("Password baru (ENTER untuk batal): ").strip()
             if not new_pass:
@@ -148,7 +148,7 @@ def lupa_password():
         return
 
 def ganti_password():
-    print("\n===== RESET PASSWORD =====\n")
+    print("\n===== RESET PASSWORD =====")
 
     # tahap 1: identitas
     while True:
@@ -169,41 +169,41 @@ def ganti_password():
             continue
         break
 
-    # tahap 2: buat PIN session
-    pin = generate_pin()
+    # tahap 2: buat Kode OTP session
+    otp = generate_otp()
     duration = 180  # 3 menit
     reset_sessions[username] = {
-        "pin": pin,
+        "otp": otp,
         "expires_at": time.time() + duration
     }
 
-    print("\nPIN reset password kamu:", pin)
-    print(f"PIN berlaku selama {duration} detik")
-    print("Ketika program dihentikan, PIN akan otomatis dihapus.\n")
+    print("\nKode OTP reset password kamu:", otp)
+    print(f"Kode OTP berlaku selama {duration} detik")
+    print("Ketika program dihentikan, Kode OTP akan otomatis dihapus.\n")
 
-    # tahap 3: verifikasi PIN
+    # tahap 3: verifikasi Kode OTP
     kesempatan = 3
 
     while True:
         remaining = int(reset_sessions[username]["expires_at"] - time.time())
 
         if remaining <= 0:
-            print("\nWaktu PIN telah habis.")
-            print("Silakan ulangi proses ganti password.")
+            print("\nWaktu Kode OTP telah habis.")
+            print("Silakan ulangi proses lupa password.")
             reset_sessions.pop(username, None)
             input("Tekan ENTER untuk kembali...")
             return
 
         if kesempatan == 0:
             print("Kesempatan habis.")
-            print("Silakan ulangi proses ganti password.")
+            print("Silakan ulangi proses lupa password.")
             reset_sessions.pop(username, None)
             input("Tekan ENTER untuk kembali...")
             return
         
-        input_pin = input(f"Masukkan PIN (sisa {remaining} detik, ENTER untuk batal): ").strip()
+        input_otp = input(f"Masukkan Kode OTP (sisa {remaining} detik, ENTER untuk batal): ").strip()
 
-        if not input_pin:
+        if not input_otp:
             print("Proses dibatalkan.")
             reset_sessions.pop(username, None)
             input("Tekan ENTER untuk kembali...")
@@ -211,21 +211,21 @@ def ganti_password():
 
         session = reset_sessions.get(username)
         if not session or time.time() > session['expires_at']:
-            print("PIN sudah tidak berlaku.")
+            print("Kode OTP sudah tidak berlaku.")
             reset_sessions.pop(username, None)
             input("Tekan ENTER untuk kembali...")
             return
         
-        if input_pin != session['pin']:
+        if input_otp != session['otp']:
             kesempatan -= 1
-            print("PIN salah!")
+            print("Kode OTP salah!")
             print(f"Sisa waktu: {remaining} detik")
             print(f"Kesempatam tersisa: {kesempatan}\n")
             continue
 
         # tahap 4: password baru
         old_password = user['password']
-        print("\n===== BUAT PASSWORD BARU =====\n")
+        print("\n===== BUAT PASSWORD BARU =====")
         while True:
             new_pass = input("Password baru (ENTER untuk batal): ").strip()
             if not new_pass:
@@ -276,4 +276,6 @@ def ganti_password():
 
         reset_sessions.pop(username, None)
         print("\nPassword berhasil direset!")
+        print("Mengembalikan user ke halaman awal...")
+        time.sleep(2)
         return "EXIT"

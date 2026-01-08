@@ -69,7 +69,7 @@ def proses_input_ulasan(username, transaksi):
         else:
             print("❌ Input harus berupa angka.")
 
-    komentar = input("Tulis pengalaman transaksi Anda (ENTER untuk keluar): ")
+    komentar = input("Tuliskan pengalaman transaksi Anda (ENTER untuk keluar): ")
 
     if not komentar:
         return
@@ -119,9 +119,9 @@ def user_review(username):
         COL_ID = 12
         COL_TGL = 12
         COL_NAMA = 22
-        COL_STATUS = 18
+        COL_STATUS = 20
 
-        print("-" * 95)
+        print("-" * 100)
         print(
             f"{'No':<{COL_NO}} | "
             f"{'ID Transaksi':<{COL_ID}} | "
@@ -130,7 +130,7 @@ def user_review(username):
             f"{'Status':<{COL_STATUS}} | "
             f"Keterangan"
         )
-        print("-" * 97)
+        print("-" * 100)
 
         nomor = 1
         for trx in my_history:
@@ -161,7 +161,7 @@ def user_review(username):
 
             nomor += 1
 
-        print("-" * 97)
+        print("-" * 100)
 
         # ================= MENU =================
         print("\nOpsi:")
