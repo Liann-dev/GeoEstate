@@ -130,16 +130,16 @@ def menu_kelola_seller():
 === Menu Pengelolaan Seller ===
 1. Lihat Daftar Seller
 2. Verifikasi Pendaftaran Seller
-3. Kembali           
+0. Kembali           
 """)
 
-        pilihan = input("Pilih menu (1-3): ").strip()
+        pilihan = input("Pilih menu (0-2): ").strip()
 
         if pilihan == "1":
             tampilkan_daftar_seller()
         elif pilihan == "2":
             verifikasi_seller()
-        elif pilihan == "3":
+        elif pilihan == "0":
             return
         else:
             print("Pilihan tidak valid.\n")

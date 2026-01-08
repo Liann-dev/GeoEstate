@@ -11,6 +11,7 @@ from app.features.feedback import collect_feedback
 from app.features.jadwal_survey import lihat_jadwal_survey
 from app.features.notifikasi_service import get_unread_notifikasi
 from app.features.notifikasi_inbox_user import tampilkan_notifikasi_inbox
+from app.features.transaksi_penjual import auto_expire_booking
 
 FILE_PROPERTI = "data/properti.csv"
 def load_properties():
@@ -24,6 +25,7 @@ def load_properties():
 
 def home_seller(username):
     while True:
+        auto_expire_booking()
         semua_properti = load_properties()
 
         # ===== HITUNG UNREAD NOTIFIKASI =====

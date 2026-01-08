@@ -79,13 +79,13 @@ def tambah_properti(username):
         "lokasi": lokasi,
         "harga": harga,
         "penjual": username,
-        "tersedia" : "True"
+        "status": "available"
     }
 
     with open(FILE_PROPERTI, mode='a', newline='') as file:
         writer = csv.DictWriter(
             file,
-            fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "tersedia"]
+            fieldnames=["id", "nama", "kategori", "lokasi", "harga", "penjual", "status"]
         )
         if file.tell() == 0:
             writer.writeheader()
@@ -104,8 +104,10 @@ def lihat_properti_saya(username):
         for p in reader:
             if p['penjual'].strip().lower() == username.strip().lower():
 
-                if p['tersedia'] == "True":
+                if p['status'] == "available" or p['status'] == "pending":
                     ketersediaan = "✅ Tersedia"
+                elif p['status'] == "booked":
+                    ketersediaan = "⌛ Properti Telah Di-Booking"
                 else:
                     ketersediaan = "❌ Terjual"
                 print(f"ID: {p['id']}")
@@ -155,7 +157,7 @@ def hapus_properti_saya(username):
                     return
 
                 # cek status tersedia
-                if p['tersedia'].strip().lower() != 'true':
+                if p['tersedia'] != 'available':
                     print("❌ Properti sudah tidak tersedia / terjual!")
                     input("Tekan ENTER untuk kembali...")
                     return
@@ -201,10 +203,10 @@ def seller_menu(username):
         print("4. Kelola Data Booking")  
         print("5. Kelola Data Survei")
         print("6. Lihat Ulasan Saya")
-        print("7. Kembali")
+        print("0. Kembali")
         print("==================================")
 
-        pilihan = input("Pilih menu (1-7): ")
+        pilihan = input("Pilih menu (0-7): ")
 
         # =========================
         # OPSI 1: TAMBAH PROPERTI
@@ -245,9 +247,9 @@ def seller_menu(username):
             seller_review(username)
 
         # =========================
-        # OPSI 7: KEMBALI
+        # OPSI 0: KEMBALI
         # =========================
-        elif pilihan == "7":
+        elif pilihan == "0":
             print("\n" * 25)
             loading_exit_seller()
             print("\n" * 25)

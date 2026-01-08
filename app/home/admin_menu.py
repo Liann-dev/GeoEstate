@@ -11,8 +11,8 @@ def admin_menu(username):
         print("1. Verifikasi Data User")
         print("2. Kelola Data Seller")
         print("3. Lihat Feedback")
-        print("4. Keluar / Logout")
-        pilihan = input(f"\nPilih menu (1-4): ")
+        print("0. Keluar / Logout")
+        pilihan = input(f"\nPilih menu (0-3): ")
 
         if pilihan == "1":
             menu_verifikasi_user()
@@ -20,7 +20,7 @@ def admin_menu(username):
             menu_kelola_seller()
         elif pilihan == "3":
             lihat_feedback()
-        elif pilihan == "4":
+        elif pilihan == "0":
             print("\nLogout berhasil!")
             input("Tekan ENTER untuk kembali ke halaman awal...")
             print("\n" * 25)

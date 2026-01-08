@@ -7,11 +7,28 @@ from app.features.seller_register import seller_registration_menu
 from app.features.biometric_toggle import toggle_biometrik
 from app.auth.lupa_password import ganti_password
 from app.home.seller_menu import seller_menu
-from app.Utils.animation import loading_seller_transition 
+from app.Utils.animation import loading_seller_transition
 
 FILE_USERS = "data/users.csv"
 FILE_RIWAYAT = "data/properti_dibeli.csv"
 FILE_BIODATA = "data/biodata.csv"
+FILE_REQUEST = "data/user_verification_requests.csv"
+
+
+# =========================
+# UTIL - REQUEST TERAKHIR
+# =========================
+def get_latest_verification_request(username):
+    if not os.path.exists(FILE_REQUEST):
+        return None
+
+    latest = None
+    with open(FILE_REQUEST, newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row["username"] == username:
+                latest = row
+    return latest
 
 
 # =========================
@@ -49,6 +66,7 @@ def properti_saya(username):
     print("-" * 50)
     input("\nTekan ENTER untuk kembali...")
 
+
 # =========================
 # INFORMASI PRIBADI
 # =========================
@@ -74,7 +92,7 @@ def informasi_pribadi(username):
 
 
 # =========================
-# PROFILE MENU
+# PROFILE MENU (FINAL)
 # =========================
 def profile(username):
     while True:
@@ -92,38 +110,58 @@ def profile(username):
             print("❌ Data pengguna tidak ditemukan.")
             return
 
+        # ===== STATUS VERIFIKASI =====
+        verification_status = ""
+        admin_note = None
+        request = get_latest_verification_request(username)
+
+        if user_data["user_verified"] == "true":
+            verification_status = "✅ Terverifikasi"
+        else:
+            if request:
+                if request["status"] == "pending":
+                    verification_status = "⏳ Verifikasi sedang diproses"
+                elif request["status"] == "rejected":
+                    verification_status = "❌ Verifikasi ditolak"
+                    admin_note = request.get("admin_note")
+                else:
+                    verification_status = "⚠️  Belum Terverifikasi"
+            else:
+                verification_status = "⚠️  Belum Terverifikasi"
+
         print("\n========================================")
         print("              PROFIL SAYA               ")
         print("========================================")
         print(f"👤 Username : {user_data['username']}")
         print(f"🛡️  Role     : {user_data['role'].capitalize()}")
+        print(f"📌 Status   : {verification_status}")
 
-        status = "✅ Terverifikasi" if user_data["user_verified"] == "true" else "Belum Terverifikasi ⚠️"
-        print(f"📌 Status   : {status}")
+        if admin_note:
+            print(f"📝 Catatan  : {admin_note}")
+
         print("----------------------------------------")
-
         print(" [I] Informasi Pribadi")
         print(" [H] History Transaksi")
         print(" [P] Properti Saya")
         print(" [K] Keamanan & Password")
+
         if user_data["user_verified"] == "false":
-            print(" [V] Ajukan Verifikasi Data User")
+            if not request or request["status"] != "pending":
+                print(" [V] Ajukan Verifikasi Data User")
+
         if user_data["role"] == "user":
             print(" [M] Daftar Sebagai Seller")
-        if user_data['role'] == "seller":
+        elif user_data["role"] == "seller":
             print(" [M] Menu Seller")
+
         print(" [B] Kembali")
         pilihan = input("\nPilih menu: ").lower().strip()
 
-        # =========================
-        # INFORMASI PRIBADI (FIX UX)
-        # =========================
         if pilihan == "i":
             if user_data["user_verified"] == "false":
                 print("\n⚠️  Data Anda belum terverifikasi.")
-                print("Silakan ajukan verifikasi terlebih dahulu.")
                 input("Tekan ENTER untuk kembali ke menu Profil...")
-                continue  # ✅ KEMBALI KE PROFILE, BUKAN HOME
+                continue
             informasi_pribadi(username)
 
         elif pilihan == "h":
@@ -152,32 +190,27 @@ def profile(username):
                     print("Pilihan tidak valid!")
 
         elif pilihan == "v":
-            if user_data["user_verified"] == "false":
-                from app.features.user_verification_request import (
-                    has_active_request,
-                    ajukan_verifikasi_user
-                )
-                if has_active_request(username):
-                    print("\n❌ Anda sudah mengajukan verifikasi dan sedang diproses oleh Admin.")
-                    input("Tekan ENTER...")
-                else:
-                    ajukan_verifikasi_user(username)
+            from app.features.user_verification_request import (
+                has_active_request,
+                ajukan_verifikasi_user
+            )
+            if has_active_request(username):
+                print("\n⏳ Verifikasi Anda sedang diproses Admin.")
+                input("Tekan ENTER...")
+            else:
+                ajukan_verifikasi_user(username)
 
         elif pilihan == "m":
-            if user_data["role"] == "user" and user_data["user_verified"] == "false" :
-                print("\n❌ Akun belum terverifikasi.")
-                print("Silakan lakukan verifikasi data terlebih dahulu")
+            if user_data["role"] == "user" and user_data["user_verified"] == "false":
+                print("\n⚠️  Data Anda belum terverifikasi.")
                 input("Tekan ENTER...")
-                continue
-            elif user_data['role'] == "user" and user_data["user_verified"] == "true":
+            elif user_data["role"] == "user":
                 seller_registration_menu(username)
-            elif user_data['role'] == "seller":
+            elif user_data["role"] == "seller":
                 print("\n" * 25)
                 loading_seller_transition()
                 print("\n" * 25)
                 seller_menu(username)
-            else:
-                print("Pilihan tidak valid!")
 
         elif pilihan == "b":
             break

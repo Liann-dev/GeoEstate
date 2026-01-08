@@ -2,86 +2,63 @@ import csv
 import os
 import uuid
 from datetime import datetime
+from app.features.biodata_input import input_biodata
 
 FILE_REQUEST = "data/user_verification_requests.csv"
-
-
-# =========================
-# INIT FILE
-# =========================
-def init_request_file():
-    if not os.path.exists(FILE_REQUEST):
-        with open(FILE_REQUEST, mode="w", newline="", encoding="utf-8") as file:
-            writer = csv.writer(file)
-            writer.writerow([
-                "request_id",
-                "username",
-                "status",
-                "timestamp",
-                "admin_note"
-            ])
-
-
-# =========================
-# GET LATEST REQUEST
-# =========================
-def get_verification_status(username):
-    """
-    Return:
-    - None -> belum pernah ajukan
-    - dict -> request terbaru user
-    """
-    if not os.path.exists(FILE_REQUEST):
-        return None
-
-    with open(FILE_REQUEST, newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-        data = [r for r in reader if r["username"] == username]
-
-    if not data:
-        return None
-
-    # ambil request TERBARU
-    data.sort(key=lambda x: x["timestamp"], reverse=True)
-    return data[0]
+FIELDS = ["request_id", "username", "status", "timestamp", "admin_note"]
 
 
 # =========================
 # CHECK ACTIVE REQUEST
 # =========================
 def has_active_request(username):
-    """
-    True jika user masih pending
-    """
-    req = get_verification_status(username)
-    return req is not None and req["status"] == "pending"
+    if not os.path.exists(FILE_REQUEST):
+        return False
+
+    with open(FILE_REQUEST, newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            if row["username"] == username and row["status"] == "pending":
+                return True
+    return False
 
 
 # =========================
-# AJUKAN VERIFIKASI
+# AJUKAN VERIFIKASI (FIXED)
 # =========================
 def ajukan_verifikasi_user(username):
-    init_request_file()
-
-    # Cegah double request
+    # 1 CEGAH DOUBLE REQUEST
     if has_active_request(username):
-        print("❌ Anda sudah mengajukan verifikasi dan sedang diproses.")
-        input("Tekan ENTER untuk kembali...")
+        print("\n⏳ Anda sudah mengajukan verifikasi.")
+        input("Tekan ENTER...")
         return
 
-    request_id = uuid.uuid4().hex[:8]
+    # 2 WAJIB INPUT BIODATA KTP
+    sukses = input_biodata(username)
+    if not sukses:
+        print("\n❌ Verifikasi dibatalkan.")
+        input("Tekan ENTER...")
+        return
+
+    # 3 BUAT REQUEST VERIFIKASI
+    request_id = str(uuid.uuid4())[:8]
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    with open(FILE_REQUEST, mode="a", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow({
-        "request_id": request_id,
-        "username": username,
-        "status": "pending",
-        "timestamp": timestamp,
-        "admin_note": ""
-        })
+    file_kosong = not os.path.exists(FILE_REQUEST) or os.path.getsize(FILE_REQUEST) == 0
 
+    with open(FILE_REQUEST, "a", newline="", encoding="utf-8") as file:
+        writer = csv.DictWriter(file, fieldnames=FIELDS)
+
+        if file_kosong:
+            writer.writeheader()
+
+        writer.writerow({
+            "request_id": request_id,
+            "username": username,
+            "status": "pending",
+            "timestamp": timestamp,
+            "admin_note": ""
+        })
 
     print("\n✅ Permintaan verifikasi berhasil diajukan.")
     print("⏳ Silakan tunggu proses verifikasi dari Admin.")

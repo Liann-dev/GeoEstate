@@ -43,7 +43,7 @@ def tambah_ke_wishlist(username, id_properti):
 
     for item in wishlist:
         if item["username"] == username and item["id_properti"] == id_str:
-            print("\n❤️ Properti ini sudah ada di wishlist.")
+            print("\n❤️  Properti ini sudah ada di wishlist.")
             input("Tekan ENTER...")
             return
 

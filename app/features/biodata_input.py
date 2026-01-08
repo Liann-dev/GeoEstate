@@ -17,7 +17,13 @@ def input_biodata(username):
 
     for field in FIELDS[1:]:
         label = field.replace("_", " ").title()
-        data[field] = input(f"{label}: ")
+        value = input(f"{label}: ").strip()
+
+        if not value:
+            print("\n❌ Semua data wajib diisi.")
+            return False
+
+        data[field] = value
 
     if not os.path.exists(FILE_BIODATA):
         with open(FILE_BIODATA, "w", newline="", encoding="utf-8") as f:
@@ -29,3 +35,4 @@ def input_biodata(username):
         writer.writerow(data)
 
     print("\n✅ Biodata berhasil disimpan.")
+    return True

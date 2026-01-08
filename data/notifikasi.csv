@@ -1,30 +1,11 @@
-id,username,role,pesan,status,timestamp
-NTF-4bcf3c9a,Naufal,seller,📌 Booking baru untuk properti 'Resort Rancawana' dari buyer Testing,read,2026-01-05 01:35:06
-NTF-46b7f01b,Testing,user,Booking properti 'Resort Rancawana' diperpanjang oleh seller,read,2026-01-05 01:36:14
-NTF-8a2be2e1,LianDev,seller,📌 Booking baru untuk properti 'Cihuy' dari buyer Testing,read,2026-01-05 01:46:49
-NTF-947f30c8,Testing,user,Properti 'Cihuy' berhasil dibeli,read,2026-01-05 01:47:44
-NTF-3b9afae9,LianDev,seller,💰 Properti 'Cihuy' berhasil terjual,read,2026-01-05 01:47:44
-NTF-df1ecf0c,Adi,user,💬 Pesan baru dari Testing,read,2026-01-05 01:48:34
-NTF-4817f160,Adi,seller,📌 Booking baru untuk properti 'Havana Resort' dari buyer Testing,read,2026-01-05 01:48:39
-NTF-e7211766,Adi,user,💬 Pesan baru dari Testing,read,2026-01-05 01:48:56
-NTF-25ea12f1,LianDev,user,Booking properti 'Rumah Panjang' diperpanjang oleh seller,unread,2026-01-05 15:36:17
-NTF-8419d17e,LianDev,user,Booking properti 'Rumah Panjang' diperpanjang oleh seller,unread,2026-01-05 16:20:16
-NTF-25be44a3,LianDev,user,Booking properti 'Rumah Panjang' diperpanjang oleh seller,unread,2026-01-05 16:21:02
-NTF-8bd7cc47,LianDev,user,Booking properti 'Rumah Panjang' diperpanjang oleh seller,unread,2026-01-05 16:33:09
-NTF-c7e11986,LianDev,user,Booking properti 'Rumah Panjang' diperpanjang oleh seller,unread,2026-01-05 16:34:44
-NTF-199657f3,LianDev,user,Booking properti 'Rumah Panjang' diperpanjang oleh seller,unread,2026-01-05 16:35:24
-NTF-858dbc48,LianDev,user,Properti 'Rumah Panjang' berhasil dibeli,unread,2026-01-05 16:43:52
-NTF-4e03104a,Naufal,seller,💰 Properti 'Rumah Panjang' berhasil terjual,unread,2026-01-05 16:43:52
-NTF-efc498ad,LianDev,user,Properti 'Rumah Panjang' berhasil dibeli,unread,2026-01-05 16:47:32
-NTF-5941804b,Naufal,seller,💰 Properti 'Rumah Panjang' berhasil terjual,unread,2026-01-05 16:47:32
-NTF-c2bc15ba,LianDev,user,Properti 'Rumah Panjang' berhasil dibeli,unread,2026-01-05 16:53:23
-NTF-52e718a1,Naufal,seller,💰 Properti 'Rumah Panjang' berhasil terjual,unread,2026-01-05 16:53:23
-NTF-083ba764,Naufal,seller,📌 Booking baru untuk properti 'Villa Air' dari buyer Adi,unread,2026-01-05 19:09:03
-NTF-b8996e1d,Adi,user,Booking properti 'Villa Air' diperpanjang oleh seller,unread,2026-01-05 19:25:55
-NTF-741189f0,Adi,user,Booking properti 'Villa Air' diperpanjang oleh seller,unread,2026-01-05 19:34:01
-NTF-9924df74,Adi,user,Properti 'Villa Air' berhasil dibeli,unread,2026-01-05 19:43:32
-NTF-f9539285,Naufal,seller,💰 Properti 'Villa Air' berhasil terjual,unread,2026-01-05 19:43:32
-NTF-1ae93ee3,Adi,user,Booking properti 'Villa Air' diperpanjang oleh seller,unread,2026-01-05 19:46:22
-NTF-c30d846d,Adi,user,Booking properti 'Villa Air' diperpanjang oleh seller,unread,2026-01-05 19:52:15
-NTF-55e0f9aa,Adi,user,Properti 'Villa Air' berhasil dibeli,unread,2026-01-05 19:52:37
-NTF-9d0a33df,Naufal,seller,💰 Properti 'Villa Air' berhasil terjual,unread,2026-01-05 19:52:37
+id,username,role,pesan,status,timestamp,redirect
+NTF-23798ba6,azzuri3,user,"❌ Verifikasi akun Anda ditolak. Alasan: a semua inputnya, ga valid",read,2026-01-08 01:41:59,
+NTF-f1fc93eb,azzuri3,user,✅ Akun Anda telah berhasil diverifikasi oleh Admin.,read,2026-01-08 02:00:24,
+NTF-f27fceca,Naufal,seller,📌 Booking baru untuk properti 'Rumah Panjang' dari buyer azzuri3,unread,2026-01-08 04:33:29,
+NTF-42c65916,Naufal,seller,Properti 'Rumah Panjang' berhasil terjual 💰,unread,2026-01-08 04:35:17,
+NTF-74c1e6bf,azzuri3,user,Booking properti 'Rumah Panjang' disetujui seller,unread,2026-01-08 04:38:59,
+NTF-a4f5e1d8,azzuri3,user,Properti 'Rumah Panjang' berhasil dibeli 🎉,unread,2026-01-08 04:50:25,
+NTF-9e3cbd30,Naufal,seller,Properti 'Rumah Panjang' berhasil terjual 💰,unread,2026-01-08 04:50:25,
+NTF-b92c8be7,Naufal,seller,📌 Booking baru untuk properti 'Villa Air' dari buyer azzuri3,unread,2026-01-08 05:58:34,
+6ee1aba7-455e-4fce-9a6c-ba3cd194ca65,azzuri3,user,Booking properti 'Villa Air' disetujui seller,unread,2026-01-08 06:01:06,-
+b7f6801b-c476-40db-afc4-775b4913bfb6,Naufal,seller,Buyer azzuri3 mengajukan pembelian properti 'Villa Air',read,2026-01-08 06:30:50,transaksi_seller

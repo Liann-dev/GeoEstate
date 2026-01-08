@@ -11,14 +11,16 @@ from app.features.wishlist import menu_wishlist
 from app.features.jadwal_survey import lihat_jadwal_survey
 from app.features.notifikasi_service import get_unread_notifikasi
 from app.features.notifikasi_inbox_user import tampilkan_notifikasi_inbox
+from app.features.transaksi_penjual import auto_expire_booking
 
+FILE_USERS = "data/users.csv"
 FILE_PROPERTI = 'data/properti.csv'
 
 
 def load_properties():
     data = []
     if os.path.exists(FILE_PROPERTI):
-        with open(FILE_PROPERTI, mode='r') as file:
+        with open(FILE_PROPERTI, newline="", mode='r') as file:
             reader = csv.DictReader(file)
             data.extend(reader)
     return data
@@ -26,6 +28,7 @@ def load_properties():
 
 def home_user(username):
     while True:
+        auto_expire_booking()
         semua_properti = load_properties()
 
         # ===== HITUNG UNREAD NOTIFIKASI =====
@@ -96,6 +99,10 @@ def home_user(username):
             lihat_jadwal_survey(username)
 
         elif pilihan == 'f':
+            # if user_data["role"] == "user":
+            #     collect_feedback(username, 'user')
+            # elif user_data["role"] == "seller":
+            #     collect_feedback(username, "seller")
             collect_feedback(username, 'user')
 
         elif pilihan == 'w':

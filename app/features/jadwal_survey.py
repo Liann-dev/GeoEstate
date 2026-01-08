@@ -50,18 +50,6 @@ def ui_sukses_request(id_survei):
     input("[ Tekan ENTER untuk kembali ke Home ]")
 
 def survey(username, properti):
-    
-    print("\n" * 50)
-    print("========================================")
-    print("         JADWALKAN SURVEI              ")
-    print("========================================")
-    print(f" 🏠 {properti['nama']}")
-    print(f" 📍 {properti['lokasi']}")
-    print("----------------------------------------")
-    
-    print("\n[ Pilih Tanggal ]")
-    print("Format: YYYY-MM-DD (Contoh: 2025-12-20)")
-    
     print("\n" * 50)
     print("========================================")
     print("         JADWALKAN SURVEI              ")
@@ -141,8 +129,6 @@ def survey(username, properti):
         else:
             print("❌ Pilihan tidak valid.")
             input("Tekan ENTER untuk coba lagi...")
-            break
-
  
     print("----------------------------------------")
     konfirmasi = input("Konfirmasi Jadwal? (y/n): ").lower()

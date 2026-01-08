@@ -4,11 +4,10 @@ from datetime import datetime, timedelta
 from app.features.notifikasi_helper import simpan_notifikasi
 from app.features.chat import buka_chat, normalize_session
 
-
 FILE_TRANSAKSI = "data/transaksi.csv"
 FILE_PROPERTI = "data/properti.csv"
 FILE_RIWAYAT = "data/properti_dibeli.csv"
-FILE_SCHEDULE = "data/booking_schedule.csv"
+FILE_BOOKING = "data/booking.csv"
 
 
 # ================= UTIL =================
@@ -16,479 +15,422 @@ FILE_SCHEDULE = "data/booking_schedule.csv"
 def baca_data_csv():
     if not os.path.exists(FILE_TRANSAKSI):
         return []
-    with open(FILE_TRANSAKSI, mode='r', newline='') as file:
-        return list(csv.DictReader(file))
+    with open(FILE_TRANSAKSI, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
 
 
-def simpan_perubahan_csv(data_baru):
-    fieldnames = [
-        'id_transaksi', 'username_pembeli', 'penjual',
-        'id_properti', 'nama_properti', 'harga',
-        'tanggal', 'transaksi', 'status', 'session'
-    ]
-
-    os.makedirs(os.path.dirname(FILE_TRANSAKSI), exist_ok=True)
-
-    with open(FILE_TRANSAKSI, mode='w', newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
+def simpan_perubahan_csv(data):
+    with open(FILE_TRANSAKSI, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=data[0].keys())
         writer.writeheader()
-        writer.writerows(data_baru)
+        writer.writerows(data)
 
 
-def print_separator(lebar):
-    print("-" * lebar)
+def update_status_properti(id_properti, status_baru):
+    if not os.path.exists(FILE_PROPERTI):
+        return
 
-# ================= SCHEDULE =================
-def get_base_date(id_transaksi):
-    """
-    Jika belum ada jadwal → pakai hari ini
-    Jika sudah → pakai jadwal terakhir
-    """
-    terakhir = get_jadwal_terakhir(id_transaksi)
+    with open(FILE_PROPERTI, newline="", encoding="utf-8") as f:
+        data = list(csv.DictReader(f))
 
-    if not terakhir:
-        return datetime.now().date()
+    for p in data:
+        if p["id"] == id_properti:
+            p["status"] = status_baru
+            break
 
-    return datetime.strptime(terakhir, "%Y-%m-%d").date()
+    with open(FILE_PROPERTI, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=data[0].keys())
+        writer.writeheader()
+        writer.writerows(data)
 
-def get_jadwal_terakhir(id_transaksi):
-    if not os.path.exists(FILE_SCHEDULE):
-        return None
-
-    terakhir = None
-
-    with open(FILE_SCHEDULE, mode='r', newline='') as file:
-        for row in csv.DictReader(file):
-            if row['id_transaksi'] == id_transaksi:
-                terakhir = row['schedule']
-
-    return terakhir
-
-def tambah_jadwal_booking(id_transaksi, jadwal_baru, penjual, pembeli):
-    with open(FILE_SCHEDULE, mode='a', newline='') as file:
-        writer = csv.writer(file)
-
-        # session pembeli
-        writer.writerow([id_transaksi, jadwal_baru, pembeli])
-
-        # session penjual
-        writer.writerow([id_transaksi, jadwal_baru, penjual])
-
-def get_extend_count(id_transaksi):
-    if not os.path.exists(FILE_SCHEDULE):
-        return 0
-
-    jadwal_set = set()
-
-    with open(FILE_SCHEDULE, mode='r', newline='') as file:
-        for row in csv.DictReader(file):
-            if row['id_transaksi'] == id_transaksi:
-                jadwal_set.add(row['schedule'])
-
-    # ✅ jadwal pertama langsung dihitung sebagai extend ke-1
-    return len(jadwal_set)
-
-def bisa_extend(id_transaksi, max_extend=3):
-    return get_extend_count(id_transaksi) < max_extend
-
-def input_tanggal_valid(jadwal_lama=None):
-    while True:
-        tanggal_input = input(">> Masukkan Tanggal (0 untuk kembali): ").strip()
-
-        if tanggal_input == '0':
-            return None
-
-        parts = tanggal_input.split('-')
-        if len(parts) != 3:
-            print("❌ Format salah! Gunakan YYYY-MM-DD.")
-            continue
-
-        y, m, d = parts
-        if not (y.isdigit() and m.isdigit() and d.isdigit()):
-            print("❌ Tanggal harus berupa angka.")
-            continue
-
-        try:
-            tanggal = datetime(int(y), int(m), int(d)).date()
-        except ValueError:
-            print("❌ Tanggal tidak valid.")
-            continue
-
-        hari_ini = datetime.now().date()
-        if tanggal < hari_ini:
-            print("❌ Tidak boleh di masa lalu.")
-            continue
-
-        if jadwal_lama:
-            lama = datetime.strptime(jadwal_lama, "%Y-%m-%d").date()
-
-            if tanggal <= lama:
-                print("❌ Harus lebih maju dari jadwal sebelumnya.")
-                continue
-
-            batas_maks = lama + timedelta(days=7)
-            if tanggal > batas_maks:
-                print("❌ Perpanjangan maksimal 7 hari dari jadwal sebelumnya.")
-                print(f"   📅 Batas akhir: {batas_maks}")
-                continue
-
-        return tanggal.strftime("%Y-%m-%d")
-
-def input_tanggal_extend(id_transaksi):
-    base_date = get_base_date(id_transaksi)
-    max_date = base_date + timedelta(days=7)
-
-    while True:
-        tanggal_input = input(
-            f">> Masukkan tanggal ({base_date} s/d {max_date}) (0 untuk batal): "
-        ).strip()
-
-        if tanggal_input == "0":
-            return None
-
-        try:
-            tanggal = datetime.strptime(tanggal_input, "%Y-%m-%d").date()
-        except ValueError:
-            print("❌ Format salah! Gunakan YYYY-MM-DD.")
-            continue
-
-        if tanggal < base_date:
-            print("❌ Tanggal tidak boleh sebelum jadwal acuan.")
-            continue
-
-        if tanggal > max_date:
-            print("❌ Extend maksimal hanya 7 hari dari jadwal sebelumnya.")
-            continue
-
-        return tanggal_input
-
-# ================= CEK TRANSAKSI AKTIF =================
 
 def sedang_dalam_transaksi(username, id_properti):
     if not os.path.exists(FILE_TRANSAKSI):
         return False
 
-    with open(FILE_TRANSAKSI, mode='r', newline='') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            if row.get('session') != username:
-                continue
-
+    with open(FILE_TRANSAKSI, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
             if (
-                row.get('username_pembeli') == username
-                and row.get('id_properti') == id_properti
+                row["username_pembeli"] == username
+                and row["id_properti"] == id_properti
+                and row["status"] not in ("Dibatalkan", "Sold", "Lunas / Selesai")
             ):
-                if row.get('status') not in ("Lunas / Selesai", "Dibatalkan"):
-                    return True
+                return True
     return False
+
+
+# ================= BOOKING DATE =================
+
+def get_jadwal_terakhir(id_transaksi):
+    if not os.path.exists(FILE_BOOKING):
+        return None
+
+    terakhir = None
+    with open(FILE_BOOKING, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            if row["id_transaksi"] == id_transaksi:
+                terakhir = row["schedule"]
+    return terakhir
+
+
+def tambah_jadwal_booking(id_transaksi, tanggal, pembeli, penjual):
+    with open(FILE_BOOKING, "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([id_transaksi, tanggal, pembeli])
+        writer.writerow([id_transaksi, tanggal, penjual])
+
+
+def get_extend_count(id_transaksi):
+    if not os.path.exists(FILE_BOOKING):
+        return 0
+
+    jadwal = set()
+    with open(FILE_BOOKING, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            if row["id_transaksi"] == id_transaksi:
+                jadwal.add(row["schedule"])
+    return len(jadwal)
 
 
 # ================= TAMPILKAN PESANAN =================
 
-def tampilkan_pesanan(penjual_login):
-    semua_transaksi = baca_data_csv()
-
-    transaksi_penjual = [
-        t for t in semua_transaksi
-        if t['session'] == penjual_login
-    ]
+def tampilkan_pesanan(penjual):
+    semua = baca_data_csv()
+    data = [t for t in semua if t["session"] == penjual]
 
     print("\n" * 50)
     print("=" * 110)
-    print("                                        📦 KELOLA BOOKING SELLER")
+    print("📦 KELOLA BOOKING SELLER")
     print("=" * 110)
 
-    if not transaksi_penjual:
-        print("📭 Belum ada booking masuk.")
-        print("=" * 110)
+    if not data:
+        print("Belum ada booking.")
         return []
 
-    print(
-        f" {'ID':<10} | {'BUYER':<12} | {'PROPERTI':<20} | "
-        f"{'TANGGAL':<18} | {'HARGA':<18} | STATUS"
-    )
-    print("=" * 110)
+    print(f"{'ID':<10} {'BUYER':<12} {'PROPERTI':<20} {'TANGGAL':<14} {'STATUS'}")
+    print("-" * 110)
 
-    for t in transaksi_penjual:
-        # ✅ ambil jadwal terbaru (extend terakhir)
-        jadwal_terakhir = get_jadwal_terakhir(t['id_transaksi'])
-        tanggal_tampil = jadwal_terakhir if jadwal_terakhir else t['tanggal'][:10]
-
-        extend = get_extend_count(t['id_transaksi'])
-        tanggal_text = f"{tanggal_tampil} ({extend}/3)"
-
-        harga = f"Rp {int(t['harga']):,}".replace(",", ".")
-        status_icon = {
-            "Menunggu Konfirmasi": "⏳ Menunggu",
-            "Perpanjang Waktu": "⏰ Diperpanjang",
-            "Lunas / Selesai": "✅ Selesai",
-            "Dibatalkan": "❌ Dibatalkan"
-        }.get(t['status'], t['status'])
-
+    for t in data:
+        jadwal = get_jadwal_terakhir(t["id_transaksi"]) or t["tanggal"][:10]
+        extend = get_extend_count(t["id_transaksi"])
         print(
-            f" {t['id_transaksi']:<10} | {t['username_pembeli']:<12} | "
-            f"{t['nama_properti'][:18]:<20} | {tanggal_text:<18} | "
-            f"{harga:<18} | {status_icon}"
+            f"{t['id_transaksi']:<10} {t['username_pembeli']:<12} "
+            f"{t['nama_properti'][:18]:<20} {jadwal} ({extend}/3) {t['status']}"
         )
 
-    print("=" * 110)
-    print(f" Total Booking: {len(transaksi_penjual)}")
+    return data
 
-    return transaksi_penjual
 
-# ================= UPDATE STATUS  =================
+# ================= UPDATE STATUS =================
 
 def update_status_pesanan(penjual_login):
-
-    id_input = input("\nID Transaksi (ENTER untuk batal): ").strip()
-    if not id_input:
+    id_trx = input("\nMasukkan ID Transaksi (ENTER batal): ").strip()
+    if not id_trx:
         return
 
-    semua_data = baca_data_csv()
+    semua = baca_data_csv()
+    trx = next(
+        (r for r in semua if r["id_transaksi"] == id_trx and r["session"] == penjual_login),
+        None
+    )
 
-    # 🔎 Cari transaksi milik seller
-    trx_penjual = None
-    for row in semua_data:
-        if row['id_transaksi'] == id_input and row['session'] == penjual_login:
-            trx_penjual = row
-            break
-
-    if not trx_penjual:
-        print("❌ Transaksi tidak ditemukan / bukan milik Anda.")
+    if not trx:
+        print("❌ Transaksi tidak ditemukan.")
         input("ENTER...")
         return
 
-    # 🔒 Status final tidak bisa diubah
-    if trx_penjual['status'] in ("Lunas / Selesai", "Dibatalkan"):
-        print("⚠️ Status sudah final, tidak bisa diubah.")
+    status = trx["status"]
+
+    # 🔒 STATUS FINAL
+    if status in ("Sold", "Lunas / Selesai", "Dibatalkan"):
+        print("🔒 Status transaksi sudah final dan tidak dapat diubah.")
         input("ENTER...")
         return
 
-    # ================= MENU =================
+    pembeli = trx["username_pembeli"]
+    properti = trx["nama_properti"]
+    id_properti = trx["id_properti"]
+
     print("\n[ UPDATE STATUS ]")
-    print("1. Konfirmasi (Lunas / Selesai)")
-    print("2. Batalkan")
-    print("3. Perpanjang Waktu")
 
-    pilihan = input(">> Pilihan: ").strip()
-    status_baru = trx_penjual['status']
+    # ================= MENUNYA DIKUNCI SESUAI STATUS =================
+    if status == "Menunggu Konfirmasi":
+        print("1. ✅ Terima Booking")
+        print("2. ❌ Tolak Booking")
+        pilih = input(">> ").strip()
 
-    # ================= OPSI 1 =================
-    if pilihan == "1":
-        status_baru = "Lunas / Selesai"
+        if pilih == "1":
+            for r in semua:
+                if r["id_transaksi"] == id_trx:
+                    r["status"] = "Booked"
 
-    # ================= OPSI 2 =================
-    elif pilihan == "2":
-        status_baru = "Dibatalkan"
+            update_status_properti(id_properti, "booked")
+            batalkan_booking_lain(id_properti, id_trx)
 
-    # ================= OPSI 3 =================
-    elif pilihan == "3":
+            simpan_notifikasi(
+                pembeli, "user",
+                f"Booking properti '{properti}' disetujui seller"
+            )
 
-        extend_count = get_extend_count(id_input)
-        if extend_count >= 3:
-            print("❌ Perpanjangan sudah maksimal (3x).")
+        elif pilih == "2":
+            for r in semua:
+                if r["id_transaksi"] == id_trx:
+                    r["status"] = "Dibatalkan"
+                    if r["session"] == pembeli:
+                        r["transaksi"] = "batal"
+
+            update_status_properti(id_properti, "available")
+
+            simpan_notifikasi(
+                pembeli, "user",
+                f"Booking properti '{properti}' ditolak seller"
+            )
+        else:
+            print("❌ Pilihan tidak valid.")
             input("ENTER...")
             return
 
-        jadwal_lama = get_jadwal_terakhir(id_input)
-        base_date = (
-            datetime.strptime(jadwal_lama, "%Y-%m-%d").date()
-            if jadwal_lama else datetime.now().date()
-        )
+    elif status == "Booked":
+        print("Buyer belum mengajukan pembelian.")
+        print("1. ❌ Batalkan Booking")
+        print("2. ⏰ Perpanjang Waktu")
+        pilih = input(">> ").strip()
 
-        print("\n📅 PERPANJANG WAKTU")
-        print(f"• Tanggal acuan : {base_date}")
-        print("• Maksimal      : +7 hari")
-        print("• Format        : YYYY-MM-DD")
+        if pilih == "1":
+            for r in semua:
+                if r["id_transaksi"] == id_trx:
+                    r["status"] = "Dibatalkan"
+                    if r["session"] == pembeli:
+                        r["transaksi"] = "batal"
 
-        while True:
-            tanggal_input = input(">> Tanggal baru (ENTER batal): ").strip()
-            if not tanggal_input:
-                return
+            update_status_properti(id_properti, "available")
 
-            # Validasi format
-            try:
-                tanggal_baru = datetime.strptime(
-                    tanggal_input, "%Y-%m-%d"
-                ).date()
-            except ValueError:
-                print("❌ Format tanggal salah.")
-                continue
-
-            # Validasi range
-            if tanggal_baru <= base_date:
-                print("❌ Tanggal harus setelah jadwal sebelumnya.")
-                continue
-
-            if tanggal_baru > base_date + timedelta(days=7):
-                print("❌ Maksimal perpanjangan hanya 7 hari.")
-                continue
-
-            # Simpan jadwal
-            tambah_jadwal_booking(
-                id_transaksi=id_input,
-                jadwal_baru=tanggal_baru.strftime("%Y-%m-%d"),
-                penjual=penjual_login,
-                pembeli=trx_penjual['username_pembeli']
+            simpan_notifikasi(
+                pembeli, "user",
+                f"Booking properti '{properti}' dibatalkan seller"
             )
 
-            status_baru = "Perpanjang Waktu"
-            break
+        elif pilih == "2":
+            if get_extend_count(id_trx) >= 3:
+                print("❌ Maksimal perpanjangan 3x.")
+                input("ENTER...")
+                return
 
-    else:
-        print("❌ Pilihan tidak valid.")
-        input("ENTER...")
-        return
+            tanggal = input("Tanggal baru (YYYY-MM-DD): ").strip()
+            try:
+                datetime.strptime(tanggal, "%Y-%m-%d")
+            except ValueError:
+                print("❌ Format salah.")
+                input("ENTER...")
+                return
 
-    # ================= SYNC STATUS =================
-    for row in semua_data:
-        if row['id_transaksi'] == id_input:
-            row['status'] = status_baru
+            tambah_jadwal_booking(id_trx, tanggal, pembeli, penjual_login)
 
-            if status_baru == "Lunas / Selesai":
-                row['transaksi'] = (
-                    "beli" if row['session'] == row['username_pembeli'] else "jual"
-                )
+            for r in semua:
+                if r["id_transaksi"] == id_trx:
+                    r["status"] = "Perpanjang Waktu"
 
-            elif status_baru == "Dibatalkan":
-                if row['session'] == row['username_pembeli']:
-                    row['transaksi'] = "batal"
-
-    # ================= TRIGGER NOTIFIKASI =================
-    pembeli = trx_penjual["username_pembeli"]
-    properti = trx_penjual["nama_properti"]
-
-    if status_baru == "Lunas / Selesai":
-        simpan_notifikasi(
-            username=pembeli,
-            role="user",
-            pesan=f"Properti '{properti}' berhasil dibeli"
-        )
-        simpan_notifikasi(
-        username=penjual_login,
-        role="seller",
-        pesan=f"💰 Properti '{properti}' berhasil terjual"
-    )
-        simpan_ke_riwayat(trx_penjual)
-
-    elif status_baru == "Dibatalkan":
-        simpan_notifikasi(
-            username=pembeli,
-            role="user",
-            pesan=f"Booking properti '{properti}' dibatalkan oleh seller"
-        )
-
-    elif status_baru == "Perpanjang Waktu":
-        simpan_notifikasi(
-            username=pembeli,
-            role="user",
-            pesan=f"Booking properti '{properti}' diperpanjang oleh seller"
-        )
-
-
-    # ================= SYNC KE SEMUA SESSION =================
-    for row in semua_data:
-        if row['id_transaksi'] == id_input:
-            row['status'] = status_baru
-            
-        if pilihan == "1":
-            if row['id_transaksi'] == id_input:
-                if row['session'] == row['username_pembeli']:
-                    row['transaksi'] = "beli"
-                if row['session'] == row['penjual']:
-                    row['transaksi'] = "jual"
-        if pilihan == "2":
-            if row['id_transaksi'] == id_input:
-                if row['session'] == row['username_pembeli']:
-                    row['transaksi'] = "batal"
-
-    simpan_perubahan_csv(semua_data)
-
-    # ================= SIMPAN RIWAYAT =================
-    if status_baru == "Lunas / Selesai":
-        simpan_ke_riwayat(trx_penjual)
-    
-    print(">> Status berhasil diperbarui.")
-    input("Tekan ENTER untuk lanjut...")
-
-
-# ================= SIMPAN RIWAYAT =================
-
-def simpan_ke_riwayat(row):
-    # Cegah duplikasi berdasarkan id_transaksi
-    if os.path.exists(FILE_RIWAYAT):
-        with open(FILE_RIWAYAT, mode='r', newline='') as f:
-            for r in csv.DictReader(f):
-                if r['id_transaksi'] == row['id_transaksi']:
-                    return  # sudah tersimpan, hentikan
-
-    tanggal = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    with open(FILE_PROPERTI, mode='r', newline='') as f:
-        for p in csv.DictReader(f):
-            if p['id'] == row['id_properti']:
-                properti = p
-                break
+            simpan_notifikasi(
+                pembeli, "user",
+                f"Booking properti '{properti}' diperpanjang hingga {tanggal}"
+            )
         else:
-            print(">> Properti tidak ditemukan.")
+            print("❌ Pilihan tidak valid.")
+            input("ENTER...")
             return
 
+    elif status == "Menunggu Pembayaran":
+        print("1. 💰 Konfirmasi Pembelian")
+        print("2. ❌ Batalkan Booking")
+        print("3. ⏰ Perpanjang Waktu")
+        pilih = input(">> ").strip()
+
+        if pilih == "1":
+            for r in semua:
+                if r["id_transaksi"] == id_trx:
+                    r["status"] = "Sold"
+                    r["transaksi"] = (
+                        "beli" if r["session"] == pembeli else "jual"
+                    )
+            update_status_properti(id_properti, "sold")
+            simpan_notifikasi(
+                pembeli, "user",
+                f"Properti '{properti}' berhasil dibeli 🎉"
+            )
+            simpan_notifikasi(
+                penjual_login, "seller",
+                f"Properti '{properti}' berhasil terjual 💰"
+            )
+            simpan_ke_riwayat(trx)
+
+        elif pilih == "2":
+            for r in semua:
+                if r["id_transaksi"] == id_trx:
+                    r["status"] = "Dibatalkan"
+                    if r["session"] == pembeli:
+                        r["transaksi"] = "batal"
+
+            update_status_properti(id_properti, "available")
+
+            simpan_notifikasi(
+                pembeli, "user",
+                f"Booking properti '{properti}' dibatalkan seller"
+            )
+
+        elif pilih == "3":
+            if get_extend_count(id_trx) >= 3:
+                print("❌ Maksimal perpanjangan 3x.")
+                input("ENTER...")
+                return
+
+            tanggal = input("Tanggal baru (YYYY-MM-DD): ").strip()
+            try:
+                datetime.strptime(tanggal, "%Y-%m-%d")
+            except ValueError:
+                print("❌ Format salah.")
+                input("ENTER...")
+                return
+
+            tambah_jadwal_booking(id_trx, tanggal, pembeli, penjual_login)
+
+            for r in semua:
+                if r["id_transaksi"] == id_trx:
+                    r["status"] = "Perpanjang Waktu"
+
+            simpan_notifikasi(
+                pembeli, "user",
+                f"Booking properti '{properti}' diperpanjang hingga {tanggal}"
+            )
+        else:
+            print("❌ Pilihan tidak valid.")
+            input("ENTER...")
+            return
+
+    simpan_perubahan_csv(semua)
+    print("✅ Status berhasil diperbarui.")
+    input("ENTER...")
+
+
+# ================= RIWAYAT =================
+
+def simpan_ke_riwayat(row):
+    if os.path.exists(FILE_RIWAYAT):
+        with open(FILE_RIWAYAT, newline="", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                if r["id_transaksi"] == row["id_transaksi"]:
+                    return
+
+    with open(FILE_PROPERTI, newline="", encoding="utf-8") as f:
+        properti = next(p for p in csv.DictReader(f) if p["id"] == row["id_properti"])
+
     data = {
-        "id_transaksi": row['id_transaksi'],
-        "username": row['username_pembeli'],
-        "id": properti['id'],
-        "nama": properti['nama'],
-        "kategori": properti['kategori'],
-        "lokasi": properti['lokasi'],
-        "harga": properti['harga'],
-        "penjual": properti['penjual'],
-        "tanggal": tanggal,
+        "id_transaksi": row["id_transaksi"],
+        "username": row["username_pembeli"],
+        "id": properti["id"],
+        "nama": properti["nama"],
+        "kategori": properti["kategori"],
+        "lokasi": properti["lokasi"],
+        "harga": properti["harga"],
+        "penjual": properti["penjual"],
+        "tanggal": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "transaksi": "beli"
     }
 
-    file_ada = os.path.exists(FILE_RIWAYAT)
-
-    with open(FILE_RIWAYAT, mode='a', newline='') as f:
+    with open(FILE_RIWAYAT, "a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=data.keys())
-        if not file_ada:
+        if f.tell() == 0:
             writer.writeheader()
         writer.writerow(data)
 
-def menu_kelola_pesanan(user_active):
 
+# ================= MENU =================
+
+def menu_kelola_pesanan(user_active):
+    auto_expire_booking()
     while True:
         transaksi = tampilkan_pesanan(user_active)
 
         print("\n[ OPSI ]")
         print("1. 🔄 Update Status Booking")
-        print("2. 💬 Chat dengan Buyer")
+        print("2. 💬 Chat Buyer")
         print("0. 🔙 Kembali")
 
-        pil = input(">> Pilih menu: ").strip()
+        pilih = input(">> ").strip()
 
-        if pil == "1":
+        if pilih == "1":
             update_status_pesanan(user_active)
-            
-        elif pil == "2":
-            if not transaksi:
-                input("Belum ada booking. ENTER...")
-                continue
 
-            id_trx = input("Masukkan ID Transaksi (ENTER batal): ").strip()
-            if not id_trx:
-                continue
-
+        elif pilih == "2":
+            id_trx = input("ID Transaksi: ").strip()
             for t in transaksi:
-                if t['id_transaksi'] == id_trx:
-                    session_id = normalize_session(user_active, t['username_pembeli'])
-                    buka_chat(user_active, session_id, t['username_pembeli'])
+                if t["id_transaksi"] == id_trx:
+                    session = normalize_session(user_active, t["username_pembeli"])
+                    buka_chat(user_active, session, t["username_pembeli"])
                     break
-            else:
-                print("❌ ID Transaksi tidak ditemukan.")
-                input("ENTER...")
 
-        elif pil == "0":
+        elif pilih == "0":
             return
 
-        else:
-            print("❌ Pilihan tidak valid.")
+
+# ========== MEMBATALKAN BOOKING LAIN ==========
+def batalkan_booking_lain(id_properti, id_transaksi_aktif):
+    semua = baca_data_csv()
+    berubah = False
+
+    for r in semua:
+        if (
+            r["id_properti"] == id_properti
+            and r["id_transaksi"] != id_transaksi_aktif
+            and r["status"] == "Menunggu Konfirmasi"
+        ):
+            r["status"] = "Dibatalkan"
+            berubah = True
+
+            simpan_notifikasi(
+                r["username_pembeli"], "user",
+                f"Booking properti '{r['nama_properti']}' dibatalkan karena sudah dibooking buyer lain",
+                redirect="transaksi_buyer"
+            )
+
+    if berubah:
+        simpan_perubahan_csv(semua)
+
+
+# ========= AUTO EXPIRED KALAU UDAH LEWAT DEADLINE =========
+def auto_expire_booking():
+    if not os.path.exists(FILE_TRANSAKSI):
+        return
+
+    semua = baca_data_csv()
+    sekarang = datetime.now()
+    berubah = False
+
+    for r in semua:
+        tanggal = datetime.strptime(r["tanggal"], "%Y-%m-%d %H:%M:%S")
+
+        if r["status"] == "Menunggu Konfirmasi":
+            if sekarang - tanggal > timedelta(days=2):
+                r["status"] = "Dibatalkan"
+                update_status_properti(r["id_properti"], "available")
+                berubah = True
+
+                simpan_notifikasi(
+                    r["username_pembeli"], "user",
+                    f"Booking properti '{r['nama_properti']}' otomatis dibatalkan (expired)",
+                    redirect="transaksi_buyer"
+                )
+
+        elif r["status"] == "Booked":
+            if sekarang - tanggal > timedelta(days=7):
+                r["status"] = "Dibatalkan"
+                update_status_properti(r["id_properti"], "available")
+                berubah = True
+
+                simpan_notifikasi(
+                    r["username_pembeli"], "user",
+                    f"Booking properti '{r['nama_properti']}' dibatalkan karena melewati batas waktu",
+                    redirect="transaksi_buyer"
+                )
+
+    if berubah:
+        simpan_perubahan_csv(semua)
