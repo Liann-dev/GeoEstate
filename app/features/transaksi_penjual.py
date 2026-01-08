@@ -85,6 +85,22 @@ def simpan_booking_awal(id_transaksi, tanggal):
         })
 
 
+def validasi_tanggal_perpanjang(tanggal_lama, tanggal_input):
+    try:
+        tgl_lama = datetime.strptime(tanggal_lama, "%Y-%m-%d")
+        tgl_baru = datetime.strptime(tanggal_input, "%Y-%m-%d")
+    except ValueError:
+        return False, "❌ Format tanggal harus YYYY-MM-DD"
+
+    if tgl_baru <= tgl_lama:
+        return False, "❌ Tanggal harus setelah tanggal sebelumnya"
+
+    if (tgl_baru - tgl_lama).days > 7:
+        return False, "❌ Maksimal perpanjangan hanya 7 hari"
+
+    return True, ""
+
+
 # ================= AUTO EXPIRED =================
 
 def auto_expire_booking():
@@ -97,7 +113,6 @@ def auto_expire_booking():
             continue
 
         tanggal_booking = datetime.strptime(r["tanggal"], "%Y-%m-%d %H:%M:%S")
-
         batas = 2 if r["status"] == "Menunggu Konfirmasi" else 7
 
         if sekarang - tanggal_booking > timedelta(days=batas):
@@ -149,7 +164,6 @@ def update_status_pesanan(penjual_login):
         input("ENTER...")
         return
 
-    # ===== MENUNGGU KONFIRMASI =====
     if status == "Menunggu Konfirmasi":
         print("1. ✅ Terima Booking")
         print("2. ❌ Tolak Booking")
@@ -157,18 +171,10 @@ def update_status_pesanan(penjual_login):
 
         if pilih == "1":
             trx["status"] = "Booked"
-
             tanggal_awal = (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d")
+
             simpan_booking_awal(id_trx, tanggal_awal)
-
-            simpan_booking_history(
-                id_trx,
-                aksi="SET_BOOKING",
-                oleh="seller",
-                tanggal_lama="-",
-                tanggal_baru=tanggal_awal
-            )
-
+            simpan_booking_history(id_trx, "SET_BOOKING", "seller", "-", tanggal_awal)
             update_status_properti(trx["id_properti"], "booked")
 
             simpan_notifikasi(
@@ -179,13 +185,8 @@ def update_status_pesanan(penjual_login):
         elif pilih == "2":
             trx["status"] = "Dibatalkan"
             update_status_properti(trx["id_properti"], "available")
+            simpan_booking_history(id_trx, "CANCEL", "seller", trx["tanggal"][:10], "-")
 
-            simpan_booking_history(
-                id_trx, "CANCEL", "seller",
-                trx["tanggal"][:10], "-"
-            )
-
-    # ===== BOOKED =====
     elif status == "Booked":
         print("1. ❌ Batalkan Booking")
         print("2. ⏰ Perpanjang Waktu")
@@ -194,11 +195,7 @@ def update_status_pesanan(penjual_login):
         if pilih == "1":
             trx["status"] = "Dibatalkan"
             update_status_properti(trx["id_properti"], "available")
-
-            simpan_booking_history(
-                id_trx, "CANCEL", "seller",
-                trx["tanggal"][:10], "-"
-            )
+            simpan_booking_history(id_trx, "CANCEL", "seller", trx["tanggal"][:10], "-")
 
         elif pilih == "2":
             extend = get_extend_count(id_trx)
@@ -208,16 +205,20 @@ def update_status_pesanan(penjual_login):
                 return
 
             tanggal_lama = get_jadwal_terakhir(id_trx)
-            tanggal_baru = (
-                datetime.strptime(tanggal_lama, "%Y-%m-%d") + timedelta(days=7)
-            ).strftime("%Y-%m-%d")
+            print(f"\nTanggal booking terakhir : {tanggal_lama}")
+            print("📅 Masukkan tanggal perpanjangan (YYYY-MM-DD)")
+            print("ℹ️ Maksimal 7 hari dari tanggal sebelumnya")
+
+            tanggal_baru = input("Tanggal baru: ").strip()
+            valid, pesan = validasi_tanggal_perpanjang(tanggal_lama, tanggal_baru)
+
+            if not valid:
+                print(pesan)
+                input("ENTER...")
+                return
 
             simpan_booking_awal(id_trx, tanggal_baru)
-
-            simpan_booking_history(
-                id_trx, "EXTEND", "seller",
-                tanggal_lama, tanggal_baru
-            )
+            simpan_booking_history(id_trx, "EXTEND", "seller", tanggal_lama, tanggal_baru)
 
             simpan_notifikasi(
                 pembeli, "user",
@@ -227,6 +228,9 @@ def update_status_pesanan(penjual_login):
     simpan_perubahan_csv(semua)
     print("✅ Status berhasil diperbarui.")
     input("ENTER...")
+
+
+# ================= MENU =================
 
 def menu_kelola_pesanan(user_active):
     auto_expire_booking()
@@ -284,11 +288,8 @@ def menu_kelola_pesanan(user_active):
         elif pilih == "0":
             return
 
+
 def sedang_dalam_transaksi(username, id_properti):
-    """
-    Mengecek apakah user masih memiliki transaksi aktif
-    untuk properti tertentu
-    """
     if not os.path.exists(FILE_TRANSAKSI):
         return False
 
@@ -302,8 +303,8 @@ def sedang_dalam_transaksi(username, id_properti):
                 return True
     return False
 
+
 def lihat_history_booking(id_transaksi):
-    import csv, os
     from app.features.booking_history import FILE_HISTORY
 
     print("\n📜 RIWAYAT PERUBAHAN BOOKING")

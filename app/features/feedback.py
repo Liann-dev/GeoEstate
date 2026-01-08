@@ -6,7 +6,7 @@ FILE_USERS = "data/users.csv"
 FILE_FEEDBACK = "data/user_feedback.csv"
 
 def collect_feedback(username):
-    print("\n" * 5)
+    print()
     user_data = None
 
     if os.path.exists(FILE_USERS):

@@ -72,20 +72,14 @@ def home_user(username):
             print(f" [N] Notifikasi Inbox [Ada {jumlah} Notifikasi]")
         else:
             print(" [N] Notifikasi Inbox")
-
         print(" [L] Lihat Semua Properti")
         print(" [P] Profil Saya")
-        # print(" [I] Informasi Umum")
         print(" [C] Kirim Pesan (Chat)")
-        # print(" [U] Ulasan Pembelian")
         print(" [J] Jadwal Survei")
-        # print(" [F] Feedback")
-        # print(" [W] Wishlist")
-        # print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
-
         pilihan = input(">> ").lower()
+
 
         if pilihan == 'n':
             tampilkan_notifikasi_inbox(username)
@@ -105,12 +99,6 @@ def home_user(username):
 
         elif pilihan == 'j':
             lihat_jadwal_survey(username)
-
-        # elif pilihan == 'f':
-        #     collect_feedback(username)
-
-        # elif pilihan == 'w':
-        #     menu_wishlist(username)
 
         # ===== INPUT ANGKA (ID PROPERTI) =====
         elif pilihan.isdigit():

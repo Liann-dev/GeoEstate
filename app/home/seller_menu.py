@@ -243,7 +243,7 @@ def seller_menu(username):
         # =========================
         # OPSI U: LIHAT ULASAN
         # =========================
-        elif pilihan == "k":
+        elif pilihan == "u":
             seller_review(username)
 
         # =========================

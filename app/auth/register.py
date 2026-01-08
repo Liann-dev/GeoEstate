@@ -8,24 +8,21 @@ FILE_USERS = "data/users.csv"
 def register():
     print(f"\n--- Register GeoEstate ---")
 
-    # Pastikan file CSV ada
     if not os.path.exists(FILE_USERS):
         with open(FILE_USERS, mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(["username", "email", "password", "role", "user_verified", "suspend"])
 
-    # Input username
     print("""Syarat Username :
 1) Terdiri dari 1-32 karakter
 2) Hanya terdiri dari angka, huruf, titik(.), dan underscore(_)
 3) Tidak boleh sama dengan username yang sudah ada""")
-    
+
     while True:
         username = input("Masukkan Username (ENTER untuk batal): ").strip()
-
         if username == "":
             return False
-        
+
         if not (1 <= len(username) <= 32):
             print("❌ Username harus 1–32 karakter.\n")
             continue
@@ -34,131 +31,106 @@ def register():
             print("❌ Username hanya boleh berisi huruf, angka, titik (.), dan underscore (_).\n")
             continue
 
-        username_dipakai = False
-        with open(FILE_USERS, mode='r', newline='') as file:
-            reader = csv.DictReader(file)
-            for user in reader:
-                if user["username"] == username:
-                    print("❌ Username sudah dipakai, silakan coba lagi.\n")
-                    username_dipakai = True
+        with open(FILE_USERS, newline='') as f:
+            for u in csv.DictReader(f):
+                if u["username"] == username:
+                    print("❌ Username sudah dipakai.\n")
                     break
+            else:
+                break
 
-        if username_dipakai:
-            continue
-
-        break
-
-    # Input email
     print("""\nSyarat Email :
-1) Maksimal terdiri dari 32 karakter
-2) Format email yaitu 'karakter' + '@' + 'karakter' + '.' + 'karakter' + ...
-   Contoh : user@domain.com | user@mail.co.id
+1) Maksimal 32 karakter
+2) Format valid
 3) Tidak boleh sama dengan email yang sudah ada""")
-    
+
     while True:
         email = input("Masukkan Email (ENTER untuk batal): ").strip().lower()
         if email == "":
             return False
 
-        if not (len(username) <= 32):
-            print("❌ Email maksmimal terdiri dari 32 karakter.\n")
+        if len(email) > 32:
+            print("❌ Email maksimal 32 karakter.\n")
             continue
 
-        # Regex email optimal
-        pattern = r'^[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{1,}$'
-        if not re.match(pattern, email):
-            print("Email tidak valid! Contoh email valid: user@domain.com, user@mail.co.id\n")
+        if not re.match(r'^[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{1,}$', email):
+            print("❌ Email tidak valid.\n")
             continue
 
-        # Cek email sudah dipakai
-        email_dipakai = False
-        with open(FILE_USERS, mode='r', newline='') as file:
-            reader = csv.DictReader(file)
-            for user in reader:
-                if user["email"] == email:
-                    print("Email sudah dipakai, silakan coba lagi.\n")
-                    email_dipakai = True
+        with open(FILE_USERS, newline='') as f:
+            for u in csv.DictReader(f):
+                if u["email"] == email:
+                    print("❌ Email sudah dipakai.\n")
                     break
+            else:
+                break
 
-        if email_dipakai:
-            continue
-        break
-
-    # Input password
     print("""\nSyarat Password :
-1) Terdiri dari 8-32 karakter
-2) Harus terdiri dari huruf dan angka
-3) Boleh menggunakan simbol (opsional)
+1) 8–32 karakter
+2) Mengandung huruf & angka
+3) Boleh simbol
 4) Tidak boleh ada spasi""")
-    
+
     while True:
         password = input("Masukkan Password (ENTER untuk batal): ")
         if password == "":
             return False
 
         if not (8 <= len(password) <= 32):
-            print("Password harus terdiri dari 8 hingga 32 karakter!\n")
+            print("❌ Password harus 8–32 karakter.\n")
+            continue
+
+        if " " in password:
+            print("❌ Password tidak boleh mengandung spasi.\n")
             continue
 
         if not any(c.isalpha() for c in password) or not any(c.isdigit() for c in password):
-            print("Password harus mengandung huruf dan angka!\n")
+            print("❌ Password harus mengandung huruf dan angka.\n")
             continue
-
         break
 
-    # Konfirmasi password
     sisa = 3
     while True:
-        konfirmasi_password = input("Konfirmasi Password (ENTER untuk batal): ")
-        if konfirmasi_password == "":
+        confirm = input("Konfirmasi Password (ENTER untuk batal): ")
+        if confirm == "":
             return False
 
-        if konfirmasi_password == password:
+        if confirm == password:
             break
 
         sisa -= 1
         if sisa == 0:
-            print("\nKonfirmasi password gagal. Registrasi dibatalkan.")
-            input("Tekan ENTER untuk kembali ke halaman awal...")
+            print("\nKonfirmasi gagal. Registrasi dibatalkan.")
+            input("Tekan ENTER untuk kembali...")
             return False
 
-        print(f"Password tidak sama! Kesempatan tersisa: {sisa}\n")
+        print(f"❌ Password tidak sama. Sisa: {sisa}\n")
 
-    otp_code = str(random.randint(1000,9999))
+    otp = str(random.randint(1000, 9999))
 
-    print("\n"+ "="*40)
-    print("Verifikasi Kode OTP")
-    print(f"\n Kode OTP telah dikirim ke email {email}")
-    print(f" Kode OTP Anda adalah: {otp_code}")
-    print("="*40+"\n")
+    print("\n========================================")
+    print("Verifikasi OTP")
+    print(f"Kode OTP Anda: {otp}")
+    print("========================================\n")
 
-    sisa_percobaan_otp = 3
+    chance = 3
+    while chance > 0:
+        inp = input("Masukkan 4 digit OTP: ").strip()
 
-    while sisa_percobaan_otp > 0:
-        input_otp = input("Masukka 4 digit Kode OTP: ").strip()
-
-        if input_otp == "":
-            print("Input tidak boleh kosong! Silahkan masukkan Kode OTP.\n")
+        if len(inp) != 4 or not inp.isdigit():
+            print("❌ OTP harus 4 digit angka.\n")
             continue
 
-        if len(input_otp) != 4 or not input_otp.isdigit():
-            print("Kode OTP harus terdiri dari 4 digit angka!\n")
-            continue
+        if inp == otp:
+            with open(FILE_USERS, 'a', newline='') as f:
+                csv.writer(f).writerow([username, email, password, "user", "false", "false"])
+            print("\n✅ Registrasi berhasil!")
+            input("Tekan ENTER untuk kembali...")
+            return True
 
-        if input_otp == otp_code:
-            role = "user"
-            with open(FILE_USERS, mode='a', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow([username, email, password, role, "false", "false"])
-                
-                print(f"\nRegister berhasil!")
-                input("Tekan ENTER untuk kembali ke halaman awal...")
-                return True
-        else:
-            sisa_percobaan_otp -= 1
-            if sisa_percobaan_otp > 0:
-                print(f"Kode OTP salah! Kesempatan tersisa: {sisa_percobaan_otp}\n")
-            else:
-                print("\nVerifikasi OTP gagal. Registrasi dibatalkan.")
-                input("Tekan ENTER untuk kembali ke halaman awal...")
-                return False
+        chance -= 1
+        print(f"❌ OTP salah. Sisa: {chance}\n")
+
+    print("❌ Verifikasi OTP gagal.")
+    input("Tekan ENTER untuk kembali...")
+    return False

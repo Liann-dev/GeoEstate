@@ -1,5 +1,9 @@
 id,username,role,pesan,status,timestamp,redirect
-NTF-c4a12624,Naufal,user,❌ Verifikasi akun Anda ditolak. Alasan: NIK nya tidak valid,unread,2026-01-08 23:16:53
-NTF-8d44c506,Naufal,user,✅ Akun Anda telah berhasil diverifikasi oleh Admin.,unread,2026-01-08 23:20:10
-NTF-2a48c760,Lian,user,✅ Akun Anda telah berhasil diverifikasi oleh Admin.,unread,2026-01-08 23:48:18
-NTF-e50ba0eb,Lian,user,🎉 Pengajuan Anda sebagai SELLER telah DISETUJUI oleh Admin.,unread,2026-01-09 00:29:02
+NTF-c4a12624,Naufal,user,❌ Verifikasi akun Anda ditolak. Alasan: NIK nya tidak valid,unread,2026-01-08 23:16:53,
+NTF-8d44c506,Naufal,user,✅ Akun Anda telah berhasil diverifikasi oleh Admin.,unread,2026-01-08 23:20:10,
+NTF-2a48c760,Lian,user,✅ Akun Anda telah berhasil diverifikasi oleh Admin.,unread,2026-01-08 23:48:18,
+NTF-e50ba0eb,Lian,user,🎉 Pengajuan Anda sebagai SELLER telah DISETUJUI oleh Admin.,unread,2026-01-09 00:29:02,
+NTF-6803f597,Naufal,seller,📌 Booking baru untuk properti 'Resort Bukit Hijau' dari buyer azzurisulthan,unread,2026-01-09 04:58:10,
+NTF-2854adac,azzurisulthan,user,Booking properti 'Resort Bukit Hijau' disetujui (berlaku s/d 2026-01-16),unread,2026-01-09 04:59:47,-
+NTF-5291c138,azzurisulthan,user,Booking properti 'Resort Bukit Hijau' diperpanjang hingga 2026-01-23,unread,2026-01-09 05:12:59,-
+NTF-af25966a,azzurisulthan,user,Booking properti 'Resort Bukit Hijau' diperpanjang hingga 2026-01-30,unread,2026-01-09 06:02:55,-

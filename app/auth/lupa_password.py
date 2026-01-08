@@ -3,279 +3,195 @@ import csv
 import random
 
 FILE_USERS = "data/users.csv"
-reset_sessions = {}  
-# format:
-# {
-#   "username": {
-#       "pin": "123456",
-#       "expires_at": 1700000000
-#   }
-# }
+reset_sessions = {}
 
+# =========================
+# UTIL
+# =========================
 def generate_pin():
     return ''.join(random.choices("0123456789", k=6))
 
 def validate_user(username, email):
     with open(FILE_USERS, newline='', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for user in reader:
-            if user['username'] == username and user['email'] == email:
-                return user
+        for u in csv.DictReader(f):
+            if u['username'] == username and u['email'] == email:
+                return u
     return None
 
+def valid_password(pw):
+    if not (8 <= len(pw) <= 32):
+        return False, "Password harus 8–32 karakter."
+    if " " in pw:
+        return False, "Password tidak boleh mengandung spasi."
+    if not any(c.isalpha() for c in pw) or not any(c.isdigit() for c in pw):
+        return False, "Password harus mengandung huruf dan angka."
+    return True, ""
+
+# =========================
+# LUPA PASSWORD (DARI LOGIN)
+# =========================
 def lupa_password():
     print("\n===== RESET PASSWORD =====\n")
 
-    # tahap 1: identitas
     while True:
         username = input("Username (ENTER untuk batal): ").strip()
         if not username:
-            print("Proses dibatalkan.")
-            input("Tekan ENTER untuk kembali...")
             return
 
         email = input("Email: ").strip()
-        if not email:
-            print("Email tidak boleh kosong!\n")
-            continue
-
         user = validate_user(username, email)
         if not user:
-            print("Username dan email tidak cocok!\n")
+            print("❌ Username dan email tidak cocok!\n")
             continue
         break
 
-    # tahap 2: buat PIN session
     pin = generate_pin()
-    duration = 180  # 3 menit
     reset_sessions[username] = {
         "pin": pin,
-        "expires_at": time.time() + duration
+        "expires_at": time.time() + 180
     }
 
-    print("\nPIN reset password kamu:", pin)
-    print(f"PIN berlaku selama {duration} detik")
-    print("Ketika program dihentikan, PIN akan otomatis dihapus.\n")
+    print("\nKode OTP reset password:", pin)
+    print("Berlaku selama 3 menit\n")
 
-    # tahap 3: verifikasi PIN
     kesempatan = 3
-
-    while True:
-        remaining = int(reset_sessions[username]["expires_at"] - time.time())
-
-        if remaining <= 0:
-            print("\nWaktu PIN telah habis.")
-            print("Silakan ulangi proses lupa password.")
+    while kesempatan > 0:
+        sisa = int(reset_sessions[username]["expires_at"] - time.time())
+        if sisa <= 0:
+            print("❌ OTP kadaluarsa.")
             reset_sessions.pop(username, None)
-            input("Tekan ENTER untuk kembali...")
             return
 
-        if kesempatan == 0:
-            print("Kesempatan habis.")
-            print("Silakan ulangi proses lupa password.")
-            reset_sessions.pop(username, None)
-            input("Tekan ENTER untuk kembali...")
-            return
-        
-        input_pin = input(f"Masukkan PIN (sisa {remaining} detik, ENTER untuk batal): ").strip()
-
-        if not input_pin:
-            print("Proses dibatalkan.")
-            reset_sessions.pop(username, None)
-            input("Tekan ENTER untuk kembali...")
-            return
-
-        session = reset_sessions.get(username)
-        if not session or time.time() > session['expires_at']:
-            print("PIN sudah tidak berlaku.")
-            reset_sessions.pop(username, None)
-            input("Tekan ENTER untuk kembali...")
-            return
-        
-        if input_pin != session['pin']:
+        inp = input(f"Masukkan OTP (sisa {sisa} detik): ").strip()
+        if inp != pin:
             kesempatan -= 1
-            print("PIN salah!")
-            print(f"Sisa waktu: {remaining} detik")
-            print(f"Kesempatam tersisa: {kesempatan}\n")
+            print(f"❌ OTP salah. Sisa kesempatan: {kesempatan}\n")
             continue
-
-        # tahap 4: password baru
-        old_password = user['password']
-        print("\n===== BUAT PASSWORD BARU =====\n")
-        while True:
-            new_pass = input("Password baru (ENTER untuk batal): ").strip()
-            if not new_pass:
-                print("Proses dibatalkan.")
-                reset_sessions.pop(username, None)
-                input("Tekan ENTER untuk kembali...")
-                return
-            
-            if new_pass == old_password:
-                print("Password baru harus berbeda dari password lama\n")
-                continue
-
-            confirm = input("Konfirmasi password: ").strip()
-
-            if not confirm:
-                print("Konfirmasi password tidak boleh kosong!\n")
-                continue
-
-            if new_pass != confirm:
-                print("Password tidak cocok!\n")
-                continue
-            break
-
-        # update password
-        users = []
-        with open(FILE_USERS, newline='', encoding='utf-8') as f:
-            users = list(csv.DictReader(f))
-
-        for u in users:
-            if u['username'] == username:
-                u['password'] = new_pass  # atau hash
-                break
-
-        with open(FILE_USERS, 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(
-                f,
-                fieldnames=['username', 'email', 'password', 'role', 'user_verified']
-            )
-            writer.writeheader()
-            writer.writerows(users)
-
+        break
+    else:
         reset_sessions.pop(username, None)
-        print("\nPassword berhasil direset!")
-        input("Tekan ENTER untuk kembali...")
         return
 
-def ganti_password():
-    print("\n===== RESET PASSWORD =====\n")
+    old_password = user['password']
 
-    # tahap 1: identitas
     while True:
-        username = input("Username (ENTER untuk batal): ").strip()
-        if not username:
-            print("Proses dibatalkan.")
-            input("Tekan ENTER untuk kembali...")
+        new_pass = input("Password baru (ENTER untuk batal): ").strip()
+        if not new_pass:
+            reset_sessions.pop(username, None)
             return
 
-        email = input("Email: ").strip()
-        if not email:
-            print("Email tidak boleh kosong!\n")
+        ok, msg = valid_password(new_pass)
+        if not ok:
+            print("❌", msg, "\n")
             continue
 
-        user = validate_user(username, email)
-        if not user:
-            print("Username dan email tidak cocok!\n")
+        if new_pass == old_password:
+            print("❌ Password baru harus berbeda dari password lama.\n")
+            continue
+
+        confirm = input("Konfirmasi password: ").strip()
+        if new_pass != confirm:
+            print("❌ Password tidak cocok.\n")
             continue
         break
 
-    # tahap 2: buat PIN session
-    pin = generate_pin()
-    duration = 180  # 3 menit
-    reset_sessions[username] = {
-        "pin": pin,
-        "expires_at": time.time() + duration
-    }
+    with open(FILE_USERS, newline='', encoding='utf-8') as f:
+        users = list(csv.DictReader(f))
 
-    print("\nPIN reset password kamu:", pin)
-    print(f"PIN berlaku selama {duration} detik")
-    print("Ketika program dihentikan, PIN akan otomatis dihapus.\n")
+    for u in users:
+        if u['username'] == username:
+            u['password'] = new_pass
 
-    # tahap 3: verifikasi PIN
-    kesempatan = 3
+    with open(FILE_USERS, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=users[0].keys())
+        writer.writeheader()
+        writer.writerows(users)
+
+    reset_sessions.pop(username, None)
+    print("\n✅ Password berhasil direset!")
+    input("Tekan ENTER untuk kembali...")
+
+# =========================
+# GANTI PASSWORD (DARI PROFILE)
+# =========================
+def ganti_password():
+    print("\n===== GANTI PASSWORD =====\n")
 
     while True:
-        remaining = int(reset_sessions[username]["expires_at"] - time.time())
+        username = input("Username (ENTER untuk batal): ").strip()
+        if not username:
+            return "EXIT"
 
-        if remaining <= 0:
-            print("\nWaktu PIN telah habis.")
-            print("Silakan ulangi proses ganti password.")
-            reset_sessions.pop(username, None)
-            input("Tekan ENTER untuk kembali...")
-            return
+        email = input("Email: ").strip()
+        user = validate_user(username, email)
+        if not user:
+            print("❌ Username dan email tidak cocok!\n")
+            continue
+        break
 
-        if kesempatan == 0:
-            print("Kesempatan habis.")
-            print("Silakan ulangi proses ganti password.")
-            reset_sessions.pop(username, None)
-            input("Tekan ENTER untuk kembali...")
-            return
-        
-        input_pin = input(f"Masukkan PIN (sisa {remaining} detik, ENTER untuk batal): ").strip()
+    pin = generate_pin()
+    reset_sessions[username] = {
+        "pin": pin,
+        "expires_at": time.time() + 180
+    }
 
-        if not input_pin:
-            print("Proses dibatalkan.")
-            reset_sessions.pop(username, None)
-            input("Tekan ENTER untuk kembali...")
-            return
+    print("\nKode OTP ganti password:", pin)
+    print("Berlaku selama 3 menit\n")
 
-        session = reset_sessions.get(username)
-        if not session or time.time() > session['expires_at']:
-            print("PIN sudah tidak berlaku.")
+    kesempatan = 3
+    while kesempatan > 0:
+        sisa = int(reset_sessions[username]["expires_at"] - time.time())
+        if sisa <= 0:
+            print("❌ OTP kadaluarsa.")
             reset_sessions.pop(username, None)
-            input("Tekan ENTER untuk kembali...")
-            return
-        
-        if input_pin != session['pin']:
+            return "EXIT"
+
+        inp = input(f"Masukkan OTP (sisa {sisa} detik): ").strip()
+        if inp != pin:
             kesempatan -= 1
-            print("PIN salah!")
-            print(f"Sisa waktu: {remaining} detik")
-            print(f"Kesempatam tersisa: {kesempatan}\n")
+            print(f"❌ OTP salah. Sisa kesempatan: {kesempatan}\n")
+            continue
+        break
+    else:
+        reset_sessions.pop(username, None)
+        return "EXIT"
+
+    old_password = user['password']
+
+    while True:
+        new_pass = input("Password baru (ENTER untuk batal): ").strip()
+        if not new_pass:
+            reset_sessions.pop(username, None)
+            return "EXIT"
+
+        ok, msg = valid_password(new_pass)
+        if not ok:
+            print("❌", msg, "\n")
             continue
 
-        # tahap 4: password baru
-        old_password = user['password']
-        print("\n===== BUAT PASSWORD BARU =====\n")
-        while True:
-            new_pass = input("Password baru (ENTER untuk batal): ").strip()
-            if not new_pass:
-                print("Proses dibatalkan.")
-                reset_sessions.pop(username, None)
-                input("Tekan ENTER untuk kembali...")
-                return
-            
-            if not (8 <= len(new_pass) <= 32):
-                print("Password harus terdiri dari 8 hingga 32 karakter!\n")
-                continue
+        if new_pass == old_password:
+            print("❌ Password baru harus berbeda dari password lama.\n")
+            continue
 
-            if not any(c.isalpha() for c in new_pass) or not any(c.isdigit() for c in new_pass):
-                print("Password harus mengandung huruf dan angka!\n")
-                continue
+        confirm = input("Konfirmasi password: ").strip()
+        if new_pass != confirm:
+            print("❌ Password tidak cocok.\n")
+            continue
+        break
 
-            if new_pass == old_password:
-                print("Password baru harus berbeda dari password lama\n")
-                continue
+    with open(FILE_USERS, newline='', encoding='utf-8') as f:
+        users = list(csv.DictReader(f))
 
-            confirm = input("Konfirmasi password: ").strip()
+    for u in users:
+        if u['username'] == username:
+            u['password'] = new_pass
 
-            if not confirm:
-                print("Konfirmasi password tidak boleh kosong!\n")
-                continue
+    with open(FILE_USERS, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=users[0].keys())
+        writer.writeheader()
+        writer.writerows(users)
 
-            if new_pass != confirm:
-                print("Password tidak cocok!\n")
-                continue
-            break
-
-        # update password
-        users = []
-        with open(FILE_USERS, newline='', encoding='utf-8') as f:
-            users = list(csv.DictReader(f))
-
-        for u in users:
-            if u['username'] == username:
-                u['password'] = new_pass  # atau hash
-                break
-
-        with open(FILE_USERS, 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(
-                f,
-                fieldnames=['username', 'email', 'password', 'role', 'user_verified']
-            )
-            writer.writeheader()
-            writer.writerows(users)
-
-        reset_sessions.pop(username, None)
-        print("\nPassword berhasil direset!")
-        return "EXIT"
+    reset_sessions.pop(username, None)
+    print("\n✅ Password berhasil diganti!")
+    input("Tekan ENTER untuk kembali...")
+    return "EXIT"

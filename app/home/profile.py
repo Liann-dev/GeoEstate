@@ -2,15 +2,13 @@ import csv
 import os
 import time
 
-from app.home.history_transaksi import history_transaksi
+from app.home.riwayat_transaksi_terpadu import riwayat_transaksi_terpadu
 from app.features.seller_register import seller_registration_menu
 from app.features.biometric_toggle import toggle_biometrik
 from app.auth.lupa_password import ganti_password
 from app.home.seller_menu import seller_menu
 from app.Utils.animation import loading_seller_transition
 from app.home.information import info
-from app.home.review_user import user_review
-from app.features.feedback import collect_feedback
 from app.features.wishlist import menu_wishlist
 
 FILE_USERS = "data/users.csv"
@@ -154,12 +152,12 @@ def profile(username):
         print(" [R] Riwayat Transaksi")
         print(" [W] Wishlist")
         print(" [D] Data Diri")
-        # print(" [P] Properti yang Pernah Dibeli")
         print(" [K] Keamanan & Password")
         print(" [P] Pusat Bantuan & Feedback")
         print(" [L] Logout")
         print(" [B] Kembali")
         pilihan = input("\nPilih menu: ").lower().strip()
+
 
         if pilihan == "d":
             if user_data["user_verified"] == "false":
@@ -168,10 +166,8 @@ def profile(username):
                 continue
             informasi_pribadi(username)
 
-####################### PR PERLU DIRUBAH ##############################
         elif pilihan == "r":
-            history_transaksi(username)
-####################### PR PERLU DIRUBAH ##############################
+            riwayat_transaksi_terpadu(username)
 
         elif pilihan == "w":
             menu_wishlist(username)
