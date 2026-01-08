@@ -12,6 +12,7 @@ from app.features.jadwal_survey import lihat_jadwal_survey
 from app.features.notifikasi_service import get_unread_notifikasi
 from app.features.notifikasi_inbox_user import tampilkan_notifikasi_inbox
 from app.features.transaksi_penjual import auto_expire_booking
+import random
 
 FILE_USERS = "data/users.csv"
 FILE_PROPERTI = 'data/properti.csv'
@@ -39,11 +40,24 @@ def home_user(username):
         print(f" Halo, {username} 👋")
         print("========================================")
 
-        print(" 🔥 REKOMENDASI UNTUKMU:")
-        if not semua_properti:
-            print("    (Belum ada data properti)")
-        else:
-            for p in semua_properti[:3]:
+        
+        # ===== FILTER PROPERTI AVAILABLE =====
+        available_properti = [
+            p for p in semua_properti
+            if p.get("status", "").lower() == "available"
+        ]
+
+        # ===== RANDOM 3 REKOMENDASI =====
+        rekomendasi = random.sample(
+            available_properti,
+            k=min(3, len(available_properti))
+        )
+
+        rekomendasi_ids = [p["id"] for p in rekomendasi]
+
+        if rekomendasi:
+            print(" 🔥 REKOMENDASI UNTUKMU:")
+            for p in rekomendasi:
                 harga_txt = f"Rp {int(p['harga']):,}"
                 print(f" +--------------------------------------+")
                 print(f" | 🏠 {p['nama']:<32} |")
@@ -51,8 +65,9 @@ def home_user(username):
                 print(f" | 💰 {harga_txt:<20} {p['kategori']:>11} |")
                 print(f" | ID: {p['id']} {' '*30}|")
                 print(f" +--------------------------------------+")
+        else:
+            print(" ⚠️  Belum ada properti tersedia saat ini.")
 
-        print("----------------------------------------")
 
         if jumlah > 0:
             print(f" [N] Notifikasi Inbox [Ada {jumlah} Notifikasi]")
@@ -99,11 +114,7 @@ def home_user(username):
             lihat_jadwal_survey(username)
 
         elif pilihan == 'f':
-            # if user_data["role"] == "user":
-            #     collect_feedback(username, 'user')
-            # elif user_data["role"] == "seller":
-            #     collect_feedback(username, "seller")
-            collect_feedback(username, 'user')
+            collect_feedback(username)
 
         elif pilihan == 'w':
             menu_wishlist(username)
@@ -113,10 +124,23 @@ def home_user(username):
             input("Tekan ENTER untuk kembali...")
             return
 
-        else:
-            item = next((p for p in semua_properti if p['id'] == pilihan), None)
+        # ===== INPUT ANGKA (ID PROPERTI) =====
+        elif pilihan.isdigit():
+            if pilihan not in rekomendasi_ids:
+                print(
+                    "\n❌ ID Properti yang kamu ketik tidak ada di daftar Rekomendasi."
+                    "\n👉 Coba cari tau lebih lanjut di [L] Lihat Semua Properti!"
+                )
+                input("Tekan ENTER...")
+                continue
+
+            item = next((p for p in rekomendasi if p["id"] == pilihan), None)
             if item:
                 detail_properti(username, item)
             else:
-                print("[!] Menu tidak dikenali.")
+                print("❌ Properti tidak ditemukan.")
                 input("Tekan ENTER...")
+        else:
+            print("[!] Menu tidak dikenali.")
+            input("Tekan ENTER...")
+

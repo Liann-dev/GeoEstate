@@ -142,7 +142,7 @@ def profile(username):
         print("----------------------------------------")
         print(" [I] Informasi Pribadi")
         print(" [H] History Transaksi")
-        print(" [P] Properti Saya")
+        print(" [P] Properti yang Pernah Dibeli")
         print(" [K] Keamanan & Password")
 
         if user_data["user_verified"] == "false":

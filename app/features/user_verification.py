@@ -198,7 +198,7 @@ def menu_verifikasi_user():
     while True:
         print("""
 === MENU VERIFIKASI USER (ADMIN) ===
-1. Lihat Request Verifikasi
+1. Lihat Request Verifikasi User
 2. Lihat History Verifikasi User
 0. Kembali
 """)

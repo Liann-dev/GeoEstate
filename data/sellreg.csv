@@ -1,8 +1,4 @@
 reg_id,username,email,reason,status
-REG-7705,Adit,adit@yahoo.com,Semangat,approved
-REG-6448,Adi,adisn@gmail.com,Mau jadi Elon Musk,approved
-REG-7031,Lian,berliandamputra@gmail.com,Xonica123,adadsadawadas
-REG-1647,Lian123,Lian@gmail.com,Cihuy,approved
-REG-1476,Testing,test@gmail.com,Ingin menjual,pending
-REG-9449,jaki,jaki@gmail.com,karena mau,approved
-REG-5517,azzurisulthan,azzuri@gmail.com,pengen,approved
+REG-8029,Naufal,naufal@gmail.com,Ingin menjual properti,approved
+REG-9119,Lian,lian@gmail.com,Saya bekerja sebagai agent properti,rejected
+REG-2606,Lian,lian@gmail.com,Saya ingin menjual properti saya di aplikasi ini,approved

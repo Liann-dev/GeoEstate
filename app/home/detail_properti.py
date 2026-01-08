@@ -161,11 +161,6 @@ def detail_properti(username, p):
 
         # ===== WISHLIST =====
         elif pilihan == "4":
-            if not get_user_verified(username):
-                print("❌ Anda belum terverifikasi.")
-                input("ENTER...")
-                continue
-
             tambah_ke_wishlist(username, p["id"])
 
         # ===== CHAT =====

@@ -36,7 +36,7 @@ def login():
                     break
 
         # Cek jika username tidak ditemukan
-        if not user_found:
+        if not user_found or user_found['role'] == "admin":
             kesempatan -= 1
             print(f"Username atau Email salah. Kesempatan tersisa: {kesempatan}\n")
             if kesempatan == 0: break
@@ -46,22 +46,21 @@ def login():
         if user_found["password"] != password:
             kesempatan -= 1
             print(f"Password salah. Kesempatan tersisa: {kesempatan}\n")
-            if kesempatan == 0: break
+            if kesempatan == 0: 
+                print("Login gagal. Jatah percobaan Anda telah habis.")
+                break
             continue
         
-        #Jika user adalah admin
-        if user_found['role'] == "admin":
-            print("\nHalaman login ini hanya dikhususkan untuk user!")
-            print("Silahkan menggunakan halaman login admin untuk login sebagai admin.")
-            input("\nTekan ENTER untuk keluar dari halaman login user...")
-            return user_found
+        # Cek jika user di-suspend
+        if user_found['suspend'] == 'true':
+            print("❌ Akun Anda disuspend. Silakan hubungi admin.")
+            break
         
         # Login berhasil
         print(f"\nLogin berhasil. Selamat datang {user_found['username']}!")
         return user_found
 
     # Hanya bisa sampai ke sini jika kesempatan sudah 0 (sudah mengisi tapi salah)
-    print("Login gagal. Jatah percobaan Anda telah habis.")
     input("Tekan ENTER untuk kembali ke halaman awal...")
     return None
 

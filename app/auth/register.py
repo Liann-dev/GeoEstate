@@ -12,7 +12,7 @@ def register():
     if not os.path.exists(FILE_USERS):
         with open(FILE_USERS, mode='w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["username", "email", "password", "role", "user_verified"])
+            writer.writerow(["username", "email", "password", "role", "user_verified", "suspend"])
 
     # Input username
     print("""Syarat Username :
@@ -56,7 +56,7 @@ def register():
 3) Tidak boleh sama dengan email yang sudah ada""")
     
     while True:
-        email = input("Masukkan Email (ENTER untuk batal): ").strip()
+        email = input("Masukkan Email (ENTER untuk batal): ").strip().lower()
         if email == "":
             return False
 
@@ -87,7 +87,9 @@ def register():
     # Input password
     print("""\nSyarat Password :
 1) Terdiri dari 8-32 karakter
-2) Terdiri dari huruf dan angka""")
+2) Harus terdiri dari huruf dan angka
+3) Boleh menggunakan simbol (opsional)
+4) Tidak boleh ada spasi""")
     
     while True:
         password = input("Masukkan Password (ENTER untuk batal): ")
@@ -147,7 +149,7 @@ def register():
             role = "user"
             with open(FILE_USERS, mode='a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow([username, email, password, role, "false"])
+                writer.writerow([username, email, password, role, "false", "false"])
                 
                 print(f"\nRegister berhasil!")
                 input("Tekan ENTER untuk kembali ke halaman awal...")
@@ -160,16 +162,3 @@ def register():
                 print("\nVerifikasi OTP gagal. Registrasi dibatalkan.")
                 input("Tekan ENTER untuk kembali ke halaman awal...")
                 return False
-
-
-
-    # role = "user"
-
-    # # Simpan ke CSV
-    # with open(FILE_USERS, mode='a', newline='') as file:
-    #     writer = csv.writer(file)
-    #     writer.writerow([username, email, password, role, "false"])
-
-    # print(f"\nRegister berhasil!")
-    # input("Tekan ENTER untuk kembali ke halaman awal...")
-    # return True

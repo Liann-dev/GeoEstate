@@ -1,9 +1,26 @@
 id,nama,kategori,lokasi,harga,penjual,status
-1,Rumah Panjang,Rumah,Bandung,1000000000,Naufal,sold
-2,Villa Air,Villa,Ciwidey,1500000000,Adi,available
-3,Havana Resort,Resort,Cianjur,780000000,Adi,available
-4,Rumah Cemara,Rumah,Bandung Selatan,999999999,Naufal,available
-5,Resort Rancawana,Resort,Rancabuaya,120000000,Naufal,available
-6,Cihuy,Rumah,Gedebage,1200000000,LianDev,available
-7,Cibiru Kost,Villa,Cibiru Indah 3,200000000,LianDev,available
-8,Villa Air,Villa,Ciwidey,1500000000,Naufal,sold
+1,Rumah di Dalam Ubertos,Rumah,"Bandung, Ujung Berung",2000000000,azzurisulthan,available
+2,Villa Air,Villa,Ciwidey,4750000000,Lian,available
+3,Villa Putih,Villa,Lembang,3500000000,Lian,available
+4,Resort Bunga Wangi,Resort,Dago Pakar,13000000000,Naufal,available
+5,Rumah Panjang,Rumah,Payakumbuh,470000000,azzurisulthan,available
+6,Resort Bintang,Resort,Pangalengan,1500000000,azzurisulthan,available
+7,Resort Mentari,Resort,Jakarta Utara,27000000000,Lian,available
+8,Villa Asri,Villa,Lembang,12000000000,Naufal,available
+9,Rumah Bukit,Rumah,Bukit Bintang,95000000000,Naufal,available
+10,Rumah Singgah,Rumah,Manglayang,475000000,Naufal,available
+11,Rumah Harmoni,Rumah,Cimahi,850000000,Lian,available
+12,Villa Puncak Indah,Villa,Puncak Bogor,6200000000,Naufal,available
+13,Resort Alam Lestari,Resort,Sukabumi,9800000000,azzurisulthan,available
+14,Rumah Cendana,Rumah,Sumedang,650000000,Lian,available
+15,Villa Sakura,Villa,Batu Malang,5400000000,Lian,available
+16,Resort Bukit Hijau,Resort,Bogor,12500000000,Naufal,available
+17,Rumah Griya Sejahtera,Rumah,Bekasi,1200000000,azzurisulthan,available
+18,Villa Panorama,Villa,Lembang,7800000000,Naufal,available
+19,Resort Samudra Indah,Resort,Pelabuhan Ratu,18500000000,Lian,available
+20,Rumah Permata,Rumah,Bandung Timur,900000000,azzurisulthan,available
+21,Villa Cemara,Villa,Pangalengan,4600000000,azzurisulthan,available
+22,Resort Gunung Mas,Resort,Puncak Cisarua,23000000000,Naufal,available
+23,Rumah Kenanga,Rumah,Tasikmalaya,520000000,Lian,available
+24,Villa Danau Biru,Villa,Dieng,6900000000,Lian,available
+25,Resort Nusantara,Resort,Bali Selatan,45000000000,azzurisulthan,available

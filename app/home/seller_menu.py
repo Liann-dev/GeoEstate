@@ -197,16 +197,16 @@ def seller_menu(username):
 
     while True:
         print("\n===== GeoEstate Menu Seller =====")
-        print("1. Tambah Properti Baru")
-        print("2. Lihat Properti Saya")
-        print("3. Hapus Properti Saya")
-        print("4. Kelola Data Booking")  
-        print("5. Kelola Data Survei")
-        print("6. Lihat Ulasan Saya")
-        print("0. Kembali")
+        print("[T] Tambah Properti Baru")
+        print("[L] Lihat Properti Saya")
+        print("[H] Hapus Properti Saya")
+        print("[B] Kelola Data Booking")  
+        print("[S] Kelola Data Survei")
+        print("[U] Lihat Ulasan Saya")
+        print("[K] Kembali")
         print("==================================")
 
-        pilihan = input("Pilih menu (0-7): ")
+        pilihan = input("Pilih menu: ")
 
         # =========================
         # OPSI 1: TAMBAH PROPERTI

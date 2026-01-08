@@ -1,11 +1,5 @@
 id,username,role,pesan,status,timestamp,redirect
-NTF-23798ba6,azzuri3,user,"❌ Verifikasi akun Anda ditolak. Alasan: a semua inputnya, ga valid",read,2026-01-08 01:41:59,
-NTF-f1fc93eb,azzuri3,user,✅ Akun Anda telah berhasil diverifikasi oleh Admin.,read,2026-01-08 02:00:24,
-NTF-f27fceca,Naufal,seller,📌 Booking baru untuk properti 'Rumah Panjang' dari buyer azzuri3,unread,2026-01-08 04:33:29,
-NTF-42c65916,Naufal,seller,Properti 'Rumah Panjang' berhasil terjual 💰,unread,2026-01-08 04:35:17,
-NTF-74c1e6bf,azzuri3,user,Booking properti 'Rumah Panjang' disetujui seller,unread,2026-01-08 04:38:59,
-NTF-a4f5e1d8,azzuri3,user,Properti 'Rumah Panjang' berhasil dibeli 🎉,unread,2026-01-08 04:50:25,
-NTF-9e3cbd30,Naufal,seller,Properti 'Rumah Panjang' berhasil terjual 💰,unread,2026-01-08 04:50:25,
-NTF-b92c8be7,Naufal,seller,📌 Booking baru untuk properti 'Villa Air' dari buyer azzuri3,unread,2026-01-08 05:58:34,
-6ee1aba7-455e-4fce-9a6c-ba3cd194ca65,azzuri3,user,Booking properti 'Villa Air' disetujui seller,unread,2026-01-08 06:01:06,-
-b7f6801b-c476-40db-afc4-775b4913bfb6,Naufal,seller,Buyer azzuri3 mengajukan pembelian properti 'Villa Air',read,2026-01-08 06:30:50,transaksi_seller
+NTF-c4a12624,Naufal,user,❌ Verifikasi akun Anda ditolak. Alasan: NIK nya tidak valid,unread,2026-01-08 23:16:53
+NTF-8d44c506,Naufal,user,✅ Akun Anda telah berhasil diverifikasi oleh Admin.,unread,2026-01-08 23:20:10
+NTF-2a48c760,Lian,user,✅ Akun Anda telah berhasil diverifikasi oleh Admin.,unread,2026-01-08 23:48:18
+NTF-e50ba0eb,Lian,user,🎉 Pengajuan Anda sebagai SELLER telah DISETUJUI oleh Admin.,unread,2026-01-09 00:29:02

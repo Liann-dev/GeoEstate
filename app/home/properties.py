@@ -156,9 +156,10 @@ def pilih_properti(username):
                 print("1. Tersedia")
                 print("2. Terjual")
                 print("3. Semua")
-                st = input("Pilih (1-3): ").strip()
+                print("0. Batal")
+                st = input("Pilih (0-3): ").strip()
 
-                if st in ("1", "2", "3"):
+                if st in ("1", "2", "3", "0"):
                     break
                 print("❌ Pilihan tidak valid. Masukkan angka 1-3.")
 
@@ -167,6 +168,8 @@ def pilih_properti(username):
                 status = "tersedia"
             elif st == "2":
                 status = "terjual"
+            elif st == "0":
+                return
 
             # =====================
             # FILTER HARGA
@@ -191,9 +194,10 @@ def pilih_properti(username):
                 print("2. Villa")
                 print("3. Resort")
                 print("4. Semua")
+                print("0. Batal")
                 kp = input("Pilih (1-4): ").strip()
 
-                if kp in ("1", "2", "3", "4"):
+                if kp in ("1", "2", "3", "4", "0"):
                     break
                 print("❌ Pilihan tidak valid. Masukkan angka 1-4.")
 
@@ -204,6 +208,8 @@ def pilih_properti(username):
                 kategori = "Villa"
             elif kp == "3":
                 kategori = "Resort"
+            elif kp == "0":
+                return
 
             # =====================
             # APPLY FILTER

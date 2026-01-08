@@ -18,7 +18,7 @@ def seller_review(username):
         reviews = [row for row in reader if row["penjual"] == username]
 
     if not reviews:
-        print("⚠️  Belum ada review untuk properti Anda.")
+        print("⚠️  Belum ada review mengenai Anda.")
         input("\nTekan ENTER untuk kembali...")
         return
 

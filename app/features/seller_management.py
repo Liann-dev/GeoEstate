@@ -1,5 +1,6 @@
 import csv
 import os
+from app.features.notifikasi_service import tambah_notifikasi
 
 USERS_FILE = "data/users.csv"
 SELLER_FILE = "data/sellreg.csv"
@@ -74,43 +75,78 @@ def update_user_role(username, new_role):
 
     write_csv(
         USERS_FILE,
-        ["username", "email", "password", "role", "user_verified"],
+        ["username", "email", "password", "role", "user_verified", "suspend"],
         users
     )
 
 def verifikasi_seller():
     data = read_csv(SELLER_FILE)
-    tampilkan_sellreg(data)
 
-    if not data:
+    # ===============================
+    # FILTER HANYA YANG PENDING
+    # ===============================
+    pending_data = [row for row in data if row.get("status") == "pending"]
+
+    if not pending_data:
+        print("Tidak ada pendaftaran seller yang menunggu verifikasi.\n")
+        input("Tekan ENTER untuk kembali...\n")
         return
+
+    tampilkan_sellreg(pending_data)
 
     reg_id = input("Masukkan REG ID (Tekan ENTER untuk kembali): ").strip()
     if not reg_id:
         return
 
-    for row in data:
+    for row in data:  # tetap pakai data asli untuk update
         if row["reg_id"] == reg_id:
             if row["status"] != "pending":
                 print("Registrasi ini sudah diproses.")
                 input("Tekan ENTER untuk kembali...\n")
                 return
 
+            # ===============================
+            # DETAIL REGISTRASI
+            # ===============================
+            print("\n=== Detail Pendaftaran Seller ===")
+            print(f"REG ID   : {row['reg_id']}")
+            print(f"Username : {row['username']}")
+            print(f"Email    : {row['email']}")
+            print(f"Alasan   : {row['reason']}")
+            print(f"Status   : {row['status']}")
+            print("-" * 40)
+
             keputusan = input("Setujui registrasi? (y/n): ").lower()
 
             if keputusan == "y":
                 row["status"] = "approved"
                 update_user_role(row["username"], "seller")
+
+                tambah_notifikasi(
+                    username=row["username"],
+                    pesan="🎉 Pengajuan Anda sebagai SELLER telah DISETUJUI oleh Admin.",
+                    role="user"
+                )
+
                 print("Seller diterima.\n")
                 input("Tekan ENTER untuk kembali...\n")
 
+
             elif keputusan == "n":
                 row["status"] = "rejected"
+
+                tambah_notifikasi(
+                    username=row["username"],
+                    pesan="❌ Pengajuan Anda sebagai SELLER DITOLAK oleh Admin.",
+                    role="user"
+                )
+
                 print("Seller ditolak.\n")
                 input("Tekan ENTER untuk kembali...\n")
 
+
             else:
-                print("Pilihan tidak valid.\n")
+                print("Pilihan tidak valid.")
                 input("Tekan ENTER untuk kembali...\n")
                 return
 

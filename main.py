@@ -2,7 +2,6 @@ from app.auth.register import register
 from app.auth.login import login
 from app.auth.lupa_password import lupa_password
 from app.home.home_user import home_user
-from app.home.home_seller import home_seller
 from app.Utils.animation import show_splash, show_onboarding
 from app.Utils.padding import pad_center as centerpadding
 
@@ -30,16 +29,13 @@ def main():
         # LOGIN USER
         # =====================
         elif pilihan == '2':
-            P = 1
             user = login()
             if user:
-                if user['role'] == 'user':
-                    input("Tekan ENTER untuk masuk...")
-                    home_user(user['username'])
-                elif user['role'] == 'seller':
-                    input("Tekan ENTER untuk masuk...")
-                    home_seller(user['username'])
+                input("Tekan ENTER untuk masuk...")
+                home_user(user['username'])
 
+                
+        
         # =====================
         # LUPA PASSWORD
         # =====================
