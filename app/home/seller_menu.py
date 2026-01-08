@@ -206,50 +206,50 @@ def seller_menu(username):
         print("[K] Kembali")
         print("==================================")
 
-        pilihan = input("Pilih menu: ")
+        pilihan = input("Pilih menu: ").lower()
 
         # =========================
         # OPSI T: TAMBAH PROPERTI
         # =========================
-        if pilihan == "T":
+        if pilihan == "t":
             tambah_properti(username)
 
         # =========================
         # OPSI L: LIHAT PROPERTI SAYA
         # =========================
-        elif pilihan == "L":
+        elif pilihan == "l":
             lihat_properti_saya(username)
             input("\nTekan ENTER untuk kembali...")
 
         # =========================
         # OPSI H: HAPUS PROPERTI SAYA
         # =========================
-        elif pilihan == "H":
+        elif pilihan == "h":
             lihat_properti_saya(username)
             hapus_properti_saya(username)
 
         # =========================
         # OPSI B: KELOLA BOOKING 
         # =========================
-        elif pilihan == "B":
+        elif pilihan == "b":
             menu_kelola_pesanan(username) 
         
         # =========================
         # OPSI S: KELOLA SURVEI
         # =========================
-        elif pilihan == "S":
+        elif pilihan == "s":
             menu_kelola_survei(username)
 
         # =========================
         # OPSI U: LIHAT ULASAN
         # =========================
-        elif pilihan == "U":
+        elif pilihan == "k":
             seller_review(username)
 
         # =========================
         # OPSI K: KEMBALI
         # =========================
-        elif pilihan == "K":
+        elif pilihan == "k":
             print("\n" * 25)
             loading_exit_seller()
             print("\n" * 25)

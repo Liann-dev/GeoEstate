@@ -2,12 +2,12 @@ import csv
 import os
 from app.home.profile import profile
 from app.home.properties import pilih_properti
-from app.home.information import info
+# from app.home.information import info
 from app.home.detail_properti import detail_properti
-from app.home.review_user import user_review
-from app.features.feedback import collect_feedback
+# from app.home.review_user import user_review
+# from app.features.feedback import collect_feedback
 from app.features.chat import menu_chat
-from app.features.wishlist import menu_wishlist
+# from app.features.wishlist import menu_wishlist
 from app.features.jadwal_survey import lihat_jadwal_survey
 from app.features.notifikasi_service import get_unread_notifikasi
 from app.features.notifikasi_inbox_user import tampilkan_notifikasi_inbox
@@ -16,7 +16,6 @@ import random
 
 FILE_USERS = "data/users.csv"
 FILE_PROPERTI = 'data/properti.csv'
-
 
 def load_properties():
     data = []
@@ -76,13 +75,13 @@ def home_user(username):
 
         print(" [L] Lihat Semua Properti")
         print(" [P] Profil Saya")
-        print(" [I] Informasi Umum")
+        # print(" [I] Informasi Umum")
         print(" [C] Kirim Pesan (Chat)")
-        print(" [U] Ulasan Pembelian")
+        # print(" [U] Ulasan Pembelian")
         print(" [J] Jadwal Survei")
-        print(" [F] Feedback")
-        print(" [W] Wishlist")
-        print(" [K] Keluar / Logout")
+        # print(" [F] Feedback")
+        # print(" [W] Wishlist")
+        # print(" [K] Keluar / Logout")
         print("========================================")
         print(" KETIK: Huruf menu atau Angka ID Properti")
 
@@ -98,31 +97,20 @@ def home_user(username):
             if profile(username) == "EXIT":
                 return
 
-        elif pilihan == 'i':
-            info()
-
-        elif pilihan == 'u':  # U = Ulasan
-            user_review(username)
-
         elif pilihan == 'c':
             menu_chat(username)
 
-        elif pilihan == 'u':
-            user_review(username)
+        # elif pilihan == 'u':
+        #     user_review(username)
 
         elif pilihan == 'j':
             lihat_jadwal_survey(username)
 
-        elif pilihan == 'f':
-            collect_feedback(username)
+        # elif pilihan == 'f':
+        #     collect_feedback(username)
 
-        elif pilihan == 'w':
-            menu_wishlist(username)
-
-        elif pilihan == 'k':
-            print("\nTerima kasih telah menggunakan GeoEstate.")
-            input("Tekan ENTER untuk kembali...")
-            return
+        # elif pilihan == 'w':
+        #     menu_wishlist(username)
 
         # ===== INPUT ANGKA (ID PROPERTI) =====
         elif pilihan.isdigit():

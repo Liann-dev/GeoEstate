@@ -169,21 +169,26 @@ def pilih_properti(username):
             elif st == "2":
                 status = "terjual"
             elif st == "0":
-                return
+                continue
 
             # =====================
             # FILTER HARGA
             # =====================
-            try:
+            while True:
                 print("\nFilter Harga:")
                 h_min = input("Harga minimum (ENTER jika tidak ada): ").strip()
                 h_max = input("Harga maksimum (ENTER jika tidak ada): ").strip()
-                h_min = int(h_min) if h_min else None
-                h_max = int(h_max) if h_max else None
-            except ValueError:
-                print("❌ Harga tidak valid.")
-                input("Tekan ENTER...")
-                continue
+                try:
+                    h_min = int(h_min) if h_min else None
+                    h_max = int(h_max) if h_max else None
+                    if h_min is not None and h_max is not None and h_min > h_max:
+                        print("❌ Harga minimum tidak boleh lebih besar daripada harga maksimum.")
+                        input("Tekan ENTER...")
+                        continue
+                    break
+                except ValueError:
+                    print("❌ Harga harus berupa angka.")
+                    input("Tekan ENTER...")
 
             # =====================
             # FILTER JENIS PROPERTI
@@ -209,7 +214,7 @@ def pilih_properti(username):
             elif kp == "3":
                 kategori = "Resort"
             elif kp == "0":
-                return
+                continue
 
             # =====================
             # APPLY FILTER
@@ -232,7 +237,7 @@ def pilih_properti(username):
             print("1. Harga Termurah")
             print("2. Harga Termahal")
             print("3. Nama A-Z")
-            mode = input("Pilih (1-3): ").strip()
+            mode = input("Pilih (Langsung klik ENTER untuk batal): ").strip()
 
             data_tampil = sort_properti(data_tampil, mode)
             continue
@@ -240,7 +245,7 @@ def pilih_properti(username):
 
         # =====================
         # SEARCH PROPERTI
-        # =====================
+        # ===================== h_max
 
         if pilihan == "c":
             keyword = input("Masukkan kata kunci (nama/lokasi): ").strip()

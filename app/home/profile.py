@@ -8,6 +8,10 @@ from app.features.biometric_toggle import toggle_biometrik
 from app.auth.lupa_password import ganti_password
 from app.home.seller_menu import seller_menu
 from app.Utils.animation import loading_seller_transition
+from app.home.information import info
+from app.home.review_user import user_review
+from app.features.feedback import collect_feedback
+from app.features.wishlist import menu_wishlist
 
 FILE_USERS = "data/users.csv"
 FILE_RIWAYAT = "data/properti_dibeli.csv"
@@ -140,35 +144,40 @@ def profile(username):
             print(f"📝 Catatan  : {admin_note}")
 
         print("----------------------------------------")
-        print(" [I] Informasi Pribadi")
-        print(" [H] History Transaksi")
-        print(" [P] Properti yang Pernah Dibeli")
-        print(" [K] Keamanan & Password")
-
         if user_data["user_verified"] == "false":
             if not request or request["status"] != "pending":
                 print(" [V] Ajukan Verifikasi Data User")
-
         if user_data["role"] == "user":
             print(" [M] Daftar Sebagai Seller")
         elif user_data["role"] == "seller":
             print(" [M] Menu Seller")
-
+        print(" [R] Riwayat Transaksi")
+        print(" [W] Wishlist")
+        print(" [D] Data Diri")
+        # print(" [P] Properti yang Pernah Dibeli")
+        print(" [K] Keamanan & Password")
+        print(" [P] Pusat Bantuan & Feedback")
+        print(" [L] Logout")
         print(" [B] Kembali")
         pilihan = input("\nPilih menu: ").lower().strip()
 
-        if pilihan == "i":
+        if pilihan == "d":
             if user_data["user_verified"] == "false":
                 print("\n⚠️  Data Anda belum terverifikasi.")
                 input("Tekan ENTER untuk kembali ke menu Profil...")
                 continue
             informasi_pribadi(username)
 
-        elif pilihan == "h":
+####################### PR PERLU DIRUBAH ##############################
+        elif pilihan == "r":
             history_transaksi(username)
+####################### PR PERLU DIRUBAH ##############################
+
+        elif pilihan == "w":
+            menu_wishlist(username)
 
         elif pilihan == "p":
-            properti_saya(username)
+            info(username)
 
         elif pilihan == "k":
             while True:
@@ -211,6 +220,11 @@ def profile(username):
                 loading_seller_transition()
                 print("\n" * 25)
                 seller_menu(username)
+
+        elif pilihan == 'l':
+            print("\nTerima kasih telah menggunakan GeoEstate.")
+            input("Tekan ENTER untuk kembali...")
+            return "EXIT"
 
         elif pilihan == "b":
             break
