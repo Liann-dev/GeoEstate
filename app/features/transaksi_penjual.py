@@ -47,6 +47,17 @@ def update_status_properti(id_properti, status_baru):
         writer.writeheader()
         writer.writerows(data)
 
+
+# =====================================================
+# 🔥 FIX UTAMA: SYNC STATUS BUYER & SELLER
+# =====================================================
+
+def update_status_transaksi_semua(semua, id_transaksi, status_baru):
+    for r in semua:
+        if r["id_transaksi"] == id_transaksi:
+            r["status"] = status_baru
+
+
 # =====================================================
 # BOOKING DATE & EXTEND
 # =====================================================
@@ -103,6 +114,7 @@ def validasi_tanggal_perpanjang(tanggal_lama, tanggal_input):
 
     return True, ""
 
+
 # =====================================================
 # AUTO EXPIRE
 # =====================================================
@@ -120,7 +132,7 @@ def auto_expire_booking():
         batas = 2 if r["status"] == "Menunggu Konfirmasi" else 7
 
         if sekarang - tgl > timedelta(days=batas):
-            r["status"] = "Dibatalkan"
+            update_status_transaksi_semua(semua, r["id_transaksi"], "Dibatalkan")
             update_status_properti(r["id_properti"], "available")
             berubah = True
 
@@ -141,6 +153,7 @@ def auto_expire_booking():
 
     if berubah:
         simpan_perubahan_csv(semua)
+
 
 # =====================================================
 # UPDATE STATUS PESANAN (SELLER ONLY)
@@ -180,7 +193,7 @@ def update_status_pesanan(penjual_login):
         pilih = input(">> ")
 
         if pilih == "1":
-            trx["status"] = "Booked"
+            update_status_transaksi_semua(semua, id_trx, "Booked")
             tanggal_awal = (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d")
             simpan_booking_awal(id_trx, tanggal_awal)
             simpan_booking_history(id_trx, "SET_BOOKING", "seller", "-", tanggal_awal)
@@ -188,7 +201,7 @@ def update_status_pesanan(penjual_login):
             simpan_notifikasi(pembeli, "user", f"Booking '{properti}' disetujui", redirect="transaksi_buyer")
 
         elif pilih == "2":
-            trx["status"] = "Dibatalkan"
+            update_status_transaksi_semua(semua, id_trx, "Dibatalkan")
             update_status_properti(trx["id_properti"], "available")
 
     elif status == "Menunggu Pembayaran":
@@ -197,13 +210,11 @@ def update_status_pesanan(penjual_login):
         pilih = input(">> ")
 
         if pilih == "1":
-            for t in semua:
-                if t["id_transaksi"] == id_trx:
-                    t["status"] = "Sold"
+            update_status_transaksi_semua(semua, id_trx, "Sold")
             update_status_properti(trx["id_properti"], "sold")
 
         elif pilih == "2":
-            trx["status"] = "Dibatalkan"
+            update_status_transaksi_semua(semua, id_trx, "Dibatalkan")
             update_status_properti(trx["id_properti"], "available")
 
     elif status == "Booked":
@@ -212,7 +223,7 @@ def update_status_pesanan(penjual_login):
         pilih = input(">> ")
 
         if pilih == "1":
-            trx["status"] = "Dibatalkan"
+            update_status_transaksi_semua(semua, id_trx, "Dibatalkan")
             update_status_properti(trx["id_properti"], "available")
 
         elif pilih == "2":
@@ -237,6 +248,7 @@ def update_status_pesanan(penjual_login):
     print("✅ Status berhasil diperbarui.")
     input("ENTER...")
 
+
 # =====================================================
 # MENU SELLER
 # =====================================================
@@ -259,10 +271,10 @@ def menu_kelola_pesanan(user_active):
         if not data:
             print("Belum ada booking.")
         else:
-            print(f"{'ID':<10} {'BUYER':<12} {'PROPERTI':<20} {'STATUS'}")
+            print(f"{'ID':<12} {'BUYER':<17} {'PROPERTI':<35} {'STATUS'}")
             print("-" * 100)
             for t in data:
-                print(f"{t['id_transaksi']:<10} {t['username_pembeli']:<12} {t['nama_properti'][:18]:<20} {t['status']}")
+                print(f"{t['id_transaksi']:<12} {t['username_pembeli']:<17} {t['nama_properti'][:30]:<35} {t['status']}")
 
         print("\n1. 🔄 Update Status")
         print("2. 💬 Chat Buyer")
@@ -279,6 +291,7 @@ def menu_kelola_pesanan(user_active):
                     buka_chat(user_active, session, t["username_pembeli"])
         elif pilih == "0":
             return
+
 
 # =====================================================
 # DIPAKAI BUYER
