@@ -57,14 +57,7 @@ def load_properti():
 # =========================
 # FILTER
 # =========================
-def filter_properti(
-    data,
-    username,
-    status=None,
-    harga_min=None,
-    harga_max=None,
-    kategori=None
-):
+def filter_properti(data, username, status=None, harga_min=None, harga_max=None, kategori=None):
     hasil = []
 
     for p in data:
@@ -72,7 +65,6 @@ def filter_properti(
         is_booking = sedang_dalam_transaksi(username, p["id"])
         is_sold = p["status"].lower() == "sold"
 
-        # FILTER STATUS
         if status == "tersedia" and (is_sold or is_booking):
             continue
         if status == "dibooking" and not is_booking:
@@ -80,13 +72,11 @@ def filter_properti(
         if status == "terjual" and not is_sold:
             continue
 
-        # FILTER HARGA
         if harga_min is not None and harga < harga_min:
             continue
         if harga_max is not None and harga > harga_max:
             continue
 
-        # FILTER KATEGORI
         if kategori and p["kategori"].lower() != kategori.lower():
             continue
 
@@ -101,9 +91,9 @@ def filter_properti(
 def sort_properti(data, mode):
     if mode == "1":
         return sorted(data, key=lambda x: int(x["harga"]))
-    elif mode == "2":
+    if mode == "2":
         return sorted(data, key=lambda x: int(x["harga"]), reverse=True)
-    elif mode == "3":
+    if mode == "3":
         return sorted(data, key=lambda x: x["nama"].lower())
     return data
 
@@ -155,58 +145,96 @@ def pilih_properti(username):
         if pilihan == "0":
             return
 
-        # FILTER
+        # ================= FILTER =================
         if pilihan == "f":
-            print("\nFilter Status:")
-            print("1. Tersedia")
-            print("2. Di-booking")
-            print("3. Terjual")
-            print("4. Semua")
-            st = input("Pilih (1-4): ").strip()
+            while True:
+                print("\nFilter Status:")
+                print("1. Tersedia")
+                print("2. Di-booking")
+                print("3. Terjual")
+                print("4. Semua")
+                print("0. Batal")
+                st = input("Pilih (0-4): ").strip()
 
-            status = {
-                "1": "tersedia",
-                "2": "dibooking",
-                "3": "terjual"
-            }.get(st)
+                if st == "0":
+                    break
+                if st not in ("1", "2", "3", "4"):
+                    print("❌ Pilihan tidak valid.")
+                    continue
 
-            h_min = input("Harga minimum (ENTER jika tidak ada): ").strip()
-            h_max = input("Harga maksimum (ENTER jika tidak ada): ").strip()
-            h_min = int(h_min) if h_min else None
-            h_max = int(h_max) if h_max else None
+                status = {
+                    "1": "tersedia",
+                    "2": "dibooking",
+                    "3": "terjual"
+                }.get(st)
 
-            print("\nJenis Properti:")
-            print("1. Rumah")
-            print("2. Villa")
-            print("3. Resort")
-            kp = input("Pilih (1-3): ").strip()
+                while True:
+                    h_min = input("\nHarga minimum (ENTER jika tidak ada): ").strip()
+                    h_max = input("Harga maksimum (ENTER jika tidak ada): ").strip()
 
-            kategori = {
-                "1": "Rumah",
-                "2": "Villa",
-                "3": "Resort"
-            }.get(kp)
+                    try:
+                        h_min = int(h_min) if h_min else None
+                        h_max = int(h_max) if h_max else None
+                    except ValueError:
+                        print("❌ Harga harus berupa angka.")
+                        continue
 
-            data_tampil = filter_properti(
-                semua_properti,
-                username,
-                status,
-                h_min,
-                h_max,
-                kategori
-            )
+                    if h_min is not None and h_max is not None and h_max < h_min:
+                        print("❌ Harga maksimum tidak boleh lebih kecil dari minimum.")
+                        continue
+                    break
+
+                while True:
+                    print("\nJenis Properti:")
+                    print("1. Rumah")
+                    print("2. Villa")
+                    print("3. Resort")
+                    print("0. Semua")
+                    kp = input("Pilih (0-3): ").strip()
+
+                    if kp not in ("0", "1", "2", "3"):
+                        print("❌ Pilihan tidak valid.")
+                        continue
+                    break
+
+                kategori = {
+                    "1": "Rumah",
+                    "2": "Villa",
+                    "3": "Resort"
+                }.get(kp)
+
+                data_tampil = filter_properti(
+                    semua_properti,
+                    username,
+                    status,
+                    h_min,
+                    h_max,
+                    kategori
+                )
+                break
             continue
 
-        # SORT
+        # ================= SORT =================
         if pilihan == "s":
-            print("\nSorting:")
-            print("1. Harga Termurah")
-            print("2. Harga Termahal")
-            print("3. Nama A-Z")
-            data_tampil = sort_properti(data_tampil, input("Pilih: "))
+            while True:
+                print("\nSorting:")
+                print("1. Harga Termurah")
+                print("2. Harga Termahal")
+                print("3. Nama A-Z")
+                print("0. Batal")
+                srt = input("Pilih: ").strip()
+
+                if srt == "0":
+                    break
+                if srt not in ("1", "2", "3"):
+                    print("❌ Pilihan tidak valid.")
+                    continue
+
+                data_tampil = sort_properti(data_tampil, srt)
+                break
             continue
 
-        # SEARCH
+        # ================= SEARCH =================
         if pilihan == "c":
             data_tampil = search_properti(
                 semua_properti,
@@ -214,7 +242,7 @@ def pilih_properti(username):
             )
             continue
 
-        # PILIH ID
+        # ================= PILIH ID =================
         item = next((p for p in data_tampil if p["id"] == pilihan), None)
 
         if not item:

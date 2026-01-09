@@ -253,6 +253,17 @@ def update_status_pesanan(penjual_login):
 # MENU SELLER
 # =====================================================
 
+def format_status_booking(id_transaksi, status):
+    if status != "Booked":
+        return status
+
+    tgl = get_jadwal_terakhir(id_transaksi)
+    extend = get_extend_count(id_transaksi)
+
+    if tgl:
+        return f"Booked | Berlaku hingga {tgl} ({extend}/3)"
+    return f"Booked ({extend}/3)"
+
 def menu_kelola_pesanan(user_active):
     auto_expire_booking()
 
@@ -274,7 +285,9 @@ def menu_kelola_pesanan(user_active):
             print(f"{'ID':<12} {'BUYER':<17} {'PROPERTI':<35} {'STATUS'}")
             print("-" * 100)
             for t in data:
-                print(f"{t['id_transaksi']:<12} {t['username_pembeli']:<17} {t['nama_properti'][:30]:<35} {t['status']}")
+                status_view = format_status_booking(t["id_transaksi"], t["status"])
+                print(f"{t['id_transaksi']:<12} {t['username_pembeli']:<17} {t['nama_properti'][:30]:<35} {status_view}")
+
 
         print("\n1. 🔄 Update Status")
         print("2. 💬 Chat Buyer")

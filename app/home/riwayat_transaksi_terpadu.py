@@ -6,7 +6,18 @@ from app.home.review_user import proses_input_ulasan, cek_sudah_review, lihat_ul
 TRANSAKSI_FILE = "data/transaksi.csv"
 REVIEW_FILE = "data/reviews.csv"
 PROPERTI_FILE = "data/properti.csv"
+FILE_BOOKING = "data/booking.csv"
 
+def get_tanggal_booking_terakhir(id_transaksi):
+    if not os.path.exists(FILE_BOOKING):
+        return None
+
+    terakhir = None
+    with open(FILE_BOOKING, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if r["id_transaksi"] == id_transaksi:
+                terakhir = r["tanggal"]
+    return terakhir
 
 def load_csv(path):
     if not os.path.exists(path):
@@ -26,13 +37,19 @@ def status_keterangan(trx, username):
     status = trx["status"]
 
     if status == "Booked":
-        return "⏳ Dalam Masa Booking"
+        tgl = get_tanggal_booking_terakhir(trx["id_transaksi"])
+        if tgl:
+            return f"⏳ Berlaku hingga {tgl}"
+        return "Dalam Masa Booking"
+
     if status == "Menunggu Pembayaran":
         return "💰 Menunggu Konfirmasi Pembelian"
+
     if status == "Sold":
         if cek_sudah_review(trx["id_transaksi"], username):
             return "✅ Sudah Diulas"
         return "⭐ Bisa Diulas"
+
     if "Batal" in status:
         return "❌ Dibatalkan"
 
