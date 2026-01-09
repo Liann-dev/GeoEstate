@@ -133,15 +133,16 @@ def detail_properti(username, p):
 
         print("\n[ OPSI ]")
 
-        if status == "available":
+        if status != "sold":
             print("1. 📅 Jadwalkan Survei")
-            print("2. 🛒 Booking")
-            print("4. ➕ Tambahkan ke Wishlist")
 
+        elif status == "available":
+            print("2. 🛒 Booking")
+        
         elif status == "booked_owner":
             print("3. 💰 Beli Properti")
 
-        elif status == "booked_other":
+        elif status != "sold":
             print("4. ➕ Tambahkan ke Wishlist")
 
         print("5. 💬 Chat Penjual")
@@ -151,7 +152,7 @@ def detail_properti(username, p):
 
         pilihan = input(">> Pilih opsi: ").strip()
 
-        if pilihan == "1" and status == "available":
+        if pilihan == "1" and status != "sold":
             if not get_user_verified(username):
                 print("❌ Anda belum terverifikasi.")
                 input("ENTER...")

@@ -1,5 +1,5 @@
 id,nama,kategori,lokasi,harga,penjual,status
-1,Rumah di Dalam Ubertos,Rumah,"Bandung, Ujung Berung",2000000000,azzurisulthan,pending
+1,Rumah di Dalam Ubertos,Rumah,"Bandung, Ujung Berung",2000000000,azzurisulthan,booked
 2,Villa Air,Villa,Ciwidey,4750000000,Lian,available
 3,Villa Putih,Villa,Lembang,3500000000,Lian,available
 4,Resort Bunga Wangi,Resort,Dago Pakar,13000000000,Naufal,available
@@ -8,7 +8,7 @@ id,nama,kategori,lokasi,harga,penjual,status
 7,Resort Mentari,Resort,Jakarta Utara,27000000000,Lian,available
 8,Villa Asri,Villa,Lembang,12000000000,Naufal,available
 9,Rumah Bukit,Rumah,Bukit Bintang,95000000000,Naufal,available
-10,Rumah Singgah,Rumah,Manglayang,475000000,Naufal,available
+10,Rumah Singgah,Rumah,Manglayang,475000000,Naufal,pending
 11,Rumah Harmoni,Rumah,Cimahi,850000000,Lian,available
 12,Villa Puncak Indah,Villa,Puncak Bogor,6200000000,Naufal,available
 13,Resort Alam Lestari,Resort,Sukabumi,9800000000,azzurisulthan,available
