@@ -11,15 +11,10 @@ FILE_RIWAYAT = "data/properti_dibeli.csv"
 # =========================
 # UTIL
 # =========================
-def to_bool(val):
-    return str(val).strip().lower() == "true"
-
-
 def print_card(p, is_booking=False):
     harga_txt = f"Rp {int(p['harga']):,}".replace(",", ".")
-    tersedia = to_bool(p.get("tersedia", "true"))
 
-    if not tersedia:
+    if p["status"].lower() == "sold":
         status = "❌ TERJUAL"
     elif is_booking:
         status = "⏳ DI-BOOKING"
@@ -41,8 +36,7 @@ def get_properti_milik_user(username):
         return properti_dimiliki
 
     with open(FILE_RIWAYAT, newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-        for row in reader:
+        for row in csv.DictReader(file):
             if row["username"] == username:
                 properti_dimiliki.add(row["id"])
 
@@ -50,7 +44,7 @@ def get_properti_milik_user(username):
 
 
 # =========================
-# LOAD & FILTER
+# LOAD
 # =========================
 def load_properti():
     if not os.path.exists(FILE_PROPERTI):
@@ -60,6 +54,9 @@ def load_properti():
         return list(csv.DictReader(file))
 
 
+# =========================
+# FILTER
+# =========================
 def filter_properti(
     data,
     username,
@@ -72,15 +69,15 @@ def filter_properti(
 
     for p in data:
         harga = int(p["harga"])
-        tersedia = to_bool(p.get("tersedia", "true"))
         is_booking = sedang_dalam_transaksi(username, p["id"])
+        is_sold = p["status"].lower() == "sold"
 
         # FILTER STATUS
-        if status == "tersedia" and (not tersedia or is_booking):
+        if status == "tersedia" and (is_sold or is_booking):
             continue
         if status == "dibooking" and not is_booking:
             continue
-        if status == "terjual" and tersedia:
+        if status == "terjual" and not is_sold:
             continue
 
         # FILTER HARGA
@@ -98,6 +95,9 @@ def filter_properti(
     return hasil
 
 
+# =========================
+# SORT & SEARCH
+# =========================
 def sort_properti(data, mode):
     if mode == "1":
         return sorted(data, key=lambda x: int(x["harga"]))
@@ -152,26 +152,17 @@ def pilih_properti(username):
 
         pilihan = input(">> ").strip().lower()
 
-        # KEMBALI
         if pilihan == "0":
             return
 
         # FILTER
         if pilihan == "f":
-            while True:
-                print("\nFilter Status:")
-                print("1. Tersedia")
-                print("2. Di-booking")
-                print("3. Terjual")
-                print("4. Semua")
-                print("0. Batal")
-                st = input("Pilih (0-4): ").strip()
-                if st in ("0", "1", "2", "3", "4"):
-                    break
-                print("❌ Pilihan tidak valid.")
-
-            if st == "0":
-                continue
+            print("\nFilter Status:")
+            print("1. Tersedia")
+            print("2. Di-booking")
+            print("3. Terjual")
+            print("4. Semua")
+            st = input("Pilih (1-4): ").strip()
 
             status = {
                 "1": "tersedia",
@@ -179,34 +170,16 @@ def pilih_properti(username):
                 "3": "terjual"
             }.get(st)
 
-            # FILTER HARGA
-            while True:
-                try:
-                    h_min = input("Harga minimum (ENTER jika tidak ada): ").strip()
-                    h_max = input("Harga maksimum (ENTER jika tidak ada): ").strip()
-                    h_min = int(h_min) if h_min else None
-                    h_max = int(h_max) if h_max else None
-                    if h_min and h_max and h_min > h_max:
-                        raise ValueError
-                    break
-                except ValueError:
-                    print("❌ Input harga tidak valid.")
+            h_min = input("Harga minimum (ENTER jika tidak ada): ").strip()
+            h_max = input("Harga maksimum (ENTER jika tidak ada): ").strip()
+            h_min = int(h_min) if h_min else None
+            h_max = int(h_max) if h_max else None
 
-            # FILTER KATEGORI
-            while True:
-                print("\nFilter Jenis Properti:")
-                print("1. Rumah")
-                print("2. Villa")
-                print("3. Resort")
-                print("4. Semua")
-                print("0. Batal")
-                kp = input("Pilih (1-4): ").strip()
-                if kp in ("0", "1", "2", "3", "4"):
-                    break
-                print("❌ Pilihan tidak valid.")
-
-            if kp == "0":
-                continue
+            print("\nJenis Properti:")
+            print("1. Rumah")
+            print("2. Villa")
+            print("3. Resort")
+            kp = input("Pilih (1-3): ").strip()
 
             kategori = {
                 "1": "Rumah",
@@ -216,39 +189,29 @@ def pilih_properti(username):
 
             data_tampil = filter_properti(
                 semua_properti,
-                username=username,
-                status=status,
-                harga_min=h_min,
-                harga_max=h_max,
-                kategori=kategori
+                username,
+                status,
+                h_min,
+                h_max,
+                kategori
             )
             continue
 
-        # SORTING
+        # SORT
         if pilihan == "s":
             print("\nSorting:")
             print("1. Harga Termurah")
             print("2. Harga Termahal")
             print("3. Nama A-Z")
-            mode = input("Pilih: ").strip()
-            data_tampil = sort_properti(data_tampil, mode)
+            data_tampil = sort_properti(data_tampil, input("Pilih: "))
             continue
 
         # SEARCH
         if pilihan == "c":
-            keyword = input("Masukkan kata kunci: ").strip()
-            if not keyword:
-                print("❌ Kata kunci kosong.")
-                input("ENTER...")
-                continue
-
-            hasil = search_properti(semua_properti, keyword)
-            if not hasil:
-                print("⚠️ Tidak ditemukan.")
-                input("ENTER...")
-                continue
-
-            data_tampil = hasil
+            data_tampil = search_properti(
+                semua_properti,
+                input("Kata kunci: ")
+            )
             continue
 
         # PILIH ID
@@ -264,5 +227,4 @@ def pilih_properti(username):
             input("ENTER...")
             continue
 
-        # ⬇️ TETAP MASUK DETAIL
         detail_properti(username, item)

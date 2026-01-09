@@ -12,9 +12,7 @@ FILE_TRANSAKSI = "data/transaksi.csv"
 REVIEW_FILE = "data/reviews.csv"
 
 
-# =========================
-# LIHAT ULASAN SELLER
-# =========================
+# ===================== ULASAN SELLER =====================
 def lihat_ulasan_seller(username_seller):
     if not os.path.exists(REVIEW_FILE):
         print("\n📭 Belum ada ulasan.")
@@ -24,28 +22,25 @@ def lihat_ulasan_seller(username_seller):
     with open(REVIEW_FILE, newline="", encoding="utf-8") as f:
         reviews = list(csv.DictReader(f))
 
-    data = [r for r in reviews if r["seller"] == username_seller]
+    data = [r for r in reviews if r.get("penjual") == username_seller]
 
     if not data:
-        print("\n📭 Seller ini belum memiliki ulasan.")
+        print(f"\n📭 Seller '{username_seller}' belum memiliki ulasan.")
         input("ENTER...")
         return
 
     print(f"\n=== ULASAN SELLER: {username_seller} ===\n")
-
     for i, r in enumerate(data, 1):
         print(f"[{i}]")
-        print(f"⭐ Rating   : {r['rating']}/5")
-        print(f"💬 Komentar : {r['komentar']}")
-        print(f"🕒 Tanggal  : {r['tanggal']}")
+        print(f"⭐ Rating   : {r.get('rating','-')}/5")
+        print(f"💬 Komentar : {r.get('review_text','-')}")
+        print(f"🕒 Tanggal  : {r.get('tanggal_review','-')}")
         print("-" * 40)
 
     input("ENTER...")
 
 
-# =========================
-# USER VERIFIED
-# =========================
+# ===================== USER VERIFIED =====================
 def get_user_verified(username):
     if not os.path.exists(FILE_USERS):
         return False
@@ -57,27 +52,22 @@ def get_user_verified(username):
     return False
 
 
-# =========================
-# CEK BOOKING AKTIF
-# =========================
-def get_booking_aktif(username, id_properti):
+# ===================== TRANSAKSI AKTIF =====================
+def get_booking_aktif(id_properti):
+    """Mengambil transaksi aktif (Booked / Menunggu Pembayaran) berdasarkan properti"""
     if not os.path.exists(FILE_TRANSAKSI):
         return None
 
     with open(FILE_TRANSAKSI, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
-            if (
-                row["id_properti"] == id_properti
-                and row["status"] == "Booked"
-            ):
-                return row
+            if row["id_properti"] == str(id_properti):
+                if row["status"] in ("Booked", "Menunggu Pembayaran"):
+                    return row
     return None
 
 
-# =========================
-# AJUKAN PEMBELIAN
-# =========================
-def ajukan_pembelian(booking_row):
+# ===================== AJUKAN PEMBELIAN =====================
+def ajukan_pembelian(trx):
     if not os.path.exists(FILE_TRANSAKSI):
         return False
 
@@ -85,7 +75,7 @@ def ajukan_pembelian(booking_row):
         semua = list(csv.DictReader(f))
 
     for r in semua:
-        if r["id_transaksi"] == booking_row["id_transaksi"]:
+        if r["id_transaksi"] == trx["id_transaksi"]:
             r["status"] = "Menunggu Pembayaran"
 
     with open(FILE_TRANSAKSI, "w", newline="", encoding="utf-8") as f:
@@ -94,35 +84,37 @@ def ajukan_pembelian(booking_row):
         writer.writerows(semua)
 
     simpan_notifikasi(
-        booking_row["penjual"],
+        trx["penjual"],
         "seller",
-        f"Buyer {booking_row['username_pembeli']} mengajukan pembelian properti '{booking_row['nama_properti']}'",
+        f"Buyer {trx['username_pembeli']} mengajukan pembelian properti '{trx['nama_properti']}'",
         redirect="transaksi_seller"
     )
 
     return True
 
 
-# =========================
-# DETAIL PROPERTI
-# =========================
+# ===================== DETAIL PROPERTI =====================
 def detail_properti(username, p):
     harga_txt = f"Rp {int(p['harga']):,}".replace(",", ".")
     rating = rating_seller(p["penjual"])
 
-    # 🔑 CEK STATUS REAL DARI TRANSAKSI
-    booking_row = get_booking_aktif(username, p["id"])
+    trx = get_booking_aktif(p["id"])
 
-    if not p.get("tersedia", "true").lower() == "true":
+    # ===== STATUS FINAL =====
+    if p["status"].lower() == "sold":
         status = "sold"
-    elif booking_row:
-        status = "booked"
+    elif trx:
+        if trx["username_pembeli"] == username:
+            status = "booked_owner"
+        else:
+            status = "booked_other"
     else:
         status = "available"
 
     status_label = {
         "available": "🟢 Tersedia",
-        "booked": "🟡 Sedang Dibooking",
+        "booked_owner": "🟡 Dibooking (Anda)",
+        "booked_other": "🟡 Sedang Dibooking",
         "sold": "🔴 Terjual"
     }[status]
 
@@ -136,21 +128,20 @@ def detail_properti(username, p):
         print(f" 💰 {harga_txt}")
         print(f" 📦 Status  : {status_label}")
         print(f" 👤 Penjual : {p['penjual']}")
-        print(f" ⭐ Rating  : {rating}")
+        print(f" ⭐ Rating Penjual : {rating}")
         print("========================================")
 
         print("\n[ OPSI ]")
 
-        if status != "sold":
-            print("1. 📅 Jadwalkan Survei")
-
         if status == "available":
+            print("1. 📅 Jadwalkan Survei")
             print("2. 🛒 Booking")
+            print("4. ➕ Tambahkan ke Wishlist")
 
-        if status == "booked" and booking_row and booking_row["username_pembeli"] == username:
+        elif status == "booked_owner":
             print("3. 💰 Beli Properti")
 
-        if status != "sold":
+        elif status == "booked_other":
             print("4. ➕ Tambahkan ke Wishlist")
 
         print("5. 💬 Chat Penjual")
@@ -160,13 +151,9 @@ def detail_properti(username, p):
 
         pilihan = input(">> Pilih opsi: ").strip()
 
-        if pilihan == "1":
+        if pilihan == "1" and status == "available":
             if not get_user_verified(username):
                 print("❌ Anda belum terverifikasi.")
-                input("ENTER...")
-                continue
-            if username == p["penjual"]:
-                print("❌ Tidak bisa survei properti sendiri.")
                 input("ENTER...")
                 continue
             survey(username, p)
@@ -176,27 +163,18 @@ def detail_properti(username, p):
                 print("❌ Anda belum terverifikasi.")
                 input("ENTER...")
                 continue
-            if username == p["penjual"]:
-                print("❌ Tidak bisa booking properti sendiri.")
-                input("ENTER...")
-                continue
             booking(username, p)
-            return  # refresh status saat masuk ulang
+            return
 
-        elif pilihan == "3" and status == "booked" and booking_row and booking_row["username_pembeli"] == username:
-            sukses = ajukan_pembelian(booking_row)
-            if sukses:
+        elif pilihan == "3" and status == "booked_owner":
+            if ajukan_pembelian(trx):
                 print("\n📢 Permintaan pembelian berhasil dikirim.")
             else:
                 print("❌ Gagal mengajukan pembelian.")
             input("ENTER...")
             return
 
-        elif pilihan == "4":
-            if username == p["penjual"]:
-                print("❌ Tidak bisa wishlist properti sendiri.")
-                input("ENTER...")
-                continue
+        elif pilihan == "4" and status != "sold":
             tambah_ke_wishlist(username, p["id"])
 
         elif pilihan == "5":

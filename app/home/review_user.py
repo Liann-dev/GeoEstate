@@ -30,7 +30,7 @@ def simpan_csv(path, data_baru, append=True):
 def cek_sudah_review(id_transaksi, username):
     reviews = baca_csv(REVIEW_FILE)
     for r in reviews:
-        if r["id_transaksi"] == id_transaksi and r["reviewer"] == username:
+        if r.get("id_transaksi") == id_transaksi and r.get("username_pembeli") == username:
             return True
     return False
 
@@ -84,12 +84,12 @@ def proses_input_ulasan(username, id_transaksi):
 
     review_baru = [{
         "id_transaksi": id_transaksi,
-        "reviewer": username,
-        "seller": trx["penjual"],
+        "username_pembeli": username,
+        "penjual": trx["penjual"],
         "id_properti": trx["id_properti"],
         "rating": str(rating),
-        "komentar": komentar,
-        "tanggal": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        "review_text": komentar,
+        "tanggal_review": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }]
 
     simpan_csv(REVIEW_FILE, review_baru, append=True)
@@ -103,7 +103,7 @@ def proses_input_ulasan(username, id_transaksi):
 # =========================
 def lihat_ulasan_saya(username):
     reviews = baca_csv(REVIEW_FILE)
-    data = [r for r in reviews if r["reviewer"] == username]
+    data = [r for r in reviews if r["username_pembeli"] == username]
 
     if not data:
         print("\n📭 Kamu belum punya ulasan.")
@@ -114,8 +114,31 @@ def lihat_ulasan_saya(username):
     for i, r in enumerate(data, 1):
         print(f"[{i}] ID Transaksi : {r['id_transaksi']}")
         print(f"⭐ Rating       : {r['rating']}/5")
-        print(f"💬 Komentar     : {r['komentar']}")
-        print(f"🕒 Tanggal      : {r['tanggal']}")
+        print(f"💬 Komentar     : {r['review_text']}")
+        print(f"🕒 Tanggal      : {r['tanggal_review']}")
+        print("-" * 40)
+
+    input("ENTER...")
+
+
+# =========================
+# LIHAT ULASAN SELLER
+# =========================
+def lihat_ulasan_seller(username_seller):
+    reviews = baca_csv(REVIEW_FILE)
+    data = [r for r in reviews if r["penjual"] == username_seller]
+
+    if not data:
+        print(f"\n📭 Seller '{username_seller}' belum punya ulasan.")
+        input("ENTER...")
+        return
+
+    print(f"\n=== ULASAN SELLER: {username_seller} ===\n")
+    for i, r in enumerate(data, 1):
+        print(f"[{i}] ID Transaksi : {r['id_transaksi']}")
+        print(f"⭐ Rating       : {r['rating']}/5")
+        print(f"💬 Ulasan       : {r['review_text']}")
+        print(f"🕒 Tanggal      : {r['tanggal_review']}")
         print("-" * 40)
 
     input("ENTER...")
@@ -126,7 +149,7 @@ def lihat_ulasan_saya(username):
 # =========================
 def rating_seller(username_seller):
     reviews = baca_csv(REVIEW_FILE)
-    ratings = [int(r["rating"]) for r in reviews if r["seller"] == username_seller]
+    ratings = [int(r["rating"]) for r in reviews if r["penjual"] == username_seller]
 
     if not ratings:
         return "Belum ada ulasan"

@@ -1,3 +1,3 @@
 id_transaksi,username_pembeli,penjual,id_properti,nama_properti,harga,tanggal,transaksi,status,session
-GES-2046,azzurisulthan,Naufal,16,Resort Bukit Hijau,12500000000,2026-01-09 04:58:10,booking,Menunggu Konfirmasi,azzurisulthan
-GES-2046,azzurisulthan,Naufal,16,Resort Bukit Hijau,12500000000,2026-01-09 04:58:10,booking,Booked,Naufal
+GES-2046,azzurisulthan,Naufal,16,Resort Bukit Hijau,12500000000,2026-01-09 04:58:10,booking,Sold,azzurisulthan
+GES-2046,azzurisulthan,Naufal,16,Resort Bukit Hijau,12500000000,2026-01-09 04:58:10,booking,Sold,Naufal

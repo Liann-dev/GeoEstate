@@ -1,7 +1,7 @@
 import csv
 import os
 from app.home.detail_properti import detail_properti
-from app.home.review_user import proses_input_ulasan, cek_sudah_review
+from app.home.review_user import proses_input_ulasan, cek_sudah_review, lihat_ulasan_seller
 
 TRANSAKSI_FILE = "data/transaksi.csv"
 REVIEW_FILE = "data/reviews.csv"
@@ -25,12 +25,10 @@ def get_properti_by_id(id_properti):
 def status_keterangan(trx, username):
     status = trx["status"]
 
-    if status == "Menunggu Konfirmasi":
-        return "⏳ Menunggu Seller"
     if status == "Booked":
-        return "📅 Booking / Proses"
+        return "⏳ Dalam Masa Booking"
     if status == "Menunggu Pembayaran":
-        return "⏳ Menunggu Konfirmasi Beli"
+        return "💰 Menunggu Konfirmasi Pembelian"
     if status == "Sold":
         if cek_sudah_review(trx["id_transaksi"], username):
             return "✅ Sudah Diulas"
@@ -41,97 +39,86 @@ def status_keterangan(trx, username):
     return "-"
 
 
-def riwayat_transaksi_terpadu(username):
-    transaksi = [
-        t for t in load_csv(TRANSAKSI_FILE)
-        if t.get("session") == username
-    ]
+def label_status(status):
+    if status == "Booked":
+        return "Booking"
+    if status == "Menunggu Pembayaran":
+        return "Menunggu Pembayaran"
+    if status == "Sold":
+        return "Selesai"
+    if "Batal" in status:
+        return "Dibatalkan"
+    return status
 
-    if not transaksi:
-        print("\n📭 Belum ada transaksi.")
-        input("ENTER...")
-        return
+
+def riwayat_transaksi_terpadu(username):
+    prioritas = {"Booked": 3, "Menunggu Pembayaran": 2, "Sold": 1, "Menunggu Konfirmasi": 0}
 
     while True:
-        os.system("cls" if os.name == "nt" else "clear")
-        print("=== RIWAYAT TRANSAKSI SAYA ===\n")
+        semua = load_csv(TRANSAKSI_FILE)
+        transaksi_map = {}
 
-        # ===== TABEL =====
+        for trx in semua:
+            if trx.get("session") != username:
+                continue
+
+            id_trx = trx["id_transaksi"]
+            if id_trx not in transaksi_map or prioritas.get(trx["status"], 0) > prioritas.get(transaksi_map[id_trx]["status"], 0):
+                transaksi_map[id_trx] = trx
+
+        transaksi = list(transaksi_map.values())
+
+        if not transaksi:
+            print("\n📭 Belum ada transaksi.")
+            input("ENTER...")
+            return
+
+        os.system("cls" if os.name == "nt" else "clear")
+        print("\n=== RIWAYAT TRANSAKSI SAYA ===\n")
         print("-" * 100)
-        print(
-            f"{'No':<3} | {'ID Transaksi':<12} | {'Properti':<25} | "
-            f"{'Status':<20} | Keterangan"
-        )
+        print(f"{'No':<3} | {'ID Transaksi':<12} | {'Properti':<25} | {'Status':<20} | Keterangan")
         print("-" * 100)
 
         for i, trx in enumerate(transaksi, 1):
-            ket = status_keterangan(trx, username)
-            print(
-                f"{i:<3} | {trx['id_transaksi']:<12} | "
-                f"{trx['nama_properti']:<25} | "
-                f"{trx['status']:<20} | {ket}"
-            )
+            print(f"{i:<3} | {trx['id_transaksi']:<12} | {trx['nama_properti']:<25} | {label_status(trx['status']):<20} | {status_keterangan(trx, username)}")
 
         print("-" * 100)
         print("\n[No] Pilih Transaksi")
         print("[U]  Lihat Ulasan Saya")
         print("[0]  Kembali")
-
         pilihan = input("Pilih: ").strip()
 
-        # ===== KELUAR =====
         if pilihan == "0":
             return
 
-        # ===== LIHAT ULASAN =====
         if pilihan.upper() == "U":
-            print("\n📭 Kamu belum punya ulasan.")
-            input("ENTER...")
+            from app.home.review_user import lihat_ulasan_saya
+            lihat_ulasan_saya(username)
             continue
 
-        # ===== VALIDASI ANGKA =====
         if not pilihan.isdigit():
             print("\n❌ Input tidak valid.")
             input("ENTER...")
             continue
 
-        nomor = int(pilihan)
-        if nomor < 1 or nomor > len(transaksi):
+        idx = int(pilihan)
+        if idx < 1 or idx > len(transaksi):
             print("\n❌ Nomor transaksi tidak tersedia.")
             input("ENTER...")
             continue
 
-        trx = transaksi[nomor - 1]
-        status = trx["status"]
+        trx = transaksi[idx - 1]
 
-        # ===== REDIRECT =====
-        if status in ("Menunggu Konfirmasi", "Booked", "Menunggu Pembayaran"):
+        # Jika transaksi sudah Sold dan bisa diulas → masuk menu review
+        if trx["status"] == "Sold" and not cek_sudah_review(trx["id_transaksi"], username):
+            print(f"\n⭐ Memberikan ulasan untuk seller '{trx['penjual']}'")
+            proses_input_ulasan(username, trx["id_transaksi"])
+            # setelah selesai ulas, langsung tampilkan review seller
+            lihat_ulasan_seller(trx["penjual"])
+        else:
             p = get_properti_by_id(trx["id_properti"])
             if p:
                 detail_properti(username, p)
             else:
                 print("\n❌ Data properti tidak ditemukan.")
                 input("ENTER...")
-            continue
-
-        if status == "Sold":
-            if cek_sudah_review(trx["id_transaksi"], username):
-                tampilkan_detail_review(trx["id_transaksi"])
-            else:
-                proses_input_ulasan(username, trx)
-            continue
-
-        print("\nℹ️ Tidak ada aksi untuk transaksi ini.")
-        input("ENTER...")
-
-
-def tampilkan_detail_review(id_transaksi):
-    reviews = load_csv(REVIEW_FILE)
-    for r in reviews:
-        if r["id_transaksi"] == id_transaksi:
-            print("\n=== ULASAN TRANSAKSI ===")
-            print(f"⭐ Rating  : {r['rating']}/5")
-            print(f"💬 Ulasan : {r['komentar']}")
-            print(f"🕒 Tanggal: {r['tanggal']}")
-            input("ENTER...")
-            return
