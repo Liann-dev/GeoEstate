@@ -1,5 +1,5 @@
 # GeoEstate
-Menjadi platform jual beli real estate terdepan guna membantu setiap orang menemukan hunian ideal  berdasarkan kenyamanan, keluwesan, dan cocok pada gaya hidup masing masing orang. GeoEstate hadir untuk memberikan fitur spesial yakni peletakan dan geografi dari bangunan yang akan di beli agar para pembeli dapat mempertimbangkan.
+Menjadi platform jual beli real estate terdepan guna membantu setiap orang menemukan hunian ideal  berdasarkan kenyamanan, keluwesan, dan cocok pada gaya hidup masing masing orang. GeoEstate hadir sebagai fasilitator yang berfungsi menyerupai platform informasi dan komunikasi dalam kategori jual beli real estate yang berfokus untuk menjadi wadah yang menghubungkan penjual dan pembeli properti secara aman, transparan, dan efisien.
 
 Dengan anggota:
 
