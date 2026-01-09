@@ -3,6 +3,7 @@ import os
 import time
 import random
 from datetime import datetime
+from app.features.notifikasi_service import tambah_notifikasi
 
 FILE_JADWAL = 'data/jadwal_survey.csv'
 
@@ -150,12 +151,23 @@ def survey(username, properti):
             'extend_count': 0
         }
         
- 
         simpan_jadwal_csv(data_baru)
+        tambah_notifikasi(
+            properti["penjual"],
+            f"📅 Permintaan survei baru untuk properti '{properti['nama']}' dari buyer {username}",
+            role="seller",
+            redirect="survey_seller"
+        )
         ui_sukses_request(srv_id)
+
     else:
         print("Pembuatan jadwal dibatalkan.")
         time.sleep(1)
+
+STATUS_PRIORITY = {
+    "berlangsung": 2,
+    "pending": 1
+}
 
 def lihat_jadwal_survey(username):
     init_csv()
@@ -164,22 +176,41 @@ def lihat_jadwal_survey(username):
     print("========================================")
     print("          JADWAL SURVEI ANDA           ")
     print("========================================")
-    found = False
+
+    surveys = {}
+
     with open(FILE_JADWAL, mode='r', newline='', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            if row['pembeli'] == username:
-                found = True
-                print(f" ID Survei   : {row['id']}")
-                print(f" Properti    : {row['nama_properti']}")
-                print(f" Lokasi      : {row['lokasi']}")
-                print(f" Tanggal     : {row['tanggal']}")
-                print(f" Waktu       : {row['waktu']}")
-                print(f" Penjual     : {row['penjual']}")
-                print(f" Status      : {row['status']}")
-                print("----------------------------------------")
-                
-    
-    if not found:
-        print(" (Belum ada jadwal survei yang dijadwalkan) ")
+            if row['pembeli'] != username:
+                continue
+
+            sid = row['id']
+            status = row['status'].lower()
+
+            if status not in STATUS_PRIORITY:
+                continue  # abaikan status selesai / ditolak dll
+
+            if sid not in surveys:
+                surveys[sid] = row
+            else:
+                old_status = surveys[sid]['status'].lower()
+                if STATUS_PRIORITY[status] > STATUS_PRIORITY.get(old_status, 0):
+                    surveys[sid] = row
+
+    if not surveys:
+        print(" (Belum ada jadwal survei aktif) ")
+        input("[ Tekan ENTER untuk kembali ]")
+        return
+
+    for row in surveys.values():
+        print(f" ID Survei   : {row['id']}")
+        print(f" Properti    : {row['nama_properti']}")
+        print(f" Lokasi      : {row['lokasi']}")
+        print(f" Tanggal     : {row['tanggal']}")
+        print(f" Waktu       : {row['waktu']}")
+        print(f" Penjual     : {row['penjual']}")
+        print(f" Status      : {row['status']}")
+        print("----------------------------------------")
+
     input("[ Tekan ENTER untuk kembali ]")

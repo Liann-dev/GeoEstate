@@ -135,7 +135,8 @@ def auto_expire_booking():
             simpan_notifikasi(
                 r["username_pembeli"],
                 "user",
-                f"Booking properti '{r['nama_properti']}' dibatalkan otomatis (expired)"
+                f"Booking properti '{r['nama_properti']}' dibatalkan otomatis (expired)",
+                redirect="transaksi_buyer"
             )
 
     if berubah:
@@ -184,7 +185,7 @@ def update_status_pesanan(penjual_login):
             simpan_booking_awal(id_trx, tanggal_awal)
             simpan_booking_history(id_trx, "SET_BOOKING", "seller", "-", tanggal_awal)
             update_status_properti(trx["id_properti"], "booked")
-            simpan_notifikasi(pembeli, "user", f"Booking '{properti}' disetujui")
+            simpan_notifikasi(pembeli, "user", f"Booking '{properti}' disetujui", redirect="transaksi_buyer")
 
         elif pilih == "2":
             trx["status"] = "Dibatalkan"

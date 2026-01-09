@@ -156,11 +156,19 @@ def detail_properti(username, p):
                 print("❌ Anda belum terverifikasi.")
                 input("ENTER...")
                 continue
+            if username == p["penjual"]:
+                print("❌ Tidak bisa menjadwalkan survei untuk properti sendiri.")
+                input("ENTER...")
+                continue
             survey(username, p)
 
         elif pilihan == "2" and status == "available":
             if not get_user_verified(username):
                 print("❌ Anda belum terverifikasi.")
+                input("ENTER...")
+                continue
+            if username == p["penjual"]:
+                print("❌ Tidak bisa mem-booking properti milik sendiri.")
                 input("ENTER...")
                 continue
             booking(username, p)
@@ -175,6 +183,10 @@ def detail_properti(username, p):
             return
 
         elif pilihan == "4" and status != "sold":
+            if username == p["penjual"]:
+                print("❌ Tidak bisa menambahkan wishlist properti milik sendiri.")
+                input("ENTER...")
+                continue
             tambah_ke_wishlist(username, p["id"])
 
         elif pilihan == "5":

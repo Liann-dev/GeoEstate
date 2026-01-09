@@ -139,8 +139,9 @@ def booking(username, p):
     # ===== NOTIFIKASI SELLER =====
     tambah_notifikasi(
         p["penjual"],
-        f"📌 Booking baru untuk properti '{p['nama']}' dari buyer {username}",
-        role="seller"
+        f"📌 Permintaan booking baru untuk properti '{p['nama']}' dari buyer {username}",
+        role="seller",
+        redirect="transaksi_seller"
     )
 
     print("\n✅ Booking berhasil diajukan.")

@@ -1,1 +1,5 @@
 id,id_properti,nama_properti,lokasi,tanggal,waktu,pembeli,penjual,status
+SRV-9551,24,Villa Danau Biru,Dieng,2026-01-10,09:00,Naufal,Lian,Pending
+SRV-9551,24,Villa Danau Biru,Dieng,2026-01-10,09:00,Naufal,Lian,Berlangsung
+SRV-5053,1,Rumah di Dalam Ubertos,"Bandung, Ujung Berung",2026-01-11,13:00,Naufal,azzurisulthan,Pending
+SRV-5053,1,Rumah di Dalam Ubertos,"Bandung, Ujung Berung",2026-01-11,13:00,Naufal,azzurisulthan,Berlangsung

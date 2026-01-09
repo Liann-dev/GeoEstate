@@ -1,12 +1,42 @@
 import csv
+import os
 
 from app.home.profile import profile
 from app.features.chat import menu_chat
 from app.features.jadwal_survey import lihat_jadwal_survey
+from app.home.riwayat_transaksi_terpadu import riwayat_transaksi_terpadu
+from app.features.transaksi_penjual import menu_kelola_pesanan
+from app.Utils.animation import loading_seller_transition
+from app.features.kelola_survey import menu_kelola_survei
 
 NOTIF_FILE = "data/notifikasi.csv"
 
-FIELDNAMES = ["id", "username", "role", "pesan", "status", "timestamp", "redirect"]
+FIELDNAMES = [
+    "id",
+    "username",
+    "role",
+    "pesan",
+    "status",
+    "timestamp",
+    "redirect"
+]
+
+
+# =========================
+# UTIL CSV
+# =========================
+def load_notifikasi():
+    if not os.path.exists(NOTIF_FILE):
+        return []
+    with open(NOTIF_FILE, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def save_notifikasi(data):
+    with open(NOTIF_FILE, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        writer.writeheader()
+        writer.writerows(data)
 
 
 # =========================
@@ -18,14 +48,16 @@ def menu_hapus_notifikasi(username, semua, user_notif):
     print("2. Hapus Semua Notifikasi")
     print("0. Batal")
 
-    pilih = input("Pilih opsi: ").strip()
+    pilih = input("Pilih: ").strip()
 
+    # BATAL
     if pilih == "0":
         return semua
 
     # ===== HAPUS SATU =====
     if pilih == "1":
-        nomor = input("Masukkan nomor notifikasi: ").strip()
+        nomor = input("Nomor notifikasi: ").strip()
+
         if not nomor.isdigit():
             print("❌ Input tidak valid.")
             input("ENTER...")
@@ -46,12 +78,14 @@ def menu_hapus_notifikasi(username, semua, user_notif):
 
     # ===== HAPUS SEMUA =====
     if pilih == "2":
-        if input("Yakin hapus semua? (y/n): ").lower() != "y":
+        konfirmasi = input("Yakin hapus semua notifikasi? (y/n): ").lower()
+        if konfirmasi != "y":
             print("❎ Dibatalkan.")
             input("ENTER...")
             return semua
 
         semua = [n for n in semua if n["username"] != username]
+
         print("🗑️ Semua notifikasi dihapus.")
         input("ENTER...")
         return semua
@@ -66,9 +100,7 @@ def menu_hapus_notifikasi(username, semua, user_notif):
 # =========================
 def tampilkan_notifikasi_inbox(username):
     while True:
-        with open(NOTIF_FILE, newline="", encoding="utf-8") as f:
-            semua = list(csv.DictReader(f))
-
+        semua = load_notifikasi()
         user_notif = [n for n in semua if n["username"] == username]
 
         print("\n========== NOTIFIKASI INBOX ==========\n")
@@ -79,8 +111,8 @@ def tampilkan_notifikasi_inbox(username):
             return
 
         for i, n in enumerate(user_notif, 1):
-            status = "🔔" if n["status"] == "unread" else "✓"
-            print(f"{i}. {status} {n['pesan']}")
+            icon = "🔔" if n["status"] == "unread" else "✓"
+            print(f"{i}. {icon} {n['pesan']}")
 
         print("\nPilih nomor notifikasi")
         print("[H] Hapus Notifikasi")
@@ -92,14 +124,10 @@ def tampilkan_notifikasi_inbox(username):
         if pilih == "0":
             return
 
-        # ===== MENU HAPUS =====
+        # ===== HAPUS =====
         if pilih == "h":
             semua = menu_hapus_notifikasi(username, semua, user_notif)
-
-            with open(NOTIF_FILE, "w", newline="", encoding="utf-8") as f:
-                writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
-                writer.writeheader()
-                writer.writerows(semua)
+            save_notifikasi(semua)
             continue
 
         # ===== PILIH NOTIF =====
@@ -117,38 +145,34 @@ def tampilkan_notifikasi_inbox(username):
         notif = user_notif[idx]
         target = notif.get("redirect", "-")
 
-        # ===== REDIRECT =====
-        if target == "profile":
-            profile(username)
-
-        elif target == "jadwal_survey":
-            lihat_jadwal_survey(username)
-
-        elif target == "chat":
-            menu_chat(username)
-
-        elif target == "transaksi_seller":
-            from app.features.transaksi_penjual import menu_kelola_pesanan
-            menu_kelola_pesanan(username)
-
-        elif target == "transaksi_buyer":
-            print("\nℹ️  Halaman transaksi buyer belum tersedia.")
-            input("ENTER...")
-            continue
-
-        else:
-            print("ℹ️  Notifikasi ini belum memiliki halaman tujuan.")
-            input("ENTER...")
-            continue
-
         # ===== MARK AS READ =====
         for n in semua:
             if n["id"] == notif["id"]:
                 n["status"] = "read"
 
-        with open(NOTIF_FILE, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
-            writer.writeheader()
-            writer.writerows(semua)
+        save_notifikasi(semua)
 
-        return
+        # ===== REDIRECT =====
+        if target == "profile":
+            profile(username)
+
+        elif target == "chat":
+            menu_chat(username)
+
+        elif target == "transaksi_seller":
+            loading_seller_transition()
+            menu_kelola_pesanan(username)
+
+        elif target == "transaksi_buyer":
+            riwayat_transaksi_terpadu(username)
+
+        elif target == "survey_buyer":
+            lihat_jadwal_survey(username)
+
+        elif target == "survey_seller":
+            loading_seller_transition()
+            menu_kelola_survei(username)
+
+        else:
+            print("\nℹ️  Notifikasi ini tidak memiliki halaman tujuan.")
+            input("ENTER...")

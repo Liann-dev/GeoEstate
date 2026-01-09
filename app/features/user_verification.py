@@ -160,7 +160,8 @@ def proses_request_pending():
                 tambah_notifikasi(
                     username=username,
                     pesan="✅ Akun Anda telah berhasil diverifikasi oleh Admin.",
-                    role="user"
+                    role="user",
+                    redirect="profile"
                 )
 
             elif pilih == "2":
@@ -175,7 +176,8 @@ def proses_request_pending():
                 tambah_notifikasi(
                     username=username,
                     pesan=f"❌ Verifikasi akun Anda ditolak. Alasan: {note}",
-                    role="user"
+                    role="user",
+                    redirect="profile"
                 )
 
             else:

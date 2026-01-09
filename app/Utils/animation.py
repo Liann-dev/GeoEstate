@@ -75,7 +75,7 @@ def loading_seller_transition():
     print(centerpadding("G E O   E S T A T E   |   B U S I N E S S"))
     print(centerpadding("Menyiapkan Portofolio Aset Anda..."))
     print("\n") 
-    print(centerpadding("Loading..."))
+    print(centerpadding("Membuka Dashboard Penjual..."))
     padding_kiri = " " * int((lebar - 25) / 2) 
     total_loading = 22
     

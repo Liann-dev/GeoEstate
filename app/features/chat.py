@@ -174,5 +174,6 @@ def kirim_pesan(sender, receiver, message):
     simpan_notifikasi(
         username=receiver,
         role="user",   # buyer & seller sama-sama user
-        pesan=f"💬 Pesan baru dari {sender}"
+        pesan=f"💬 Pesan baru dari {sender}",
+        redirect="chat"
     )

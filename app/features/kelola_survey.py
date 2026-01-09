@@ -2,6 +2,7 @@ import csv
 import os
 from datetime import datetime, timedelta
 from app.features.chat import buka_chat, normalize_session
+from app.features.notifikasi_helper import simpan_notifikasi
 
 FILE_JADWAL = 'data/jadwal_survey.csv'
 MAX_EXTEND = 3
@@ -250,12 +251,24 @@ def update_status_survei(username):
             baru = survei.copy()
             baru['status'] = 'Berlangsung'
             append_survei(baru)
+            simpan_notifikasi(
+                survei['pembeli'],
+                "user",
+                f"Permintaan survei untuk '{survei['nama_properti']}' telah DISETUJUI",
+                redirect="survey_buyer"
+            )
 
         # ===== TOLAK =====
         elif opsi == '2':
             baru = survei.copy()
             baru['status'] = 'Ditolak'
             append_survei(baru)
+            simpan_notifikasi(
+                survei['pembeli'],
+                "user",
+                f"Permintaan survei untuk '{survei['nama_properti']}' DITOLAK oleh seller",
+                redirect="survey_buyer"
+            )
 
         # ===== GANTI JADWAL =====
         elif opsi == '3':
@@ -284,6 +297,13 @@ def update_status_survei(username):
 
             append_survei(baru)
 
+            simpan_notifikasi(
+                survei['pembeli'],
+                "user",
+                f"Jadwal survei '{survei['nama_properti']}' telah DIUBAH oleh seller",
+                redirect="survey_buyer"
+            )
+
         else:
             print("❌ Pilihan tidak valid.")
             input("ENTER...")
@@ -300,6 +320,14 @@ def update_status_survei(username):
         baru = survei.copy()
         baru['status'] = 'Selesai'
         append_survei(baru)
+
+        simpan_notifikasi(
+            survei['pembeli'],
+            "user",
+            f"Survei properti '{survei['nama_properti']}' telah SELESAI",
+            redirect="survey_buyer"
+        )
+
 
     else:
         print("❌ Status sudah final.")

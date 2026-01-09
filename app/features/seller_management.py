@@ -125,7 +125,8 @@ def verifikasi_seller():
                 tambah_notifikasi(
                     username=row["username"],
                     pesan="🎉 Pengajuan Anda sebagai SELLER telah DISETUJUI oleh Admin.",
-                    role="user"
+                    role="user",
+                    redirect="profile"
                 )
 
                 print("Seller diterima.\n")
@@ -138,7 +139,8 @@ def verifikasi_seller():
                 tambah_notifikasi(
                     username=row["username"],
                     pesan="❌ Pengajuan Anda sebagai SELLER DITOLAK oleh Admin.",
-                    role="user"
+                    role="user",
+                    redirect="profile"
                 )
 
                 print("Seller ditolak.\n")
