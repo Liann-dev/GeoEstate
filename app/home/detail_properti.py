@@ -136,13 +136,13 @@ def detail_properti(username, p):
         if status != "sold":
             print("1. 📅 Jadwalkan Survei")
 
-        elif status == "available":
+        if status == "available":
             print("2. 🛒 Booking")
         
-        elif status == "booked_owner":
+        if status == "booked_owner":
             print("3. 💰 Beli Properti")
 
-        elif status != "sold":
+        if status != "sold":
             print("4. ➕ Tambahkan ke Wishlist")
 
         print("5. 💬 Chat Penjual")
